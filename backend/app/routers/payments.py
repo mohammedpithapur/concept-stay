@@ -47,6 +47,8 @@ from app.models.property import Property
 from app.schemas.booking import BookingOut
 from app.schemas.payment import PaymentOrderCreate, PaymentOrderOut, PaymentOut, PaymentVerifyIn
 from app.services.email import send_booking_confirmation_email
+from app.models.payout import Payout
+from app.services.cancellation import rescale_payout
 from app.services.payouts import create_payout_for_booking
 from app.services.push import send_push_to_admins, send_push_to_user, send_push_to_all
 from app.services.booking import remove_shadow_blocks
@@ -452,12 +454,21 @@ async def razorpay_webhook(
                 payment.updated_at = utc_now()
 
                 booking = await db.get(Booking, payment.booking_id)
-                if booking:
+                if booking and not booking.refund_amount:
                     booking.payment_status = PaymentStatus.refunded
+                    booking.refund_amount = booking.total
+                    await _void_payout(db, booking)
 
                 await db.commit()
 
     return {"status": "ok"}
+
+
+async def _void_payout(db: AsyncSession, booking: Booking) -> None:
+    """A full refund outside the guest cancel flow (admin, gateway webhook) leaves the host nothing to be paid."""
+    payout = await db.scalar(select(Payout).where(Payout.booking_id == booking.id))
+    if payout:
+        rescale_payout(payout, booking.total, booking.total)
 
 
 # ── POST /payments/{payment_id}/refund ───────────────────────────────────────
@@ -504,6 +515,8 @@ async def refund_payment(
     booking = await db.get(Booking, payment.booking_id)
     if booking:
         booking.payment_status = PaymentStatus.refunded
+        booking.refund_amount = booking.total
+        await _void_payout(db, booking)
 
     await db.commit()
     await db.refresh(payment)

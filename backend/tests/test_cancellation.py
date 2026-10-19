@@ -177,3 +177,25 @@ async def test_refund_preview_matches_cancel(client, admin_headers, user_token, 
         "total_paid": booking["total"],
     }
     assert fake_razorpay == []  # preview never refunds
+
+
+async def test_admin_full_refund_voids_owed_payout(
+    client, admin_headers, user_token, db_session, fake_razorpay, monkeypatch
+):
+    from app.routers import payments as payments_router
+
+    booking = await _paid_booking(client, admin_headers, user_token, db_session)
+    payment = await db_session.scalar(select(Payment).where(Payment.booking_id == booking["id"]))
+    payment.razorpay_payment_id = "pay_admin_refund"
+    await db_session.commit()
+    monkeypatch.setattr(payments_router, "_get_razorpay_client", lambda: SimpleNamespace(payment=SimpleNamespace(refund=lambda *a, **k: {})))
+    monkeypatch.setattr(payments_router.settings, "RAZORPAY_KEY_ID", "rzp_test")
+    monkeypatch.setattr(payments_router.settings, "RAZORPAY_KEY_SECRET", "secret")
+
+    res = await client.post(f"/payments/{payment.id}/refund", headers=admin_headers)
+    assert res.status_code == 200, res.text
+
+    db_session.expire_all()
+    payout = await db_session.scalar(select(Payout).where(Payout.booking_id == booking["id"]))
+    assert payout.status == "voided"
+    assert payout.host_amount == 0
