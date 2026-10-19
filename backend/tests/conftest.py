@@ -20,6 +20,9 @@ from app.config import settings
 settings.RESEND_API_KEY = None
 settings.FAST2SMS_API_KEY = None
 
+from app.rate_limit import limiter
+limiter.enabled = False  # tests register/login many times; rate limits would cause 429s
+
 
 
 TEST_DB_ENV = "TEST_DATABASE_URL"
@@ -133,7 +136,7 @@ async def admin_token(client):
 
     login = await client.post(
         "/auth/login",
-        json={"email": admin_email, "password": admin_password},
+        json={"identifier": admin_email, "password": admin_password},
     )
     token = login.json()["access_token"]
     return token
@@ -151,7 +154,7 @@ async def user_token(client):
 
     login = await client.post(
         "/auth/login",
-        json={"email": user_email, "password": user_password},
+        json={"identifier": user_email, "password": user_password},
     )
     token = login.json()["access_token"]
     return token

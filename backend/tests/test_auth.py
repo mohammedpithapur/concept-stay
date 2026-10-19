@@ -11,7 +11,7 @@ async def test_register_and_login(client):
     token = register.json().get("access_token")
     assert token, "Expected access token in register response"
 
-    login = await client.post("/auth/login", json={"email": payload["email"], "password": payload["password"]})
+    login = await client.post("/auth/login", json={"identifier": payload["email"], "password": payload["password"]})
     assert login.status_code == 200, login.text
     assert login.json().get("access_token"), "Expected access token in login response"
 
@@ -32,6 +32,6 @@ async def test_login_invalid_credentials(client):
         json={"email": "badlogin@example.com", "password": "GoodPass123!", "full_name": "Bad Login"},
     )
 
-    bad = await client.post("/auth/login", json={"email": "badlogin@example.com", "password": "WrongPass"})
+    bad = await client.post("/auth/login", json={"identifier": "badlogin@example.com", "password": "WrongPass"})
     assert bad.status_code == 401
     assert bad.json().get("detail") == "Invalid email or password"

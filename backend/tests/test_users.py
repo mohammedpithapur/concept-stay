@@ -30,7 +30,7 @@ async def test_change_password(client, user_headers):
     )
     assert response.status_code == 200, response.text
 
-    login = await client.post("/auth/login", json={"email": "guest@example.com", "password": "NewGuestPass123!"})
+    login = await client.post("/auth/login", json={"identifier": "guest@example.com", "password": "NewGuestPass123!"})
     assert login.status_code == 200, login.text
 
 
