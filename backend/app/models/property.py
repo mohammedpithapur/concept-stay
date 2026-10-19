@@ -15,6 +15,7 @@ class Property(Base):
         Index("ix_properties_is_published", "is_published"),
         Index("ix_properties_owner_id", "owner_id"),
         Index("ix_properties_is_published_city", "is_published", "city"),
+        Index("ix_properties_property_type", "property_type"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -54,6 +55,21 @@ class Property(Base):
     override_house_rules: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     override_amenities: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     override_details: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    property_type: Mapped[str] = mapped_column(String(30), default="villa", server_default="villa", nullable=False)
+    categories: Mapped[list] = mapped_column(JSONB, default=list, server_default="[]", nullable=False)
+    experience_tags: Mapped[list] = mapped_column(JSONB, default=list, server_default="[]", nullable=False)
+    number_of_rooms: Mapped[int] = mapped_column(Integer, default=1, server_default="1", nullable=False)
+    about_stay: Mapped[str] = mapped_column(Text, default="", server_default="", nullable=False)
+    the_space: Mapped[str] = mapped_column(Text, default="", server_default="", nullable=False)
+    location_notes: Mapped[str] = mapped_column(Text, default="", server_default="", nullable=False)
+    what_guests_love: Mapped[str] = mapped_column(Text, default="", server_default="", nullable=False)
+    things_to_know: Mapped[str] = mapped_column(Text, default="", server_default="", nullable=False)
+    cancellation_policy: Mapped[str] = mapped_column(String(20), default="flexible", server_default="flexible", nullable=False)
+    approval_status: Mapped[str] = mapped_column(String(20), default="approved", server_default="approved", nullable=False)
+    pending_changes: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    verification_status: Mapped[str] = mapped_column(String(20), default="unverified", server_default="unverified", nullable=False)
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     avg_rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     review_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, nullable=False)

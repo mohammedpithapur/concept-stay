@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field, field_validator
 from uuid import UUID
 from datetime import datetime
 
+from app.taxonomy import CancellationPolicy, Category, ExperienceTag, PropertyType
+
 
 # ── PropertyImage ──
 
@@ -76,6 +78,19 @@ class PropertyOut(BaseModel):
     override_house_rules: bool = False
     override_amenities: bool = False
     override_details: bool = False
+    property_type: str = "villa"
+    categories: list[str] = Field(default_factory=list)
+    experience_tags: list[str] = Field(default_factory=list)
+    number_of_rooms: int = 1
+    about_stay: str = ""
+    the_space: str = ""
+    location_notes: str = ""
+    what_guests_love: str = ""
+    things_to_know: str = ""
+    cancellation_policy: str = "flexible"
+    approval_status: str = "approved"
+    verification_status: str = "unverified"
+    verified_at: Any = None
     avg_rating: float = 0.0
     review_count: int = 0
     created_at: Any = None
@@ -90,7 +105,7 @@ class PropertyOut(BaseModel):
     @field_validator(
         "price_per_night", "cleaning_fee", "extra_guest_charge_per_night",
         "base_guests", "max_guests", "bedrooms", "bathrooms",
-        "min_nights", "max_pets", "pet_charge_per_night", "review_count",
+        "min_nights", "max_pets", "pet_charge_per_night", "review_count", "number_of_rooms",
         mode="before"
     )
     @classmethod
@@ -137,7 +152,7 @@ class PropertyOut(BaseModel):
             return [item for item in v if isinstance(item, dict)]
         return []
 
-    @field_validator("amenities", "house_rules", "local_recommendations", mode="before")
+    @field_validator("amenities", "house_rules", "local_recommendations", "categories", "experience_tags", mode="before")
     @classmethod
     def ensure_str_list(cls, v: Any) -> list[str]:
         if v is None:
@@ -194,6 +209,16 @@ class PropertyCreate(BaseModel):
     override_house_rules: bool = False
     override_amenities: bool = False
     override_details: bool = False
+    property_type: PropertyType = "villa"
+    categories: list[Category] = []
+    experience_tags: list[ExperienceTag] = []
+    number_of_rooms: int = 1
+    about_stay: str = ""
+    the_space: str = ""
+    location_notes: str = ""
+    what_guests_love: str = ""
+    things_to_know: str = ""
+    cancellation_policy: CancellationPolicy = "flexible"
     images: list[PropertyImageCreate] = Field(default_factory=list)
 
 
@@ -234,6 +259,16 @@ class PropertyUpdate(BaseModel):
     override_house_rules: bool | None = None
     override_amenities: bool | None = None
     override_details: bool | None = None
+    property_type: PropertyType | None = None
+    categories: list[Category] | None = None
+    experience_tags: list[ExperienceTag] | None = None
+    number_of_rooms: int | None = None
+    about_stay: str | None = None
+    the_space: str | None = None
+    location_notes: str | None = None
+    what_guests_love: str | None = None
+    things_to_know: str | None = None
+    cancellation_policy: CancellationPolicy | None = None
     images: list[PropertyImageCreate] | None = None
 
 
