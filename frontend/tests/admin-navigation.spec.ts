@@ -76,6 +76,7 @@ test.describe('Admin navigation', () => {
   test('View button opens property details', async ({ page }) => {
     await mockAdminApi(page)
     await page.goto('/admin')
+    await page.waitForLoadState('networkidle') // let React hydrate before clicking a tab
     await page.getByRole('button', { name: 'Properties' }).click()
     const viewLink = page.getByRole('link', { name: 'View' }).first()
     await expect(viewLink).toHaveAttribute('href', '/properties/e2e-seed-property')

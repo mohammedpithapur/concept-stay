@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { HostsTab, PayoutsTab, ReviewQueueTab } from './MarketplaceTabs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -920,6 +921,9 @@ export default function AdminPage() {
     { id: 'ical', label: 'iCal Sync' },
     { id: 'events', label: 'Events' },
     { id: 'articles', label: 'Articles / Blog' },
+    { id: 'review', label: 'Listing Review' },
+    { id: 'hosts', label: 'Hosts' },
+    { id: 'payouts', label: 'Payouts' },
   ]
 
   const cardStyle = { backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '24px' }
@@ -2406,6 +2410,10 @@ export default function AdminPage() {
             )}
           </div>
         )}
+
+        {activeTab === 'review' && <ReviewQueueTab />}
+        {activeTab === 'hosts' && <HostsTab />}
+        {activeTab === 'payouts' && <PayoutsTab />}
 
         {/* Articles / Blog Tab */}
         {activeTab === 'articles' && (
