@@ -34,7 +34,9 @@ from app.services.upload import (
     UploadStorageError,
     UploadValidationError,
 )
+from app.schemas.property import HostPropertyOut, RejectListingIn, VerificationUpdateIn
 from app.schemas.user import HostStatusUpdate, UserOut
+from app.services import listing_review
 from app.services.cache import cache_delete, cache_get_json, cache_set_json, invalidate_properties_cache
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -50,77 +52,7 @@ async def fetch_group(db: AsyncSession, group_id: str) -> PropertyGroup | None:
     return result.scalar_one_or_none()
 
 
-async def sync_property_images(db: AsyncSession, property_id_val: uuid.UUID | str, images: list[PropertyImageCreate] | None) -> None:
-    """Replace all images for a property. Deletes old DB records (storage files deleted separately by caller)."""
-    if images is None:
-        return
-
-    prop_uuid = property_id_val if isinstance(property_id_val, uuid.UUID) else uuid.UUID(str(property_id_val))
-
-    # Bulk delete all existing image records for this property
-    await db.execute(delete(PropertyImage).where(PropertyImage.property_id == prop_uuid))
-
-    if not images:
-        return
-
-    # Filter out any blob: or empty URLs that should never reach the DB
-    valid_images = [img for img in images if img.image_url and not img.image_url.startswith("blob:")]
-
-    if not valid_images:
-        return
-
-    normalized_images = []
-    primary_assigned = False
-    for index, image_data in enumerate(valid_images):
-        is_primary = bool(image_data.is_primary) and not primary_assigned
-        primary_assigned = primary_assigned or is_primary
-        album_name = getattr(image_data, "album_name", "General") or "General"
-        normalized_images.append(
-            PropertyImage(
-                property_id=prop_uuid,
-                image_url=image_data.image_url,
-                is_primary=is_primary,
-                display_order=image_data.display_order or index + 1,
-                album_name=album_name,
-            )
-        )
-
-    if not primary_assigned and normalized_images:
-        normalized_images[0].is_primary = True
-
-    db.add_all(normalized_images)
-
-
-async def normalize_property_images(images: list[PropertyImageCreate] | None) -> list[PropertyImageCreate] | None:
-    if images is None:
-        return None
-
-    normalized: list[PropertyImageCreate] = []
-    for image in images:
-        image_url = image.image_url
-        # Skip blob: URLs — they should have been uploaded client-side already
-        if image_url.startswith("blob:"):
-            continue
-        if image_url.startswith("data:image"):
-            try:
-                # Run blocking upload in a thread to avoid blocking the event loop
-                image_url = await asyncio.to_thread(upload_property_image_from_data_url, image_url)
-            except UploadValidationError as exc:
-                raise HTTPException(status_code=400, detail=str(exc)) from exc
-            except UploadStorageError as exc:
-                raise HTTPException(status_code=500, detail=f"Image upload failed: {exc}") from exc
-
-        album_name = getattr(image, "album_name", "General") or "General"
-        normalized.append(
-            PropertyImageCreate(
-                image_url=image_url,
-                is_primary=image.is_primary,
-                display_order=image.display_order,
-                album_name=album_name,
-            )
-        )
-
-    return normalized
+from app.services.property_images import normalize_property_images, sync_property_images  # noqa: F401
 
 
 # ── Dashboard ──
@@ -1237,3 +1169,67 @@ async def update_host_status(
     await cache_delete(f"user:{host.id}")
     await invalidate_properties_cache()
     return host
+
+
+# -- Listing review (host submissions) ---------------------------------------------
+
+async def _get_property_or_404(db: AsyncSession, property_id: str) -> Property:
+    try:
+        prop_uuid = uuid.UUID(property_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid property ID format")
+    result = await db.execute(
+        select(Property).options(selectinload(Property.images)).where(Property.id == prop_uuid)
+    )
+    prop = result.scalar_one_or_none()
+    if not prop:
+        raise HTTPException(status_code=404, detail="Property not found")
+    return prop
+
+
+@router.get("/review-queue", response_model=list[HostPropertyOut])
+async def review_queue(admin: User = Depends(get_admin), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Property)
+        .options(selectinload(Property.images))
+        .where((Property.approval_status == "pending_review") | (Property.pending_changes.isnot(None)))
+        .order_by(Property.updated_at.asc())
+    )
+    return result.scalars().all()
+
+
+@router.post("/properties/{property_id}/approve", response_model=HostPropertyOut)
+async def approve_listing(property_id: str, admin: User = Depends(get_admin), db: AsyncSession = Depends(get_db)):
+    prop = await _get_property_or_404(db, property_id)
+    await listing_review.approve_listing(db, prop)
+    await db.commit()
+    await invalidate_properties_cache()
+    return await _get_property_or_404(db, property_id)
+
+
+@router.post("/properties/{property_id}/reject", response_model=HostPropertyOut)
+async def reject_listing(
+    property_id: str,
+    data: RejectListingIn,
+    admin: User = Depends(get_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    prop = await _get_property_or_404(db, property_id)
+    listing_review.reject_listing(prop, data.reason)
+    await db.commit()
+    await invalidate_properties_cache()
+    return await _get_property_or_404(db, property_id)
+
+
+@router.patch("/properties/{property_id}/verification", response_model=HostPropertyOut)
+async def update_verification(
+    property_id: str,
+    data: VerificationUpdateIn,
+    admin: User = Depends(get_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    prop = await _get_property_or_404(db, property_id)
+    listing_review.set_verification(prop, data.status)
+    await db.commit()
+    await invalidate_properties_cache()
+    return await _get_property_or_404(db, property_id)

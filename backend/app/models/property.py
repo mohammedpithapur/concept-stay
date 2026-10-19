@@ -66,7 +66,7 @@ class Property(Base):
     things_to_know: Mapped[str] = mapped_column(Text, default="", server_default="", nullable=False)
     cancellation_policy: Mapped[str] = mapped_column(String(20), default="flexible", server_default="flexible", nullable=False)
     approval_status: Mapped[str] = mapped_column(String(20), default="approved", server_default="approved", nullable=False)
-    pending_changes: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    pending_changes: Mapped[dict | None] = mapped_column(JSONB(none_as_null=True), nullable=True)
     rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     verification_status: Mapped[str] = mapped_column(String(20), default="unverified", server_default="unverified", nullable=False)
     verified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

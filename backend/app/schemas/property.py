@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, field_validator
 from uuid import UUID
 from datetime import datetime
 
-from app.taxonomy import CancellationPolicy, Category, ExperienceTag, PropertyType
+from app.taxonomy import CancellationPolicy, Category, ExperienceTag, PropertyType, VerificationStatus
 
 
 # ── PropertyImage ──
@@ -277,3 +277,16 @@ class PropertyListOut(BaseModel):
     total: int
     page: int
     limit: int
+
+class HostPropertyOut(PropertyOut):
+    """Owner/admin view: includes the unpublished edit buffer and the last rejection reason."""
+    pending_changes: dict | None = None
+    rejection_reason: str | None = None
+
+
+class RejectListingIn(BaseModel):
+    reason: str = Field(min_length=1, max_length=2000)
+
+
+class VerificationUpdateIn(BaseModel):
+    status: VerificationStatus
