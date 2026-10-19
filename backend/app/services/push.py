@@ -20,7 +20,7 @@ from app.database import async_session
 from app.models.push_subscription import PushSubscription
 from app.models.user import User, UserRole
 
-logger = logging.getLogger("earthystay.push")
+logger = logging.getLogger("conceptstay.push")
 
 DEFAULT_ICON = "/icons/icon-192x192.png"
 

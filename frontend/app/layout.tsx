@@ -6,14 +6,14 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Earthy stays | Unique Earthy Properties Across India',
-    template: '%s | Earthy stays',
+    default: 'Concept Stay | Unique Earthy Properties Across India',
+    template: '%s | Concept Stay',
   },
   description: 'Discover and book one-of-a-kind earthy villas, cottages, and estates across India. Perfect for boutique stays, destination weddings, and corporate retreats.',
   keywords: [
-    'Earthy stays',
-    'EarthyStays',
-    'earthystays.in',
+    'Concept Stay',
+    'ConceptStay',
+    'conceptstay.in',
     'earthy properties',
     'luxury villas India',
     'heritage stays India',
@@ -21,38 +21,38 @@ export const metadata: Metadata = {
     'destination wedding venues India',
     'corporate retreats India',
   ],
-  metadataBase: new URL('https://earthystays.in'),
+  metadataBase: new URL('https://conceptstay.in'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
-    url: 'https://earthystays.in',
-    siteName: 'Earthy stays',
-    title: 'Earthy stays | Unique Earthy Properties Across India',
+    url: 'https://conceptstay.in',
+    siteName: 'Concept Stay',
+    title: 'Concept Stay | Unique Earthy Properties Across India',
     description: 'Discover and book one-of-a-kind earthy villas, cottages, and estates across India. Perfect for stays, weddings, and corporate retreats.',
     images: [
       {
-        url: 'https://earthystays.in/og-image.jpg',
-        secureUrl: 'https://earthystays.in/og-image.jpg',
+        url: 'https://conceptstay.in/og-image.jpg',
+        secureUrl: 'https://conceptstay.in/og-image.jpg',
         width: 1024,
         height: 1024,
         type: 'image/jpeg',
-        alt: 'Earthy stays — Unique Earthy Properties Across India',
+        alt: 'Concept Stay — Unique Earthy Properties Across India',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Earthy stays | Unique Earthy Properties Across India',
+    title: 'Concept Stay | Unique Earthy Properties Across India',
     description: 'Discover and book one-of-a-kind earthy villas, cottages, and estates across India. Perfect for stays, weddings, and corporate retreats.',
-    images: ['https://earthystays.in/og-image.jpg'],
+    images: ['https://conceptstay.in/og-image.jpg'],
   },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Earthy stays',
+    title: 'Concept Stay',
   },
   icons: {
     icon: [
@@ -74,18 +74,18 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'WebSite',
-      '@id': 'https://earthystays.in/#website',
-      url: 'https://earthystays.in',
-      name: 'Earthy stays',
-      alternateName: ['Earthy stays', 'Earthy Stays', 'EarthyStays India', 'earthystays.in'],
+      '@id': 'https://conceptstay.in/#website',
+      url: 'https://conceptstay.in',
+      name: 'Concept Stay',
+      alternateName: ['Concept Stay', 'ConceptStay India', 'conceptstay.in'],
       description: 'Discover and book unique earthy properties across India. Boutique villas, heritage stays, wedding estates, and retreats.',
     },
     {
       '@type': 'Organization',
-      '@id': 'https://earthystays.in/#organization',
-      name: 'Earthy stays',
-      url: 'https://earthystays.in',
-      logo: 'https://earthystays.in/Untitled_design-removebg-preview.png',
+      '@id': 'https://conceptstay.in/#organization',
+      name: 'Concept Stay',
+      url: 'https://conceptstay.in',
+      logo: 'https://conceptstay.in/Untitled_design-removebg-preview.png',
     },
   ],
 }

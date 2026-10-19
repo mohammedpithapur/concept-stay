@@ -38,7 +38,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://checkout.razorpay.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://checkout.razorpay.com https://earthystays.in",
+      "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://checkout.razorpay.com https://conceptstay.in",
       "font-src 'self' data: https://fonts.gstatic.com",
       `connect-src 'self' ${apiOrigin()} https://*.onrender.com http://localhost:8000 http://127.0.0.1:8000 http://localhost:3000 http://127.0.0.1:3000 https://*.supabase.co https://api.razorpay.com`,
       "frame-src 'self' https://api.razorpay.com",

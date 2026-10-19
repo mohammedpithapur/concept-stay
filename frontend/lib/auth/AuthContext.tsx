@@ -52,10 +52,10 @@ function parseJwtExp(token: string): number | null {
   }
 }
 
-const TOKEN_KEY = 'earthystays_token'
-const USER_KEY = 'earthystays_user'
-const LEGACY_TOKEN_KEY = 'earthystay_token'
-const LEGACY_USER_KEY = 'earthystay_user'
+const TOKEN_KEY = 'conceptstay_token'
+const USER_KEY = 'conceptstay_user'
+const LEGACY_TOKEN_KEY = 'conceptstay_legacy_token'
+const LEGACY_USER_KEY = 'conceptstay_legacy_user'
 
 function getStoredToken(): string | null {
   if (typeof window === 'undefined') return null

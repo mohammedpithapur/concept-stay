@@ -5,7 +5,7 @@ import { AlertTriangle, X, Check } from 'lucide-react'
 const faqs = [
   {
     q: 'Can I get a refund if I cancel my booking?',
-    a: 'No. All bookings made through Earthy Stays are strictly non-refundable. Once payment is confirmed, no refunds will be issued under any circumstances.',
+    a: 'No. All bookings made through Concept Stay are strictly non-refundable. Once payment is confirmed, no refunds will be issued under any circumstances.',
   },
   {
     q: 'What if I need to change my dates?',
@@ -80,7 +80,7 @@ export default function CancellationPage() {
             100% Non-Refundable
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '16px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.7' }}>
-            All bookings made through Earthy Stays are <strong>strictly non-refundable</strong>. Once your payment is confirmed, the full amount is charged and cannot be returned under any circumstances.
+            All bookings made through Concept Stay are <strong>strictly non-refundable</strong>. Once your payment is confirmed, the full amount is charged and cannot be returned under any circumstances.
           </p>
         </div>
       </div>

@@ -28,9 +28,9 @@ export default function PropertyCard({ property }: Props) {
     e.preventDefault()
     e.stopPropagation()
 
-    const shareTitle = `Property | Earthy stays | ${property.name}`
-    const shareDesc = 'a hand picked property - book now on Earthy stays'
-    const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://earthystays.in'}/properties/${property.id}`
+    const shareTitle = `Property | Concept Stay | ${property.name}`
+    const shareDesc = 'a hand picked property - book now on Concept Stay'
+    const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://conceptstay.in'}/properties/${property.id}`
 
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {

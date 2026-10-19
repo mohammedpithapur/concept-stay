@@ -5,29 +5,29 @@ import PropertiesClient from './PropertiesClient'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Property | Earthy stays',
-  description: 'A hand-picked property - book now on Earthy stays',
+  title: 'Property | Concept Stay',
+  description: 'A hand-picked property - book now on Concept Stay',
   openGraph: {
-    title: 'Property | Earthy stays',
-    description: 'A hand-picked property - book now on Earthy stays',
-    url: 'https://earthystays.in/properties',
-    siteName: 'Earthy stays',
+    title: 'Property | Concept Stay',
+    description: 'A hand-picked property - book now on Concept Stay',
+    url: 'https://conceptstay.in/properties',
+    siteName: 'Concept Stay',
     type: 'website',
     images: [
       {
-        url: 'https://earthystays.in/og-image.jpg',
-        secureUrl: 'https://earthystays.in/og-image.jpg',
+        url: 'https://conceptstay.in/og-image.jpg',
+        secureUrl: 'https://conceptstay.in/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Earthy stays Properties',
+        alt: 'Concept Stay Properties',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Property | Earthy stays',
-    description: 'A hand-picked property - book now on Earthy stays',
-    images: ['https://earthystays.in/og-image.jpg'],
+    title: 'Property | Concept Stay',
+    description: 'A hand-picked property - book now on Concept Stay',
+    images: ['https://conceptstay.in/og-image.jpg'],
   },
 }
 

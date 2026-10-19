@@ -3,7 +3,7 @@ import secrets
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
 
-logger = logging.getLogger("earthystay.auth")
+logger = logging.getLogger("conceptstay.auth")
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request, Response

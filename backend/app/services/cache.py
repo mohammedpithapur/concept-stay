@@ -7,7 +7,7 @@ from redis.asyncio import Redis
 from app.config import settings
 
 
-logger = logging.getLogger("earthystay.cache")
+logger = logging.getLogger("conceptstay.cache")
 _redis: Redis | None = None
 
 

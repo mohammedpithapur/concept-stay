@@ -20,7 +20,7 @@ from app.routers import admin, auth, bookings, ical, payments, properties, revie
 from app.models import push_subscription, price_override  # noqa: F401 — ensures table is created
 
 
-logger = logging.getLogger("earthystays.api")
+logger = logging.getLogger("conceptstay.api")
 logging.basicConfig(level=logging.INFO)
 
 if settings.SENTRY_DSN:
@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI):
             pass
 
 
-app = FastAPI(title="Earthy Stays API", lifespan=lifespan)
+app = FastAPI(title="Concept Stay API", lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 app.state.limiter = limiter
 app.add_exception_handler(
@@ -123,13 +123,13 @@ async def request_logging(request: Request, call_next):
 
 # Exact, explicit whitelist of allowed origins (no wildcard regex)
 ALLOWED_ORIGINS = [
-    "https://earthystay-delta.vercel.app",
-    "https://earthystay.vercel.app",
-    "https://earthystays.in",
-    "https://www.earthystays.in",
-    "https://api.earthystays.in",
-    "https://earthystays.com",
-    "https://www.earthystays.com",
+    "https://conceptstay-delta.vercel.app",
+    "https://conceptstay.vercel.app",
+    "https://conceptstay.in",
+    "https://www.conceptstay.in",
+    "https://api.conceptstay.in",
+    "https://conceptstay.com",
+    "https://www.conceptstay.com",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
@@ -162,7 +162,7 @@ app.include_router(articles.router)
 
 @app.get("/")
 async def root():
-    return {"message": "Earthy Stays API is running"}
+    return {"message": "Concept Stay API is running"}
 
 
 @app.get("/health")

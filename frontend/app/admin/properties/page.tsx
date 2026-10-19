@@ -1757,7 +1757,7 @@ function PoliciesSection({
           <div>
             <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Non-Refundable Policy</p>
             <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>
-              All Earthy Stays bookings are 100% non-refundable. This policy is applied to all properties and cannot be changed per listing.
+              All Concept Stay bookings are 100% non-refundable. This policy is applied to all properties and cannot be changed per listing.
             </p>
           </div>
         </div>
@@ -2030,7 +2030,7 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
   const propId = property?.id || 'new'
 
   useEffect(() => {
-    const draftKey = `earthystays_draft_${propId}`
+    const draftKey = `conceptstay_draft_${propId}`
     let restoredForm = createFormFromProperty(property)
     try {
       const savedDraft = localStorage.getItem(draftKey)
@@ -2053,7 +2053,7 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
 
   // Auto-save form draft to localStorage
   useEffect(() => {
-    const draftKey = `earthystays_draft_${propId}`
+    const draftKey = `conceptstay_draft_${propId}`
     try {
       if (form.name || form.description || form.address || form.images.length > 0) {
         localStorage.setItem(draftKey, JSON.stringify(form))
@@ -2269,7 +2269,7 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
         return [saved, ...prev]
       })
 
-      try { localStorage.removeItem(`earthystays_draft_${propId}`) } catch {}
+      try { localStorage.removeItem(`conceptstay_draft_${propId}`) } catch {}
       onSave?.(saved)
       setSaveStatus('saved')
       setTimeout(() => setSaveStatus('idle'), 2000)

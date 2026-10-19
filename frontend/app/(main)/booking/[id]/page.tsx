@@ -249,7 +249,7 @@ function BookingPageContent() {
           key: order.key_id,
           amount: order.amount,
           currency: order.currency,
-          name: 'Earthy stays',
+          name: 'Concept Stay',
           description: `Booking for ${property.name}`,
           order_id: order.razorpay_order_id,
           prefill: {

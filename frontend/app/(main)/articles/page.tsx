@@ -3,8 +3,8 @@ import ArticlesClient from './ArticlesClient'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Journal & Stories | Earthy stays',
-  description: 'Read the latest travel stories, destination guides, mindful living tips, and architectural inspirations from Earthy stays.',
+  title: 'Journal & Stories | Concept Stay',
+  description: 'Read the latest travel stories, destination guides, mindful living tips, and architectural inspirations from Concept Stay.',
 }
 
 export default function ArticlesPage() {

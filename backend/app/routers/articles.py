@@ -174,7 +174,7 @@ async def create_article(
         excerpt=data.excerpt.strip() if data.excerpt else None,
         content=data.content,
         cover_image_url=data.cover_image_url.strip() if data.cover_image_url else None,
-        author_name=data.author_name.strip() if data.author_name else "Earthy stays Team",
+        author_name=data.author_name.strip() if data.author_name else "Concept Stay Team",
         read_time_minutes=read_time,
         tags=clean_tags,
         is_published=data.is_published,

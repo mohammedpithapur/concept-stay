@@ -228,7 +228,7 @@ async def verify_payment(
 
     # Trigger notifications in the background
     property_obj = await db.get(Property, booking.property_id)
-    property_name = property_obj.name if property_obj else "Earthy stays Property"
+    property_name = property_obj.name if property_obj else "Concept Stay Property"
     property_city = property_obj.city if property_obj else ""
     property_state = property_obj.state if property_obj else ""
     property_address = property_obj.address if property_obj else ""
@@ -354,7 +354,7 @@ async def razorpay_webhook(
 
                     # Trigger notifications
                     property_obj = await db.get(Property, booking.property_id)
-                    property_name = property_obj.name if property_obj else "Earthy stays Property"
+                    property_name = property_obj.name if property_obj else "Concept Stay Property"
                     property_city = property_obj.city if property_obj else ""
                     property_state = property_obj.state if property_obj else ""
                     property_address = property_obj.address if property_obj else ""

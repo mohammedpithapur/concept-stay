@@ -2,7 +2,7 @@ import logging
 import httpx
 from app.config import settings
 
-logger = logging.getLogger("earthystay.sms")
+logger = logging.getLogger("conceptstay.sms")
 
 
 async def send_sms(phone: str, message: str) -> bool:
@@ -71,7 +71,7 @@ async def send_booking_confirmation_sms(
         f"Check-in: {check_in}\n"
         f"Check-out: {check_out}\n"
         f"Total: INR {total}\n"
-        f"Thank you for choosing Earthy stays!"
+        f"Thank you for choosing Concept Stay!"
     )
     return await send_sms(phone, message)
 

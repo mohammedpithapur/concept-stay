@@ -1,5 +1,5 @@
 const Copy = {
-  curatedLabel: 'Curated Earthy Stays',
+  curatedLabel: 'Curated Stays',
   heroDescription: "Handpicked earthy properties across India's most beautiful destinations",
   ctaHeading: 'Book Your Earthy Escape Today',
   ctaSubtitle: 'Get exclusive rates on selected properties. Instant confirmation. Best price guarantee.',

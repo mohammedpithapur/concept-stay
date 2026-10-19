@@ -41,7 +41,7 @@ export default function WhyChooseUs() {
     },
     {
       image: '/prop-entrance-sign.jpg',
-      alt: 'EarthyStays entrance door with wooden sign',
+      alt: 'ConceptStay entrance door with wooden sign',
       title: '24/7 Support',
       description: "Our team is always available to assist you before, during, and after your stay. We've got you covered."
     },
@@ -61,7 +61,7 @@ export default function WhyChooseUs() {
             marginBottom: '12px',
             fontWeight: '600',
           }}>
-            The Earthy Stays Difference
+            The Concept Stay Difference
           </p>
           <h2 style={{
             fontSize: 'clamp(28px, 4vw, 48px)',

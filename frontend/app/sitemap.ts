@@ -1,8 +1,8 @@
 import type { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://earthystays.in'
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.earthystays.in'
+  const baseUrl = 'https://conceptstay.in'
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.conceptstay.in'
 
   // Static routes
   const staticRoutes: MetadataRoute.Sitemap = [

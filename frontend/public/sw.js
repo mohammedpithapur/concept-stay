@@ -1,4 +1,4 @@
-// Earthy stays Service Worker — handles Web Push notifications
+// Concept Stay Service Worker — handles Web Push notifications
 self.addEventListener('push', (event) => {
   if (!event.data) return;
 
@@ -6,15 +6,15 @@ self.addEventListener('push', (event) => {
   try {
     data = event.data.json();
   } catch {
-    data = { title: 'Earthy stays', body: event.data.text() };
+    data = { title: 'Concept Stay', body: event.data.text() };
   }
 
-  const title = data.title || 'Earthy stays';
+  const title = data.title || 'Concept Stay';
   const options = {
     body: data.body || 'You have a new notification',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-192x192.png',
-    tag: data.tag || 'earthystays-notification',
+    tag: data.tag || 'conceptstay-notification',
     renotify: true,
     data: { url: data.url || '/' },
     actions: [

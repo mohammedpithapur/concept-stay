@@ -15,12 +15,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
     if (!res.ok) {
       return {
-        title: 'Property | Earthy stays',
-        description: 'A hand-picked property - book now on Earthy stays',
+        title: 'Property | Concept Stay',
+        description: 'A hand-picked property - book now on Concept Stay',
         openGraph: {
-          title: 'Property | Earthy stays',
-          description: 'A hand-picked property - book now on Earthy stays',
-          images: ['https://earthystays.in/og-image.jpg'],
+          title: 'Property | Concept Stay',
+          description: 'A hand-picked property - book now on Concept Stay',
+          images: ['https://conceptstay.in/og-image.jpg'],
         },
       }
     }
@@ -28,12 +28,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     const property = await res.json()
     const primaryImg = property.images?.find((img: any) => img.is_primary)?.image_url
     const firstImg = property.images?.[0]?.image_url
-    const rawCover = primaryImg || firstImg || 'https://earthystays.in/og-image.jpg'
-    const coverImage = rawCover.startsWith('blob:') ? 'https://earthystays.in/og-image.jpg' : rawCover
+    const rawCover = primaryImg || firstImg || 'https://conceptstay.in/og-image.jpg'
+    const coverImage = rawCover.startsWith('blob:') ? 'https://conceptstay.in/og-image.jpg' : rawCover
 
-    const title = property.name ? `Property | Earthy stays | ${property.name}` : 'Property | Earthy stays'
-    const description = 'A hand-picked property - book now on Earthy stays'
-    const url = `https://earthystays.in/properties/${id}`
+    const title = property.name ? `Property | Concept Stay | ${property.name}` : 'Property | Concept Stay'
+    const description = 'A hand-picked property - book now on Concept Stay'
+    const url = `https://conceptstay.in/properties/${id}`
 
     return {
       title,
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         title,
         description,
         url,
-        siteName: 'Earthy stays',
+        siteName: 'Concept Stay',
         type: 'website',
         images: [
           {
@@ -63,12 +63,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     }
   } catch {
     return {
-      title: 'Property | Earthy stays',
-      description: 'A hand-picked property - book now on Earthy stays',
+      title: 'Property | Concept Stay',
+      description: 'A hand-picked property - book now on Concept Stay',
       openGraph: {
-        title: 'Property | Earthy stays',
-        description: 'A hand-picked property - book now on Earthy stays',
-        images: ['https://earthystays.in/og-image.jpg'],
+        title: 'Property | Concept Stay',
+        description: 'A hand-picked property - book now on Concept Stay',
+        images: ['https://conceptstay.in/og-image.jpg'],
       },
     }
   }

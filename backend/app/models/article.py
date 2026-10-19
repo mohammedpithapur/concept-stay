@@ -22,7 +22,7 @@ class Article(Base):
     excerpt: Mapped[str | None] = mapped_column(String(500), nullable=True)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     cover_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    author_name: Mapped[str] = mapped_column(String(100), default="Earthy stays Team", nullable=False)
+    author_name: Mapped[str] = mapped_column(String(100), default="Concept Stay Team", nullable=False)
     read_time_minutes: Mapped[int] = mapped_column(Integer, default=3, nullable=False)
     tags: Mapped[list] = mapped_column(JSONB, default=list, nullable=False)
     is_published: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)

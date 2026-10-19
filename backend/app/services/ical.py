@@ -15,7 +15,7 @@ from app.models.property import Property
 from app.models.user import User
 from app.services.booking import apply_group_blocking, remove_shadow_blocks
 
-logger = logging.getLogger("earthystay.ical")
+logger = logging.getLogger("conceptstay.ical")
 
 
 def _parse_ics_date(val: str) -> date | None:
@@ -99,7 +99,7 @@ async def sync_single_ical_link(
 ) -> int:
     """
     Fetch and sync a single iCal import link.
-    Creates or updates admin date blocks in Earthy stays.
+    Creates or updates admin date blocks in Concept Stay.
     Returns the count of imported events.
     """
     if link.direction != ICalDirection.import_:
@@ -119,7 +119,7 @@ async def sync_single_ical_link(
         url = "https://" + url
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (compatible; EarthyStaysCalendarSync/1.0; +https://earthystays.in)"
+        "User-Agent": "Mozilla/5.0 (compatible; ConceptStayCalendarSync/1.0; +https://conceptstay.in)"
     }
 
     try:
@@ -183,7 +183,7 @@ async def sync_single_ical_link(
             is_shadow_block=False,
             note=f"{tag_prefix} ({ev['summary']})",
             guest_name=f"iCal Block ({link.calendar_name})",
-            guest_email="ical-sync@earthystays.in",
+            guest_email="ical-sync@conceptstay.in",
             guest_phone="",
         )
         db.add(block)

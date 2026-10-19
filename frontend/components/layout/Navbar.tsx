@@ -66,7 +66,7 @@ export default function Navbar() {
               {mounted ? (
                 <img
                   src="/Untitled_design-removebg-preview.png?v=2"
-                  alt="Earthy Stays Logo"
+                  alt="Concept Stay Logo"
                   width="42"
                   height="42"
                   style={{ objectFit: 'contain' }}
@@ -76,7 +76,7 @@ export default function Navbar() {
               )}
             </div>
             <span style={{ color: 'var(--color-navbar-text)', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', fontFamily: "'Figtree', sans-serif" }}>
-              EARTHY STAYS
+              CONCEPT STAY
             </span>
           </div>
         </Link>

@@ -64,7 +64,7 @@ def generate_og_image(out_path_jpg, out_path_png):
     draw.text(((width - sub_w) // 2, 340), sub_text, fill=(217, 194, 168), font=font_sub)
 
     # Button badge
-    btn_text = "Book Your Stay at earthystays.in"
+    btn_text = "Book Your Stay at conceptstay.in"
     btn_bbox = draw.textbbox((0, 0), btn_text, font=font_btn)
     btn_w = btn_bbox[2] - btn_bbox[0]
     btn_h = btn_bbox[3] - btn_bbox[1]
@@ -85,6 +85,6 @@ def generate_og_image(out_path_jpg, out_path_png):
 
 if __name__ == "__main__":
     generate_og_image(
-        r"C:\Users\moham\OneDrive\Documents\project\earthystay\frontend\public\og-image.jpg",
-        r"C:\Users\moham\OneDrive\Documents\project\earthystay\frontend\public\og-image.png"
+        r"C:\Users\moham\OneDrive\Documents\project\conceptstay\frontend\public\og-image.jpg",
+        r"C:\Users\moham\OneDrive\Documents\project\conceptstay\frontend\public\og-image.png"
     )

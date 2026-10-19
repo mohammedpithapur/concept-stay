@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from app.config import settings
 
 
-logger = logging.getLogger("earthystay.email")
+logger = logging.getLogger("conceptstay.email")
 TEMPLATE_DIR = Path(__file__).resolve().parents[1] / "templates"
 
 _jinja_env = Environment(
@@ -37,7 +37,7 @@ async def send_password_reset_email(to_email: str, reset_url: str) -> bool:
             json={
                 "from": settings.RESEND_FROM_EMAIL,
                 "to": [to_email],
-                "subject": "Reset your Earthy stays password",
+                "subject": "Reset your Concept Stay password",
                 "html": html,
             },
         )
@@ -61,7 +61,7 @@ async def send_verification_otp_email(to_email: str, code: str) -> bool:
                 json={
                     "from": settings.RESEND_FROM_EMAIL,
                     "to": [to_email],
-                    "subject": f"{code} is your Earthy stays verification code",
+                    "subject": f"{code} is your Concept Stay verification code",
                     "html": html,
                 },
             )
@@ -298,7 +298,7 @@ async def send_event_enquiry_confirmation_email(
         phone=phone,
         email=to_email,
     )
-    subject = f"Enquiry Received: {nature_of_event} at {destination} — Earthy stays"
+    subject = f"Enquiry Received: {nature_of_event} at {destination} — Concept Stay"
 
     if not settings.RESEND_API_KEY:
         if settings.ENVIRONMENT == "development":

@@ -89,7 +89,7 @@ async def test_notification(
     from app.services.push import send_push_to_user
 
     is_admin = getattr(user, "role", None) and user.role.value == "admin"
-    title = "Earthy stays Admin Notification" if is_admin else "Earthy stays Notifications"
+    title = "Concept Stay Admin Notification" if is_admin else "Concept Stay Notifications"
     body = (
         "Push notifications are working properly on this device! 🔔"
         if is_admin

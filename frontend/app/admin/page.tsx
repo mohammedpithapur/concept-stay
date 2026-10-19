@@ -273,7 +273,7 @@ export default function AdminPage() {
     excerpt: '',
     content: '',
     cover_image_url: '',
-    author_name: 'Earthy stays Team',
+    author_name: 'Concept Stay Team',
     read_time_minutes: 3,
     tags: '',
     is_published: true,
@@ -326,7 +326,7 @@ export default function AdminPage() {
       excerpt: '',
       content: '',
       cover_image_url: '',
-      author_name: 'Earthy stays Team',
+      author_name: 'Concept Stay Team',
       read_time_minutes: 3,
       tags: '',
       is_published: true,
@@ -347,7 +347,7 @@ export default function AdminPage() {
       excerpt: art.excerpt || '',
       content: art.content,
       cover_image_url: art.cover_image_url || '',
-      author_name: art.author_name || 'Earthy stays Team',
+      author_name: art.author_name || 'Concept Stay Team',
       read_time_minutes: art.read_time_minutes || 3,
       tags: (art.tags || []).join(', '),
       is_published: art.is_published,
@@ -379,7 +379,7 @@ export default function AdminPage() {
         excerpt: articleForm.excerpt.trim() || undefined,
         content: articleForm.content,
         cover_image_url: articleForm.cover_image_url.trim() ? articleForm.cover_image_url.trim() : null,
-        author_name: articleForm.author_name.trim() || 'Earthy stays Team',
+        author_name: articleForm.author_name.trim() || 'Concept Stay Team',
         read_time_minutes: Number(articleForm.read_time_minutes) || 3,
         tags: tagsList,
         is_published: articleForm.is_published,
@@ -959,7 +959,7 @@ export default function AdminPage() {
           <div>
             <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '8px', fontWeight: '600' }}>Admin Panel</p>
             <h1 style={{ color: 'var(--color-text-primary)', fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: '800' }}>
-              Earthy Stays Dashboard
+              Concept Stay Dashboard
             </h1>
           </div>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -1185,7 +1185,7 @@ export default function AdminPage() {
                     const encodedUri = encodeURI(csvContent)
                     const link = document.createElement('a')
                     link.setAttribute('href', encodedUri)
-                    link.setAttribute('download', `earthystays_analytics_${timeframeMode}.csv`)
+                    link.setAttribute('download', `conceptstay_analytics_${timeframeMode}.csv`)
                     document.body.appendChild(link)
                     link.click()
                     document.body.removeChild(link)

@@ -29,7 +29,7 @@ def upgrade() -> None:
             sa.Column('excerpt', sa.String(length=500), nullable=True),
             sa.Column('content', sa.Text(), nullable=False),
             sa.Column('cover_image_url', sa.String(length=500), nullable=True),
-            sa.Column('author_name', sa.String(length=100), server_default='EarthyStay Team', nullable=False),
+            sa.Column('author_name', sa.String(length=100), server_default='ConceptStay Team', nullable=False),
             sa.Column('read_time_minutes', sa.Integer(), server_default='3', nullable=False),
             sa.Column('tags', postgresql.JSONB(astext_type=sa.Text()), server_default=sa.text("'[]'::jsonb"), nullable=False),
             sa.Column('is_published', sa.Boolean(), server_default='true', nullable=False),

@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     SENTRY_DSN: str | None = None
     REDIS_URL: str | None = None
     RESEND_API_KEY: str | None = None
-    RESEND_FROM_EMAIL: str = "Earthy stays <noreply@earthystays.in>"
+    RESEND_FROM_EMAIL: str = "Concept Stay <noreply@conceptstay.in>"
     ADMIN_EMAIL: str = "staysearthy@gmail.com"
     FAST2SMS_API_KEY: str | None = None
 

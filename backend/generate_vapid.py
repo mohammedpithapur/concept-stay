@@ -28,7 +28,7 @@ public_b64 = base64.urlsafe_b64encode(
 print("Add these to your backend/.env:\n")
 print(f"VAPID_PUBLIC_KEY={public_b64}")
 print(f"VAPID_PRIVATE_KEY={private_b64}")
-print(f"VAPID_CONTACT_EMAIL=noreply@earthystays.in")
+print(f"VAPID_CONTACT_EMAIL=noreply@conceptstay.in")
 print()
 print("And add this to your frontend .env.local or Vercel env vars:")
 print(f"NEXT_PUBLIC_VAPID_PUBLIC_KEY={public_b64}")

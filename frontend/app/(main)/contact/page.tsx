@@ -241,7 +241,7 @@ export default function ContactPage() {
               <MapWrapper
                 latitude={22.5726}
                 longitude={88.3639}
-                propertyName="Earthy Stays — Kolkata"
+                propertyName="Concept Stay — Kolkata"
                 address="Serving earthy properties across Kolkata"
               />
             </div>

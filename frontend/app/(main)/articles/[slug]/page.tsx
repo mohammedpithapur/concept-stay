@@ -263,7 +263,7 @@ export default function ArticleDetailPage() {
                 {article.author_name}
               </p>
               <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', margin: 0 }}>
-                Earthy stays Journal
+                Concept Stay Journal
               </p>
             </div>
           </div>
@@ -374,7 +374,7 @@ export default function ArticleDetailPage() {
         >
           <Sparkles size={28} style={{ color: 'var(--color-gold)', margin: '0 auto 12px' }} />
           <h3 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '8px' }}>
-            Experience Earthy stays Yourself
+            Experience Concept Stay Yourself
           </h3>
           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', maxWidth: '520px', margin: '0 auto 24px', lineHeight: 1.6 }}>
             Immerse yourself in our hand-picked sanctuaries designed for calm, connection, and slow living.

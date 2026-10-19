@@ -5,7 +5,7 @@ import { Sparkles, Trees, BadgeCheck, Heart } from 'lucide-react'
 
 const values = [
   { icon: Sparkles, title: 'Curated Excellence', description: 'Every property we list is personally verified. We visit, we stay, we approve. No shortcuts, no compromises.' },
-  { icon: Trees, title: 'Earthy Stays', description: 'We believe earthy and nature are not opposites. Our properties blend comfort with the raw beauty of India.' },
+  { icon: Trees, title: 'Rooted in Nature', description: 'We believe earthy and nature are not opposites. Our properties blend comfort with the raw beauty of India.' },
   { icon: BadgeCheck, title: 'Honest Pricing', description: 'What you see is what you pay. No hidden charges, no last-minute surprises. Just transparent, fair pricing.' },
   { icon: Heart, title: 'Guest First', description: 'Every decision we make starts with one question — is this better for our guests? That will never change.' },
 ]
@@ -25,47 +25,47 @@ const team: TeamMember[] = [
     role: 'Founder',
     initial: 'M',
     image: '/team/megha.jpeg',
-    description: 'Megha Gupta holds a Master’s in International Relations, International Business, and International Law, bringing a global perspective to the brand. She spent 12 years in art school and was awarded the Chitra Visharad, shaping her eye for design and detail. Inspired by her travels and unique Airbnb stays, she created Earthy Stays as thoughtfully designed homes that reflect global cultures, artistic influences, heritage charm, and warm comfort.',
+    description: 'Megha Gupta holds a Master’s in International Relations, International Business, and International Law, bringing a global perspective to the brand. She spent 12 years in art school and was awarded the Chitra Visharad, shaping her eye for design and detail. Inspired by her travels and unique Airbnb stays, she created Concept Stay as thoughtfully designed homes that reflect global cultures, artistic influences, heritage charm, and warm comfort.',
   },
   {
     name: 'Ajay Gupta',
     role: 'Operations',
     initial: 'A',
     image: '/team/ajay.jpeg',
-    description: 'Ajay Gupta heads operations at Earthy Stays, bringing over 40 years of industrial experience in manufacturing. His background builds strong systems, discipline, and efficiency across day-to-day operations. From maintenance coordination to operational planning and execution, he ensures every property is managed with consistency and reliability.',
+    description: 'Ajay Gupta heads operations at Concept Stay, bringing over 40 years of industrial experience in manufacturing. His background builds strong systems, discipline, and efficiency across day-to-day operations. From maintenance coordination to operational planning and execution, he ensures every property is managed with consistency and reliability.',
   },
   {
     name: 'Sunita Gupta',
     role: 'Design & Cleaning Management',
     initial: 'S',
     image: '/team/sunita.jpeg',
-    description: 'Sunita Gupta looks after design aesthetics, decor detailing, and cleaning management across Earthy Stays. She ensures every property feels warm, well-styled, and thoughtfully arranged for guests. Her attention to detail keeps each home fresh, welcoming, and comfortable.',
+    description: 'Sunita Gupta looks after design aesthetics, decor detailing, and cleaning management across Concept Stay. She ensures every property feels warm, well-styled, and thoughtfully arranged for guests. Her attention to detail keeps each home fresh, welcoming, and comfortable.',
   },
   {
     name: 'Pratiksha',
     role: 'Co-Host',
     initial: 'P',
     image: '/team/pratiksha.jpeg',
-    description: 'Pratiksha is a friendly and dedicated co-host at Earthy Stays, committed to making every stay comfortable, smooth, and memorable. With a strong focus on hospitality and guest experience, she takes care of the little details that make a big difference—from ensuring properties are well-prepared and maintained to assisting guests throughout their stay with warmth, quick communication, and thoughtful care.',
+    description: 'Pratiksha is a friendly and dedicated co-host at Concept Stay, committed to making every stay comfortable, smooth, and memorable. With a strong focus on hospitality and guest experience, she takes care of the little details that make a big difference—from ensuring properties are well-prepared and maintained to assisting guests throughout their stay with warmth, quick communication, and thoughtful care.',
   },
   {
     name: 'Laasya Nalluri',
     role: 'Marketing & Creative Strategy',
     initial: 'L',
     image: '/team/laasya.jpeg',
-    description: 'Laasya Nalluri leads marketing and brand communication, shaping Earthy Stays’ digital presence through social strategy, content direction, and positioning. Her approach blends analytics with creative execution to grow visibility, storytelling, and brand engagement.',
+    description: 'Laasya Nalluri leads marketing and brand communication, shaping Concept Stay’s digital presence through social strategy, content direction, and positioning. Her approach blends analytics with creative execution to grow visibility, storytelling, and brand engagement.',
   },
   {
     name: 'Mohammed',
     role: 'Tech Head',
     initial: 'M',
-    description: 'Mohammed leads the digital experience at Earthy Stays with a focus on clarity, speed, and ease of use. He built the website to reflect the brand’s warmth and heritage-inspired identity, helping guests explore properties and connect with Earthy Stays seamlessly online.',
+    description: 'Mohammed leads the digital experience at Concept Stay with a focus on clarity, speed, and ease of use. He built the website to reflect the brand’s warmth and heritage-inspired identity, helping guests explore properties and connect with Concept Stay seamlessly online.',
   },
   {
     name: 'Naveen Kumar BR',
     role: 'Business Advisory & Taxation',
     initial: 'N',
-    description: 'Naveen Kumar BR provides strategic guidance on financial planning, business structuring, and tax matters. His expertise ensures strong oversight, compliance, and long-term stability for Earthy Stays’ growth.',
+    description: 'Naveen Kumar BR provides strategic guidance on financial planning, business structuring, and tax matters. His expertise ensures strong oversight, compliance, and long-term stability for Concept Stay’s growth.',
   },
 ]
 
@@ -90,11 +90,11 @@ export default function AboutPage() {
           Our Story
         </p>
         <h1 style={{ fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '24px', lineHeight: '1.15', maxWidth: '800px', margin: '0 auto 24px' }}>
-          About Earthy Stays
+          About Concept Stay
         </h1>
         <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto 24px' }} />
         <p style={{ fontSize: '16px', color: 'var(--color-text-secondary)', maxWidth: '620px', margin: '0 auto', lineHeight: '1.8' }}>
-          Earthy Stays offers warm, heritage-inspired homes designed for comfort, calm, and effortless city living. Perfect for corporate travellers, families, wedding guests, and anyone looking for a stay that feels personal, elegant, and memorable.
+          Concept Stay offers warm, heritage-inspired homes designed for comfort, calm, and effortless city living. Perfect for corporate travellers, families, wedding guests, and anyone looking for a stay that feels personal, elegant, and memorable.
         </p>
       </div>
 
@@ -103,13 +103,13 @@ export default function AboutPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '48px', alignItems: 'center' }}>
           <div>
             <p style={{ fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: '600', marginBottom: '16px' }}>
-              About Earthy Stays
+              About Concept Stay
             </p>
             <h2 style={{ fontSize: 'clamp(26px, 3vw, 38px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '24px', lineHeight: '1.2' }}>
               Heritage-inspired stays with calm and character
             </h2>
             <p style={{ fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: '1.9', marginBottom: '20px' }}>
-              Earthy Stays brings together the warmth of earthy living with the charm of heritage-inspired spaces. Thoughtfully designed with comfort, calm, and character, our stays offer a homely experience with a touch of quiet luxury.
+              Concept Stay brings together the warmth of earthy living with the charm of heritage-inspired spaces. Thoughtfully designed with comfort, calm, and character, our stays offer a homely experience with a touch of quiet luxury.
             </p>
             <p style={{ fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: '1.9' }}>
               Located across well-connected neighbourhoods in Kolkata, our properties are ideal for corporate travellers, families, wedding guests, and guests visiting the city for celebrations, work, or leisure. Whether it is a short visit or an extended stay, each space is designed to feel warm, personal, and memorable.
@@ -233,7 +233,7 @@ export default function AboutPage() {
               Uday, Gajendra, Bappa & Moumuni
             </h3>
             <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.8' }}>
-              A heartfelt mention to Uday, Gajendra, Bappa, and Moumuni for the wonderful work they do in keeping our properties clean, fresh, and guest-ready. Their dedication, attention to detail, and consistent effort play a big role in creating the warm and comfortable experience that Earthy Stays is known for. From maintaining spotless spaces to ensuring every corner feels cared for, their contribution helps make each stay pleasant, welcoming, and worry-free for our guests. Their hard work behind the scenes is truly valued and deeply appreciated.
+              A heartfelt mention to Uday, Gajendra, Bappa, and Moumuni for the wonderful work they do in keeping our properties clean, fresh, and guest-ready. Their dedication, attention to detail, and consistent effort play a big role in creating the warm and comfortable experience that Concept Stay is known for. From maintaining spotless spaces to ensuring every corner feels cared for, their contribution helps make each stay pleasant, welcoming, and worry-free for our guests. Their hard work behind the scenes is truly valued and deeply appreciated.
             </p>
           </div>
         </div>

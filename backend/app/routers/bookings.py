@@ -230,7 +230,7 @@ async def update_booking_status(
     # Trigger cancellation notifications if status transitioned to cancelled
     if booking.status == BookingStatus.cancelled and old_status != BookingStatus.cancelled:
         property_obj = await db.get(Property, booking.property_id)
-        property_name = property_obj.name if property_obj else "Earthy stays Property"
+        property_name = property_obj.name if property_obj else "Concept Stay Property"
         is_refunded = (booking.payment_status.value == "refunded")
 
         background_tasks.add_task(
@@ -246,7 +246,7 @@ async def update_booking_status(
     # Push notification to guest when booking status changes
     if booking.guest_id and booking.status != old_status:
         property_obj = await db.get(Property, booking.property_id)
-        prop_name = property_obj.name if property_obj else "Earthy stays Property"
+        prop_name = property_obj.name if property_obj else "Concept Stay Property"
         background_tasks.add_task(
             send_push_to_user,
             user_id=booking.guest_id,

@@ -8,11 +8,11 @@ const sections = [
     content: [
       {
         subtitle: 'Agreement to Terms',
-        text: 'By accessing or using the Earthy Stays website and services, you confirm that you are at least 18 years of age, have read and understood these Terms & Conditions, and agree to be bound by them. If you do not agree to these terms, please do not use our services.',
+        text: 'By accessing or using the Concept Stay website and services, you confirm that you are at least 18 years of age, have read and understood these Terms & Conditions, and agree to be bound by them. If you do not agree to these terms, please do not use our services.',
       },
       {
         subtitle: 'Modifications',
-        text: 'Earthy Stays reserves the right to modify these terms at any time. We will notify users of significant changes via email or a prominent notice on our website. Your continued use of our services after any modification constitutes acceptance of the updated terms.',
+        text: 'Concept Stay reserves the right to modify these terms at any time. We will notify users of significant changes via email or a prominent notice on our website. Your continued use of our services after any modification constitutes acceptance of the updated terms.',
       },
     ],
   },
@@ -22,7 +22,7 @@ const sections = [
     content: [
       {
         subtitle: 'Booking Process',
-        text: 'All bookings made through Earthy Stays are subject to availability and confirmation. A booking is confirmed once you receive a confirmation email and your voucher is available from the website.',
+        text: 'All bookings made through Concept Stay are subject to availability and confirmation. A booking is confirmed once you receive a confirmation email and your voucher is available from the website.',
       },
       {
         subtitle: 'Accurate Information',
@@ -58,7 +58,7 @@ const sections = [
     content: [
       {
         subtitle: 'Non-Refundable Bookings',
-        text: 'All bookings made through Earthy Stays are strictly non-refundable. Once a booking is confirmed and payment is processed, the full amount is charged and cannot be refunded under any circumstances, including but not limited to personal emergencies, illness, travel disruptions, or change of plans.',
+        text: 'All bookings made through Concept Stay are strictly non-refundable. Once a booking is confirmed and payment is processed, the full amount is charged and cannot be refunded under any circumstances, including but not limited to personal emergencies, illness, travel disruptions, or change of plans.',
       },
       {
         subtitle: 'No Modifications',
@@ -112,11 +112,11 @@ const sections = [
     content: [
       {
         subtitle: 'Limitation',
-        text: 'To the maximum extent permitted by applicable law, Earthy Stays shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our platform or services. Our total liability shall not exceed the amount paid for the specific booking in question.',
+        text: 'To the maximum extent permitted by applicable law, Concept Stay shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our platform or services. Our total liability shall not exceed the amount paid for the specific booking in question.',
       },
       {
         subtitle: 'Force Majeure',
-        text: 'Earthy Stays shall not be liable for any failure to perform obligations where such failure is caused by circumstances beyond our reasonable control, including natural disasters, government actions, pandemics, or other force majeure events.',
+        text: 'Concept Stay shall not be liable for any failure to perform obligations where such failure is caused by circumstances beyond our reasonable control, including natural disasters, government actions, pandemics, or other force majeure events.',
       },
     ],
   },
@@ -126,11 +126,11 @@ const sections = [
     content: [
       {
         subtitle: 'Our Content',
-        text: 'All content on the Earthy Stays platform, including text, images, logos, and software, is the property of Earthy Stays or its licensors and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without our express written permission.',
+        text: 'All content on the Concept Stay platform, including text, images, logos, and software, is the property of Concept Stay or its licensors and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without our express written permission.',
       },
       {
         subtitle: 'User Content',
-        text: 'By submitting reviews, photos, or other content to our platform, you grant Earthy Stays a non-exclusive, royalty-free licence to use, reproduce, and display such content in connection with our services.',
+        text: 'By submitting reviews, photos, or other content to our platform, you grant Concept Stay a non-exclusive, royalty-free licence to use, reproduce, and display such content in connection with our services.',
       },
     ],
   },
@@ -175,7 +175,7 @@ export default function TermsPage() {
           </h1>
           <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto 24px' }} />
           <p style={{ color: 'var(--color-text-primary)', fontSize: '15px', maxWidth: '560px', margin: '0 auto', lineHeight: '1.7' }}>
-            Please read these terms carefully before using our platform. By booking with Earthy Stays, you agree to be bound by the following terms and conditions.
+            Please read these terms carefully before using our platform. By booking with Concept Stay, you agree to be bound by the following terms and conditions.
           </p>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '13px', marginTop: '24px' }}>
             Effective Date: 1st January 2026 &nbsp;·&nbsp; Last Updated: 1st January 2026
@@ -187,7 +187,7 @@ export default function TermsPage() {
       <div style={{ backgroundColor: 'var(--color-bg-card)', borderBottom: '1px solid var(--color-gold)' }}>
         <div className="content-shell" style={{ padding: '20px 24px' }}>
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.7', textAlign: 'center' }}>
-            <strong>Important:</strong> All bookings made through Earthy Stays are <strong>strictly non-refundable</strong>. Please review our cancellation policy in Section 4 before making a reservation.
+            <strong>Important:</strong> All bookings made through Concept Stay are <strong>strictly non-refundable</strong>. Please review our cancellation policy in Section 4 before making a reservation.
           </p>
         </div>
       </div>
