@@ -1,0 +1,60 @@
+# Self-contained STAGING stack for client review of the marketplace branch.
+#   docker compose -f docker-compose.staging.yml up --build
+# Site: http://localhost:3000   API: http://localhost:8000   (never touches production data or the live API)
+# Payments: set RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET to Razorpay TEST keys (rzp_test_...) in the shell or a .env file.
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: conceptstay_staging
+    volumes:
+      - staging-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d conceptstay_staging"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+
+  backend:
+    build: ./backend
+    environment:
+      ENVIRONMENT: staging
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/conceptstay_staging
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: staging-only-jwt-secret
+      JWT_REFRESH_SECRET: staging-only-refresh-secret
+      FRONTEND_BASE_URL: http://localhost:3000
+      CORS_ORIGINS: '["http://localhost:3000"]'
+      COOKIE_SECURE: "false"
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
+      RESEND_API_KEY: ""
+    command: >
+      sh -c "python scripts/bootstrap_db.py &&
+             python scripts/seed_staging.py &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_BASE: http://localhost:8000
+    environment:
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  staging-db:

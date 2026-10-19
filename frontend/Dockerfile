@@ -5,7 +5,9 @@ RUN npm ci
 
 FROM node:20-alpine AS builder
 WORKDIR /app
+ARG NEXT_PUBLIC_API_BASE
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_PUBLIC_API_BASE=$NEXT_PUBLIC_API_BASE
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build

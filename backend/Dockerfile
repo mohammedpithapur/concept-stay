@@ -17,6 +17,7 @@ COPY app ./app
 COPY alembic ./alembic
 COPY alembic.ini ./
 COPY create_tables.py ./
+COPY scripts ./scripts
 
 EXPOSE 10000
 
