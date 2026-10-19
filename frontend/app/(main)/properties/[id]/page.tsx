@@ -6,6 +6,8 @@ import { DayPicker } from 'react-day-picker'
 import MapWrapper from '@/components/shared/MapWrapper'
 import { buildApiUrl, fetchPropertyReviews, type PriceOverride } from '@/lib/api'
 import type { Property, Review } from '@/lib/types'
+import VerifiedBadge from '@/components/property/VerifiedBadge'
+import { CANCELLATION_POLICIES, PROPERTY_TYPES, getPriceQuote, getReviewSummary, labelFor, type PriceQuote, type ReviewSummary } from '@/lib/marketplace'
 import type { DateRange } from 'react-day-picker'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { Star, MapPin, Users, User, Bed, Bath, Calendar, Moon, Dog, Check, Phone, Mail, Clock, ShieldAlert, Sparkles, ChevronLeft, ChevronRight, Armchair, Sofa, Utensils, UtensilsCrossed, DoorOpen, LayoutDashboard, TreePalm, Camera, X, Folder, Share2, Compass } from 'lucide-react'
@@ -59,6 +61,8 @@ export default function PropertyDetailPage() {
   // ── Reviews State ────────────────────────────────────────────────────────
   const [reviews, setReviews] = useState<Review[]>([])
   const [reviewsLoading, setReviewsLoading] = useState(false)
+  const [quote, setQuote] = useState<PriceQuote | null>(null)
+  const [reviewSummary, setReviewSummary] = useState<ReviewSummary | null>(null)
   const [shareCopied, setShareCopied] = useState(false)
 
   const { fetchWithAuth } = useAuth()
@@ -250,6 +254,21 @@ export default function PropertyDetailPage() {
     return sum
   }, [checkIn, checkOut, property, nights, priceOverrides])
 
+  // Server-side quote is the source of truth for taxes, fees and the total shown at booking time.
+  useEffect(() => {
+    if (!property || !checkIn || !checkOut || nights <= 0) { setQuote(null); return }
+    let cancelled = false
+    getPriceQuote(property.id, { checkIn, checkOut, guests, pets })
+      .then(q => { if (!cancelled) setQuote(q) })
+      .catch(() => { if (!cancelled) setQuote(null) })
+    return () => { cancelled = true }
+  }, [property, checkIn, checkOut, guests, pets, nights])
+
+  useEffect(() => {
+    if (!property) return
+    getReviewSummary(property.id).then(setReviewSummary).catch(() => {})
+  }, [property])
+
 
 
   const handleDetailShare = useCallback(async () => {
@@ -354,7 +373,10 @@ export default function PropertyDetailPage() {
   const extraGuests = Math.max(0, guests - baseGuests)
   const extraGuestCharge = extraGuests * nights * extraGuestRate
   const petCharge = pets * nights * property.pet_charge_per_night
-  const totalPrice = basePrice + extraGuestCharge + property.cleaning_fee + petCharge
+  const taxes = quote?.taxes ?? 0
+  const serviceFee = quote?.service_fee ?? 0
+  const totalPrice = quote ? quote.total : basePrice + extraGuestCharge + property.cleaning_fee + petCharge
+  const policy = CANCELLATION_POLICIES[property.cancellation_policy ?? 'flexible']
 
   const handleBook = () => {
     if (!checkIn || !checkOut) { alert('Please select check-in and check-out dates'); return }
@@ -514,6 +536,18 @@ export default function PropertyDetailPage() {
           <h1 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px', lineHeight: '1.2' }}>
             {property.name}
           </h1>
+
+          {(property.verification_status === 'verified' || property.property_type) && (
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '16px' }}>
+              <VerifiedBadge status={property.verification_status} size="md" />
+              {property.property_type && (
+                <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
+                  {labelFor(PROPERTY_TYPES, property.property_type)}
+                  {property.number_of_rooms && property.number_of_rooms > 1 ? ` · ${property.number_of_rooms} rooms` : ''}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Quick Stats */}
           {(() => {
@@ -679,6 +713,19 @@ export default function PropertyDetailPage() {
                 {property.description}
               </p>
 
+              {([
+                ['About the stay', property.about_stay],
+                ['The space', property.the_space],
+                ['Location', property.location_notes],
+                ['What guests love', property.what_guests_love],
+                ['Things to know', property.things_to_know],
+              ] as const).filter(([, text]) => text && text.trim()).map(([title, text]) => (
+                <div key={title} style={{ marginBottom: '28px' }}>
+                  <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>{title}</h3>
+                  <p style={{ color: 'var(--color-text-secondary)', fontSize: '15px', lineHeight: '1.8', whiteSpace: 'pre-line' }}>{text}</p>
+                </div>
+              ))}
+
               {/* Photo Tour Preview in Overview */}
               {albums.length > 0 && (
                 <div style={{ marginBottom: '36px' }}>
@@ -831,8 +878,8 @@ export default function PropertyDetailPage() {
                 <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-gold)', borderRadius: '12px', padding: '20px 24px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                   <ShieldAlert size={22} style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '2px' }} />
                   <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Important: Non-Refundable Booking</h4>
-                    <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>All bookings are non-refundable. Once payment is confirmed, cancellations will not be eligible for a refund. Please review your dates carefully before booking.</p>
+                    <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Cancellation policy: {policy.label}</h4>
+                    <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>{policy.summary}</p>
                   </div>
                 </div>
             </div>
@@ -1051,8 +1098,8 @@ export default function PropertyDetailPage() {
                 <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-gold)', borderRadius: '12px', padding: '20px 24px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                   <ShieldAlert size={22} style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '2px' }} />
                   <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Important: Non-Refundable Booking Policy</h4>
-                    <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>All bookings are non-refundable once payment is confirmed.</p>
+                    <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Cancellation policy: {policy.label}</h4>
+                    <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>{policy.summary}</p>
                   </div>
                 </div>
             </div>
@@ -1096,6 +1143,29 @@ export default function PropertyDetailPage() {
           {/* Reviews */}
           {activeTab === 'reviews' && (
             <div>
+              {reviewSummary && Object.keys(reviewSummary.categories).length > 0 && (
+                <div style={{ ...cardStyle, marginBottom: '24px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--color-text-primary)' }}>Guest ratings</h3>
+                    {reviewSummary.recommend_percent !== null && (
+                      <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                        {reviewSummary.recommend_percent}% of guests would recommend this stay
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px 32px' }}>
+                    {Object.entries(reviewSummary.categories).map(([name, value]) => (
+                      <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <span style={{ width: '96px', fontSize: '13px', textTransform: 'capitalize', color: 'var(--color-text-secondary)' }}>{name}</span>
+                        <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'var(--color-border)' }}>
+                          <div style={{ width: `${((value ?? 0) / 5) * 100}%`, height: '100%', borderRadius: '3px', backgroundColor: 'var(--color-gold)' }} />
+                        </div>
+                        <span style={{ fontSize: '13px', fontWeight: 700, width: '28px', textAlign: 'right' }}>{value?.toFixed(1)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div style={{ ...cardStyle, display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <div style={{ textAlign: 'center' }}>
                   <p style={{ fontSize: '56px', color: 'var(--color-text-primary)', lineHeight: '1', fontWeight: '800' }}>{property.avg_rating}</p>
@@ -1280,6 +1350,18 @@ export default function PropertyDetailPage() {
                   <span>₹{property.cleaning_fee.toLocaleString('en-IN')}</span>
                 </div>
               )}
+              {taxes > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
+                  <span>Taxes</span>
+                  <span>₹{taxes.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              {serviceFee > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
+                  <span>Concept Stay service fee</span>
+                  <span>₹{serviceFee.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               <div style={{ height: '1px', backgroundColor: 'var(--color-border)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700', color: 'var(--color-text-primary)', fontSize: '15px' }}>
                 <span>Total</span>
@@ -1304,7 +1386,7 @@ export default function PropertyDetailPage() {
           </button>
 
           <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', textAlign: 'center', lineHeight: '1.6' }}>
-            Important: This booking is <strong>non-refundable</strong>
+            Cancellation policy: <strong>{policy.label}</strong>
           </p>
         </div>
       </div>

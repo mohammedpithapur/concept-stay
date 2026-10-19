@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import PropertyCard from '@/components/property/PropertyCard'
 import { buildApiUrl } from '@/lib/api'
+import MarketplaceFilters, { EMPTY_MARKETPLACE_FILTERS, type MarketplaceFilterState } from '@/components/property/MarketplaceFilters'
 import type { Property } from '@/lib/types'
 import { Building2, SlidersHorizontal, Search, RotateCcw, PawPrint, Calendar, Users, X } from 'lucide-react'
 
@@ -57,6 +58,8 @@ export default function PropertiesClient() {
   const urlCheckIn  = searchParams.get('checkIn')  || searchParams.get('check_in')  || ''
   const urlCheckOut = searchParams.get('checkOut') || searchParams.get('check_out') || ''
   const urlGuests   = searchParams.get('guests')   || ''
+  const urlCategory = searchParams.get('category') || ''
+  const urlDestination = searchParams.get('destination') || ''
 
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
@@ -72,6 +75,8 @@ export default function PropertiesClient() {
   const [sortBy, setSortBy] = useState('rating')
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [mkt, setMkt] = useState<MarketplaceFilterState>(EMPTY_MARKETPLACE_FILTERS)
+  const [loadedOnce, setLoadedOnce] = useState(false)
 
   // Sync location + pets from URL if URL changes (e.g. hero re-search)
   useEffect(() => { setLocation(urlLocation) }, [urlLocation])
@@ -91,6 +96,12 @@ export default function PropertiesClient() {
         if (urlCheckIn)  apiParams.set('check_in',  urlCheckIn)
         if (urlCheckOut) apiParams.set('check_out', urlCheckOut)
         if (urlGuests)   apiParams.set('guests',    urlGuests)
+        if (urlCategory) apiParams.set('category',  urlCategory)
+        if (urlDestination) apiParams.set('destination', urlDestination)
+        if (mkt.types.length)       apiParams.set('property_type', mkt.types.join(','))
+        if (mkt.experiences.length) apiParams.set('experience',   mkt.experiences.join(','))
+        if (mkt.amenities.length)   apiParams.set('amenities',    mkt.amenities.join(','))
+        if (mkt.verifiedOnly)       apiParams.set('verified_only', 'true')
 
         const response = await fetch(buildApiUrl(`/properties?${apiParams.toString()}`), { cache: 'no-store' })
         if (!response.ok) {
@@ -107,6 +118,7 @@ export default function PropertiesClient() {
       } finally {
         if (isMounted) {
           setLoading(false)
+          setLoadedOnce(true)
         }
       }
     }
@@ -115,7 +127,7 @@ export default function PropertiesClient() {
     return () => {
       isMounted = false
     }
-  }, [urlCheckIn, urlCheckOut, urlGuests])
+  }, [urlCheckIn, urlCheckOut, urlGuests, urlCategory, urlDestination, mkt])
 
   const filtered = useMemo(() => {
     let result = [...properties]
@@ -162,10 +174,11 @@ export default function PropertiesClient() {
     setPropertyType('all')
     setBathroomType('all')
     setSortBy('rating')
+    setMkt(EMPTY_MARKETPLACE_FILTERS)
     setFiltersOpen(false)
   }
 
-  if (loading) {
+  if (loading && !loadedOnce) {
     return (
       <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
         {/* Hero shimmer */}
@@ -576,6 +589,10 @@ export default function PropertiesClient() {
                   </button>
                 </div>
               </div>
+
+              <div style={{ height: '1px', backgroundColor: 'var(--color-border)' }} />
+
+              <MarketplaceFilters value={mkt} onChange={setMkt} />
 
               <div style={{ height: '1px', backgroundColor: 'var(--color-border)' }} />
 

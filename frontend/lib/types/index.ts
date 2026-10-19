@@ -67,6 +67,20 @@ export interface Property {
   override_details?: boolean
   updated_at?: string
   owner_id?: string
+  // marketplace fields
+  property_type?: string
+  categories?: string[]
+  experience_tags?: string[]
+  number_of_rooms?: number
+  about_stay?: string
+  the_space?: string
+  location_notes?: string
+  what_guests_love?: string
+  things_to_know?: string
+  cancellation_policy?: 'flexible' | 'moderate' | 'non_refundable'
+  approval_status?: string
+  verification_status?: string
+  verified_at?: string | null
 }
 
 export interface Booking {
@@ -102,6 +116,12 @@ export interface Review {
   platform?: string | null
   rating: number
   comment?: string | null
+  cleanliness?: number | null
+  location?: number | null
+  comfort?: number | null
+  hospitality?: number | null
+  accuracy?: number | null
+  would_recommend?: boolean | null
   created_at: string
 }
 

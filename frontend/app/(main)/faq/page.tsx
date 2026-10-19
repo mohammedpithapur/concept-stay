@@ -4,10 +4,10 @@ import Link from 'next/link'
 
 const faqs = [
   { q: 'How do I make a booking?', a: 'Browse our properties, select your dates and guests, then proceed to checkout. Payment is processed securely via Razorpay.' },
-  { q: 'Are all bookings non-refundable?', a: 'Yes, all bookings on Concept Stay are non-refundable. Please review your dates carefully before confirming payment.' },
+  { q: 'Can I get a refund if I cancel?', a: 'It depends on the cancellation policy shown on the property page (Flexible, Moderate or Non-refundable). Your dashboard shows the exact refund before you confirm a cancellation.' },
   { q: 'Can I bring my pets?', a: 'Many of our properties are pet-friendly. Look for the "Pets Welcome" badge on the property page. An additional nightly charge applies per pet.' },
   { q: 'How do I get my booking confirmation and voucher PDF?', a: 'A confirmation email with your booking reference is sent immediately after payment, and the PDF voucher will also be available on the website.' },
-  { q: 'Can I modify my booking dates?', a: 'Booking dates cannot be modified after payment due to our non-refundable policy. Please contact us before booking if you need flexibility.' },
+  { q: 'Can I modify my booking dates?', a: 'Booking dates cannot be modified after payment. Cancel under the property\'s cancellation policy and rebook if you need different dates.' },
 ]
 
 export default function FaqPage() {

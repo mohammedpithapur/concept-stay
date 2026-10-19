@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { buildApiUrl, createBooking, createPaymentOrder, verifyPayment } from '@/lib/api'
 import { useAuth } from '@/lib/auth/AuthContext'
 import type { Property } from '@/lib/types'
+import { CANCELLATION_POLICIES, getPriceQuote, type PriceQuote } from '@/lib/marketplace'
 import { AlertTriangle } from 'lucide-react'
 
 // ── Razorpay type declarations ────────────────────────────────────────────────
@@ -99,9 +100,21 @@ function BookingPageContent() {
     })
   }, [])
 
-  const { checkIn, checkOut, guests, pets, nights, total } = urlParams
+  const { checkIn, checkOut, guests, pets, nights, total: urlTotal } = urlParams
 
   const [property, setProperty] = useState<Property | null>(null)
+  const [quote, setQuote] = useState<PriceQuote | null>(null)
+  // The server quote is authoritative (taxes, fees); the URL total is only a fallback while it loads.
+  const total = quote?.total ?? urlTotal
+
+  useEffect(() => {
+    if (!property || !checkIn || !checkOut || nights <= 0) return
+    let cancelled = false
+    getPriceQuote(property.id, { checkIn, checkOut, guests, pets })
+      .then(q => { if (!cancelled) setQuote(q) })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [property, checkIn, checkOut, guests, pets, nights])
   const [pageLoading, setPageLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -199,7 +212,7 @@ function BookingPageContent() {
     else if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = 'Enter a valid email'
     if (!form.phone.trim()) newErrors.phone = 'Phone number is required'
     else if (form.phone.replace(/\D/g, '').length < 10) newErrors.phone = 'Enter a valid phone number'
-    if (!agreed) newErrors.agreed = 'You must agree to the non-refundable policy'
+    if (!agreed) newErrors.agreed = 'You must agree to the cancellation policy'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -304,10 +317,16 @@ function BookingPageContent() {
   const isProcessing = paymentStep !== 'form' && paymentStep !== 'error'
   const buttonLabel = STEP_LABELS[paymentStep].replace('{{amount}}', total.toLocaleString('en-IN'))
 
-  const petCharge = pets * nights * property.pet_charge_per_night
-  const basePrice = total > 0
-    ? Math.max(0, total - property.cleaning_fee - petCharge)
-    : property.price_per_night * nights
+  const policy = CANCELLATION_POLICIES[property.cancellation_policy ?? 'flexible']
+  const petCharge = quote?.pet_charge ?? pets * nights * property.pet_charge_per_night
+  const extraGuestCharge = quote?.extra_guest_charge ?? 0
+  const taxes = quote?.taxes ?? 0
+  const serviceFee = quote?.service_fee ?? 0
+  const basePrice = quote
+    ? quote.base_price
+    : total > 0
+      ? Math.max(0, total - property.cleaning_fee - petCharge)
+      : property.price_per_night * nights
 
   const inputStyle = (field: string) => ({
     width: '100%',
@@ -446,10 +465,10 @@ function BookingPageContent() {
 
             <div style={{ marginBottom: '20px' }}>
               <h4 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
-                Important: This booking is 100% Non-Refundable
+                Cancellation policy: {policy.label}
               </h4>
               <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.7' }}>
-                Once your payment is confirmed, this booking cannot be cancelled or modified for a refund. The full amount of ₹{total.toLocaleString('en-IN')} will be charged and is non-refundable under any circumstances including weather, illness, or change of plans.
+                {policy.summary} The full amount of ₹{total.toLocaleString('en-IN')} is charged when you pay. Refunds, if any, are returned to your original payment method.
               </p>
             </div>
 
@@ -469,7 +488,7 @@ function BookingPageContent() {
                 {agreed && <span style={{ color: 'var(--color-text-primary)', fontSize: '12px', fontWeight: '700' }}>&#10003;</span>}
               </div>
               <span style={{ fontSize: '13px', color: 'var(--color-text-primary)', lineHeight: '1.6' }}>
-                I understand and agree that this booking is <strong>non-refundable</strong>. I have reviewed all booking details and confirm they are correct.
+                I have read the <strong>{policy.label.toLowerCase()}</strong> cancellation policy above. I have reviewed all booking details and confirm they are correct.
               </span>
             </button>
             {errors.agreed && <p style={{ color: '#E53E3E', fontSize: '12px', marginTop: '8px', paddingLeft: '32px' }}>{errors.agreed}</p>}
@@ -493,10 +512,28 @@ function BookingPageContent() {
                   <span>₹{petCharge.toLocaleString('en-IN')}</span>
                 </div>
               )}
+              {extraGuestCharge > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+                  <span>Extra guests</span>
+                  <span>₹{extraGuestCharge.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               {property.cleaning_fee > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-text-secondary)' }}>
                   <span>Cleaning fee</span>
                   <span>₹{property.cleaning_fee.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              {taxes > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+                  <span>Taxes</span>
+                  <span>₹{taxes.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              {serviceFee > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+                  <span>Concept Stay service fee</span>
+                  <span>₹{serviceFee.toLocaleString('en-IN')}</span>
                 </div>
               )}
             </div>

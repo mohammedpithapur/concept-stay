@@ -57,8 +57,8 @@ const sections = [
     title: '4. Cancellation & Refund Policy',
     content: [
       {
-        subtitle: 'Non-Refundable Bookings',
-        text: 'All bookings made through Concept Stay are strictly non-refundable. Once a booking is confirmed and payment is processed, the full amount is charged and cannot be refunded under any circumstances, including but not limited to personal emergencies, illness, travel disruptions, or change of plans.',
+        subtitle: 'Cancellations and Refunds',
+        text: 'Each listing shows its cancellation policy (Flexible, Moderate or Non-refundable). Refunds, if any, follow that policy as calculated on the booking date and are returned to the original payment method. Taxes and service fees follow the same refund percentage.',
       },
       {
         subtitle: 'No Modifications',
@@ -187,7 +187,7 @@ export default function TermsPage() {
       <div style={{ backgroundColor: 'var(--color-bg-card)', borderBottom: '1px solid var(--color-gold)' }}>
         <div className="content-shell" style={{ padding: '20px 24px' }}>
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.7', textAlign: 'center' }}>
-            <strong>Important:</strong> All bookings made through Concept Stay are <strong>strictly non-refundable</strong>. Please review our cancellation policy in Section 4 before making a reservation.
+            <strong>Important:</strong> Each stay has its own <strong>cancellation policy</strong>. Please review it in Section 4 before making a reservation.
           </p>
         </div>
       </div>

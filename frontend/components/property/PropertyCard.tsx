@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react'
+import VerifiedBadge from '@/components/property/VerifiedBadge'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Property } from '@/lib/types'
@@ -189,6 +190,9 @@ export default function PropertyCard({ property }: Props) {
           }}>
             {property.name}
           </h3>
+          {property.verification_status === 'verified' && (
+            <div style={{ marginBottom: '8px' }}><VerifiedBadge status={property.verification_status} /></div>
+          )}
 
           {/* Details Row — ONLY Guests, Beds, Baths, and spaces_detail (Balcony, Living Room, Kitchen, etc. with Shared/Not Shared) */}
           {(() => {

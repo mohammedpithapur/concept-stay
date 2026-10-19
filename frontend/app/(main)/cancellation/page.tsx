@@ -5,11 +5,11 @@ import { AlertTriangle, X, Check } from 'lucide-react'
 const faqs = [
   {
     q: 'Can I get a refund if I cancel my booking?',
-    a: 'No. All bookings made through Concept Stay are strictly non-refundable. Once payment is confirmed, no refunds will be issued under any circumstances.',
+    a: 'It depends on the cancellation policy shown on the property page: Flexible (full refund until 5 days before check-in), Moderate (full refund until 14 days, 50% until 5 days before check-in) or Non-refundable. You can cancel from your dashboard, which shows the exact refund before you confirm.',
   },
   {
     q: 'What if I need to change my dates?',
-    a: 'Date modifications are not permitted on confirmed bookings. You would need to cancel your current booking (without refund) and make a new reservation, subject to availability.',
+    a: 'Dates cannot be modified on confirmed bookings. Cancel under the property\'s cancellation policy and make a new reservation, subject to availability.',
   },
   {
     q: 'What if the property is unavailable on arrival?',
@@ -17,7 +17,7 @@ const faqs = [
   },
   {
     q: 'What happens in case of a natural disaster or emergency?',
-    a: 'While we empathise with difficult circumstances, our non-refundable policy applies in all cases.',
+    a: 'While we empathise with difficult circumstances, the property\'s cancellation policy applies in all cases.',
   },
   {
     q: 'Can I transfer my booking to someone else?',
@@ -77,10 +77,10 @@ export default function CancellationPage() {
         <div className="content-shell" style={{ textAlign: 'center' }}>
           <AlertTriangle size={40} style={{ color: 'var(--color-gold)', margin: '0 auto 16px' }} />
           <h2 style={{ color: 'var(--color-gold)', fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: '800', marginBottom: '16px', letterSpacing: '1px' }}>
-            100% Non-Refundable
+            Cancellation Policies
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '16px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.7' }}>
-            All bookings made through Concept Stay are <strong>strictly non-refundable</strong>. Once your payment is confirmed, the full amount is charged and cannot be returned under any circumstances.
+            Every stay shows one of three policies: <strong>Flexible</strong> (free cancellation until 5 days before check-in), <strong>Moderate</strong> (full refund until 14 days, 50% until 5 days) or <strong>Non-refundable</strong>. Refunds go back to your original payment method.
           </p>
         </div>
       </div>

@@ -290,6 +290,10 @@ export type MyBooking = {
   base_price: number
   cleaning_fee: number
   pet_charge: number
+  extra_guest_charge?: number
+  taxes?: number
+  service_fee?: number
+  refund_amount?: number
   total: number
   status: string
   payment_status: string
