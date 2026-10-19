@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
+from typing import Literal
 from uuid import UUID
 from datetime import datetime, date
 
@@ -11,11 +12,16 @@ class UserOut(BaseModel):
     full_name: str
     phone: str | None
     role: str
+    host_status: str = "approved"
     is_active: bool
     is_email_verified: bool
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class HostStatusUpdate(BaseModel):
+    host_status: Literal["pending", "approved", "suspended"]
 
 
 class UserUpdate(BaseModel):

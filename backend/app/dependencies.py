@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models.user import User, UserRole
+from app.models.user import HostStatus, User, UserRole
 from app.services.auth import get_user_from_token
 
 security = HTTPBearer()
@@ -40,4 +40,13 @@ async def get_optional_current_user(
 async def get_admin(user: User = Depends(get_current_user)) -> User:
     if user.role != UserRole.admin:
         raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
+
+async def get_host(user: User = Depends(get_current_user)) -> User:
+    """Approved hosts, plus admins (who own the legacy listings)."""
+    if user.role == UserRole.admin:
+        return user
+    if user.role != UserRole.host or user.host_status != HostStatus.approved:
+        raise HTTPException(status_code=403, detail="Approved host access required")
     return user

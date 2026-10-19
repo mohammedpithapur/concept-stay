@@ -45,6 +45,7 @@ def _serialize_user(user: User) -> dict:
         "full_name": user.full_name,
         "phone": user.phone,
         "role": user.role.value,
+        "host_status": user.host_status.value,
         "is_active": user.is_active,
         "is_email_verified": user.is_email_verified,
         "created_at": user.created_at.isoformat(),
@@ -52,7 +53,7 @@ def _serialize_user(user: User) -> dict:
 
 
 def _deserialize_user(data: dict) -> User:
-    from app.models.user import UserRole
+    from app.models.user import HostStatus, UserRole
 
     return User(
         id=uuid.UUID(data["id"]),
@@ -61,6 +62,7 @@ def _deserialize_user(data: dict) -> User:
         full_name=data["full_name"],
         phone=data.get("phone"),
         role=UserRole(data["role"]),
+        host_status=HostStatus(data.get("host_status", "approved")),
         is_active=data["is_active"],
         is_email_verified=data["is_email_verified"],
         created_at=datetime.fromisoformat(data["created_at"]),

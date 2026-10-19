@@ -111,7 +111,8 @@ export interface User {
   full_name: string
   phone: string
   profile_photo: string
-  role: 'guest' | 'admin'
+  role: 'guest' | 'host' | 'admin'
+  host_status?: 'pending' | 'approved' | 'suspended'
   created_at: string
 }
 

@@ -52,3 +52,13 @@ async def invalidate_properties_cache() -> None:
             await client.delete(*keys)
     except Exception:
         logger.exception("Redis invalidation failed")
+
+
+async def cache_delete(key: str) -> None:
+    client = get_redis()
+    if client is None:
+        return
+    try:
+        await client.delete(key)
+    except Exception:
+        logger.exception("Redis delete failed")

@@ -14,7 +14,7 @@ from app.config import settings
 from app.database import get_db, utc_now
 from app.dependencies import get_current_user
 from app.models.password_reset import PasswordResetToken
-from app.models.user import User
+from app.models.user import HostStatus, User, UserRole
 from app.rate_limit import limiter
 from app.schemas.user import RegisterIn, LoginIn, TokenOut, UserOut, ForgotPasswordIn, ResetPasswordIn, SendOtpIn, VerifyOtpIn
 from app.services.auth import (
@@ -22,6 +22,7 @@ from app.services.auth import (
     create_access_token, create_refresh_token, decode_refresh_token,
     create_password_reset_token, hash_reset_token,
 )
+from app.services.cache import cache_delete
 from app.services.email import send_password_reset_email
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -204,6 +205,19 @@ async def logout(response: Response):
 
 
 # ── Me ────────────────────────────────────────────────────────────────────────
+
+@router.post("/become-host", response_model=UserOut)
+async def become_host(user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    if user.role != UserRole.guest:
+        raise HTTPException(status_code=409, detail="Only guest accounts can apply to become a host")
+    db_user = await db.get(User, user.id)
+    db_user.role = UserRole.host
+    db_user.host_status = HostStatus.pending
+    await db.commit()
+    await db.refresh(db_user)
+    await cache_delete(f"user:{db_user.id}")
+    return db_user
+
 
 @router.get("/me", response_model=UserOut)
 async def me(user: User = Depends(get_current_user)):

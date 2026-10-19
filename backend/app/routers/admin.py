@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 
 from app.database import get_db
 from app.dependencies import get_admin
-from app.models.user import User
+from app.models.user import HostStatus, User, UserRole
 from app.models.property import Property
 from app.models.property_group import PropertyGroup, PropertyGroupMember
 from app.models.booking import Booking, BookingStatus, PaymentStatus
@@ -34,7 +34,8 @@ from app.services.upload import (
     UploadStorageError,
     UploadValidationError,
 )
-from app.services.cache import cache_get_json, cache_set_json, invalidate_properties_cache
+from app.schemas.user import HostStatusUpdate, UserOut
+from app.services.cache import cache_delete, cache_get_json, cache_set_json, invalidate_properties_cache
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 logger = logging.getLogger(__name__)
@@ -1198,3 +1199,30 @@ async def delete_price_override(
         pass
 
     return {"message": "Price override removed"}
+
+# -- Hosts ---------------------------------------------------------------------
+
+@router.get("/hosts", response_model=list[UserOut])
+async def list_hosts(admin: User = Depends(get_admin), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(User).where(User.role == UserRole.host).order_by(User.created_at.desc())
+    )
+    return result.scalars().all()
+
+
+@router.patch("/hosts/{user_id}", response_model=UserOut)
+async def update_host_status(
+    user_id: uuid.UUID,
+    data: HostStatusUpdate,
+    admin: User = Depends(get_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    host = await db.get(User, user_id)
+    if not host or host.role != UserRole.host:
+        raise HTTPException(status_code=404, detail="Host not found")
+    host.host_status = HostStatus(data.host_status)
+    await db.commit()
+    await db.refresh(host)
+    await cache_delete(f"user:{host.id}")
+    await invalidate_properties_cache()
+    return host
