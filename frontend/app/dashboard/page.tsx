@@ -12,6 +12,7 @@ import {
 import type { Property } from '@/lib/types'
 import { Building2, Share2, Download, Calendar, Users, Check, X, Shield, Clock, MapPin, Plus, LogOut } from 'lucide-react'
 import PushSubscribeButton from '@/components/shared/PushSubscribeButton'
+import BookingActions from '@/components/booking/BookingActions'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -249,12 +250,13 @@ function VoucherModal({ booking, property: propFromCache, onClose }: {
 
 // ─── Booking Card ─────────────────────────────────────────────────────────────
 
-function BookingCard({ booking, property, expanded, onToggle, onVoucher }: {
+function BookingCard({ booking, property, expanded, onToggle, onVoucher, onChanged }: {
   booking: MyBooking
   property: Property | null
   expanded: boolean
   onToggle: () => void
   onVoucher: () => void
+  onChanged: () => void
 }) {
   const formatDate = (d: string) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
 
@@ -395,11 +397,7 @@ function BookingCard({ booking, property, expanded, onToggle, onVoucher }: {
             </div>
           </div>
 
-          <div style={{ marginTop: '16px', backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-gold)', borderRadius: '8px', padding: '12px 16px' }}>
-            <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>
-              <strong>Important:</strong> This booking is <strong>non-refundable</strong>. Cancellation will not result in a refund. For emergencies contact the property directly.
-            </p>
-          </div>
+          <BookingActions booking={booking} property={property} onChanged={onChanged} />
         </div>
       )}
     </div>
@@ -569,6 +567,7 @@ export default function DashboardPage() {
             expanded={expandedBooking === booking.id}
             onToggle={() => setExpandedBooking(prev => prev === booking.id ? null : booking.id)}
             onVoucher={() => setVoucherBooking(booking)}
+            onChanged={loadAll}
           />
         ))}
       </div>

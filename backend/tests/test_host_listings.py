@@ -219,3 +219,31 @@ async def test_host_dashboard_and_bookings_scoped(client, host_a, host_b, admin_
     dash = (await client.get("/host/dashboard", headers=_h(host_a))).json()
     assert set(dash) >= {"bookings_this_month", "revenue", "occupancy_percent", "upcoming"}
     assert [b["property_id"] for b in dash["upcoming"]] == [pid_a]
+
+
+async def test_host_can_upload_image(client, host_a, user_token, monkeypatch):
+    monkeypatch.setattr(
+        "app.routers.admin.upload_property_image_from_bytes",
+        lambda image_bytes, mime_type, folder="properties": "https://cdn.example.com/properties/h.png",
+    )
+    ok = await client.post(
+        "/host/upload-image", headers=_h(host_a), files={"file": ("h.png", b"fake", "image/png")}
+    )
+    assert ok.status_code == 200, ok.text
+    assert ok.json() == {"url": "https://cdn.example.com/properties/h.png"}
+    guest = await client.post(
+        "/host/upload-image", headers=_h(user_token), files={"file": ("h.png", b"fake", "image/png")}
+    )
+    assert guest.status_code == 403
+
+
+async def test_host_can_request_presigned_urls(client, host_a, user_token, monkeypatch):
+    async def fake_presign(items, folder="properties"):
+        return [{"id": i["id"], "upload_url": "https://up", "public_url": "https://pub"} for i in items]
+
+    monkeypatch.setattr("app.routers.admin.async_generate_batch_presigned_upload_urls", fake_presign)
+    body = {"items": [{"id": "a", "mime_type": "image/png"}], "folder": "properties"}
+    ok = await client.post("/host/presigned-upload-urls", headers=_h(host_a), json=body)
+    assert ok.status_code == 200, ok.text
+    assert ok.json()["items"][0]["public_url"] == "https://pub"
+    assert (await client.post("/host/presigned-upload-urls", headers=_h(user_token), json=body)).status_code == 403

@@ -30,6 +30,8 @@ export interface AuthContextType {
   /** Use instead of raw fetch() for any protected API call.
    *  Automatically injects the Authorization header and retries once on 401. */
   fetchWithAuth: (url: string, options?: RequestInit) => Promise<Response>
+  /** Re-read the signed-in user from the API (e.g. after their role changed). */
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -334,8 +336,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return res
   }, [accessToken, silentRefresh, saveSession])
 
+  const refreshUser = useCallback(async () => {
+    const res = await fetchWithAuth('/auth/me')
+    if (!res.ok) return
+    const fresh = (await res.json()) as User
+    setUser(fresh)
+    try { localStorage.setItem(USER_KEY, JSON.stringify(fresh)) } catch { /* storage unavailable */ }
+  }, [fetchWithAuth])
+
   return (
-    <AuthContext.Provider value={{ user, accessToken, loading, login, register, googleLoginCallback, logout, fetchWithAuth }}>
+    <AuthContext.Provider value={{ user, accessToken, loading, login, register, googleLoginCallback, logout, fetchWithAuth, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

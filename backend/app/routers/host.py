@@ -2,7 +2,7 @@ import uuid
 from calendar import monthrange
 from datetime import date, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -14,6 +14,7 @@ from app.models.property import Property
 from app.models.user import User, UserRole
 from app.schemas.booking import AdminBlockCreate, BookingListOut, BookingOut, CalendarEventOut, CalendarOut
 from app.schemas.property import HostPropertyOut, PropertyCreate, PropertyUpdate
+from app.routers.admin import PresignedBatchRequest
 from app.schemas.user import UserOut
 from app.routers import admin as admin_router
 from app.services.cache import invalidate_properties_cache
@@ -223,3 +224,15 @@ async def my_dashboard(host: User = Depends(get_host), db: AsyncSession = Depend
         "occupancy_percent": round(100 * booked_nights / capacity, 1),
         "upcoming": [BookingOut.model_validate(b) for b in upcoming],
     }
+
+
+# -- Photo uploads (same storage pipeline as the admin panel) ----------------------
+
+@router.post("/presigned-upload-urls")
+async def host_presigned_upload_urls(payload: PresignedBatchRequest, host: User = Depends(get_host)):
+    return await admin_router.get_presigned_upload_urls(payload=payload, admin=host)
+
+
+@router.post("/upload-image")
+async def host_upload_image(file: UploadFile = File(...), host: User = Depends(get_host)):
+    return await admin_router.upload_image_file(file=file, admin=host)

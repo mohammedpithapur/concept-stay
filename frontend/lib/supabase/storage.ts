@@ -307,6 +307,8 @@ export async function uploadPropertyImage(
   file: File,
   onProgress?: (percent: number) => void,
   fetcher?: ApiFetcher,
+  /** API prefix owning the upload endpoints: '/admin' for staff, '/host' for approved hosts. */
+  basePath: '/admin' | '/host' = '/admin',
 ): Promise<string> {
   const fileToUpload = await compressImageFile(file, 2048, 0.82)
   validateImageFile(fileToUpload)
@@ -319,7 +321,7 @@ export async function uploadPropertyImage(
 
   // Try direct presigned upload first (0 EC2 load)
   try {
-    const presignedResp = await fetcher(buildApiUrl('/admin/presigned-upload-urls'), {
+    const presignedResp = await fetcher(buildApiUrl(`${basePath}/presigned-upload-urls`), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -351,7 +353,7 @@ export async function uploadPropertyImage(
   try {
     const formData = new FormData()
     formData.append('file', fileToUpload, fileToUpload.name)
-    const response = await fetcher(buildApiUrl('/admin/upload-image'), {
+    const response = await fetcher(buildApiUrl(`${basePath}/upload-image`), {
       method: 'POST',
       body: formData,
     })

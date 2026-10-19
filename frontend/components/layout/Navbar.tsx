@@ -127,6 +127,7 @@ export default function Navbar() {
                   </div>
                   {[
                     { label: 'My Dashboard', href: '/dashboard' },
+                    ...(user.role === 'host' || user.role === 'admin' ? [{ label: 'Host Dashboard', href: '/host' }] : [{ label: 'Become a host', href: '/host/apply' }]),
                     ...(user.role === 'admin' ? [{ label: 'Admin Panel', href: '/admin' }] : []),
                   ].map(item => (
                     <Link key={item.href} href={item.href}
@@ -220,6 +221,10 @@ export default function Navbar() {
               <Link href="/dashboard" onClick={() => setMenuOpen(false)}
                 style={{ color: 'var(--color-navbar-text)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
                 My Dashboard
+              </Link>
+              <Link href={user.role === 'host' || user.role === 'admin' ? '/host' : '/host/apply'} onClick={() => setMenuOpen(false)}
+                style={{ color: 'var(--color-navbar-text)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
+                {user.role === 'host' || user.role === 'admin' ? 'Host Dashboard' : 'Become a host'}
               </Link>
               {user.role === 'admin' && (
                 <Link href="/admin" onClick={() => setMenuOpen(false)}
