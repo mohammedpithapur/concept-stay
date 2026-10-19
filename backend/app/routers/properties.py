@@ -1,4 +1,5 @@
 import hashlib
+from datetime import date
 import json
 import uuid
 
@@ -15,6 +16,7 @@ from app.models.user import User, UserRole
 from app.models.price_override import PropertyPriceOverride
 from app.schemas.price_override import PriceOverrideOut
 from app.schemas.property import PropertyListOut, PropertyOut
+from app.services.booking import calculate_pricing
 from app.services.property import apply_property_inheritance, get_property_filters, public_listing_clauses
 from app.taxonomy import CATEGORIES, CATEGORY_LABELS
 from app.services.cache import cache_get_json, cache_set_json
@@ -225,6 +227,37 @@ async def get_property(
         raise HTTPException(status_code=404, detail="Property not found")
     
     return await apply_property_inheritance(db, property)
+
+
+@router.get("/{property_id}/quote")
+async def get_property_quote(
+    property_id: str,
+    check_in: date,
+    check_out: date,
+    guests: int = Query(1, ge=1),
+    pets: int = Query(0, ge=0),
+    db: AsyncSession = Depends(get_db),
+):
+    """Server-side price breakdown (nightly rates, taxes, fees, total) for a prospective stay."""
+    try:
+        target_uuid = uuid.UUID(property_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid property ID format")
+    if check_out <= check_in:
+        raise HTTPException(status_code=400, detail="check_out must be after check_in")
+    prop = await db.scalar(select(Property).where(Property.id == target_uuid, *public_listing_clauses()))
+    if not prop:
+        raise HTTPException(status_code=404, detail="Property not found")
+    overrides = (
+        await db.execute(
+            select(PropertyPriceOverride).where(
+                PropertyPriceOverride.property_id == target_uuid,
+                PropertyPriceOverride.start_date < check_out,
+                PropertyPriceOverride.end_date > check_in,
+            )
+        )
+    ).scalars().all()
+    return calculate_pricing(prop, check_in, check_out, pets, guests, price_overrides=list(overrides))
 
 
 @router.get("/{property_id}/availability")

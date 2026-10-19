@@ -16,8 +16,8 @@ from starlette.responses import JSONResponse
 from app.config import settings
 from app.database import get_db, _IS_LAMBDA
 from app.rate_limit import limiter
-from app.routers import admin, auth, bookings, ical, payments, properties, reviews, users, events, push, contact, articles, host
-from app.models import push_subscription, price_override  # noqa: F401 — ensures table is created
+from app.routers import admin, auth, bookings, ical, payments, properties, reviews, users, events, push, contact, articles, host, payouts
+from app.models import push_subscription, price_override, payout  # noqa: F401 — ensures table is created
 
 
 logger = logging.getLogger("conceptstay.api")
@@ -159,6 +159,7 @@ app.include_router(push.router)
 app.include_router(contact.router)
 app.include_router(articles.router)
 app.include_router(host.router)
+app.include_router(payouts.router)
 
 
 @app.get("/")

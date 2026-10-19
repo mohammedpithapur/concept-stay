@@ -86,6 +86,9 @@ async def create_booking(
         existing_pending.base_price = pricing["base_price"]
         existing_pending.cleaning_fee = pricing["cleaning_fee"]
         existing_pending.pet_charge = pricing["pet_charge"]
+        existing_pending.extra_guest_charge = pricing["extra_guest_charge"]
+        existing_pending.taxes = pricing["taxes"]
+        existing_pending.service_fee = pricing["service_fee"]
         existing_pending.total = pricing["total"]
         existing_pending.guest_name = data.guest_name or user.full_name
         existing_pending.guest_email = data.guest_email or user.email
@@ -128,6 +131,9 @@ async def create_booking(
         base_price=pricing["base_price"],
         cleaning_fee=pricing["cleaning_fee"],
         pet_charge=pricing["pet_charge"],
+        extra_guest_charge=pricing["extra_guest_charge"],
+        taxes=pricing["taxes"],
+        service_fee=pricing["service_fee"],
         total=pricing["total"],
         status=BookingStatus.pending,
         guest_name=data.guest_name or user.full_name,

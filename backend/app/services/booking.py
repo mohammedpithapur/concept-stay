@@ -6,7 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.booking import Booking, BookingStatus
 from app.models.property import Property
+from app.config import settings
 from app.models.property_group import PropertyGroupMember
+from app.services.payouts import percent_of
 
 
 def calculate_pricing(
@@ -49,11 +51,16 @@ def calculate_pricing(
     extra_guests = max(0, guests - base_guests)
     extra_guest_charge = extra_guests * nights * extra_guest_rate
     pet_charge = pets * nights * property.pet_charge_per_night
-    total = base_price + extra_guest_charge + property.cleaning_fee + pet_charge
+    stay_value = base_price + extra_guest_charge
+    taxes = percent_of(stay_value, settings.TAX_PERCENT)
+    service_fee = percent_of(stay_value, settings.GUEST_SERVICE_FEE_PERCENT)
+    total = stay_value + property.cleaning_fee + pet_charge + taxes + service_fee
     return {
         "nights": nights,
         "base_price": base_price,
         "extra_guest_charge": extra_guest_charge,
+        "taxes": taxes,
+        "service_fee": service_fee,
         "cleaning_fee": property.cleaning_fee,
         "pet_charge": pet_charge,
         "total": total,

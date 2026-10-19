@@ -47,6 +47,7 @@ from app.models.property import Property
 from app.schemas.booking import BookingOut
 from app.schemas.payment import PaymentOrderCreate, PaymentOrderOut, PaymentOut, PaymentVerifyIn
 from app.services.email import send_booking_confirmation_email
+from app.services.payouts import create_payout_for_booking
 from app.services.push import send_push_to_admins, send_push_to_user, send_push_to_all
 from app.services.booking import remove_shadow_blocks
 
@@ -222,6 +223,7 @@ async def verify_payment(
 
     booking.status = BookingStatus.confirmed
     booking.payment_status = PaymentStatus.paid
+    await create_payout_for_booking(db, booking)
 
     await db.commit()
     await db.refresh(booking)
@@ -349,6 +351,7 @@ async def razorpay_webhook(
                 if booking:
                     booking.status = BookingStatus.confirmed
                     booking.payment_status = PaymentStatus.paid
+                    await create_payout_for_booking(db, booking)
                     await db.commit()
                     await db.refresh(booking)
 
