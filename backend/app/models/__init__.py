@@ -9,6 +9,7 @@ from app.models.password_reset import PasswordResetToken
 from app.models.event import EventRequest, EventStatus
 from app.models.price_override import PropertyPriceOverride
 from app.models.article import Article
+from app.models.payout import Payout
 
 __all__ = [
 	"User",
@@ -25,4 +26,5 @@ __all__ = [
 	"EventStatus",
 	"PropertyPriceOverride",
 	"Article",
+	"Payout",
 ]
