@@ -1,11 +1,14 @@
+import hashlib
+import hmac
+import json
 from datetime import date, timedelta
 from types import SimpleNamespace
 
 import pytest
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.models.booking import Booking
-from app.models.payment import Payment
+from app.models.payment import Payment, RazorpayPaymentStatus
 from app.models.payout import Payout
 from app.services import refunds
 from app.services.cancellation import compute_refund
@@ -199,3 +202,57 @@ async def test_admin_full_refund_voids_owed_payout(
     payout = await db_session.scalar(select(Payout).where(Payout.booking_id == booking["id"]))
     assert payout.status == "voided"
     assert payout.host_amount == 0
+
+
+async def test_payment_after_pending_cancel_does_not_resurrect_booking(
+    client, admin_headers, user_token, db_session, fake_razorpay
+):
+    pid = await _listing(client, admin_headers)
+    booking = await _book(client, user_token, pid, check_in=_days_ahead(60), check_out=_days_ahead(63))
+    res = await client.post(f"/bookings/{booking['id']}/cancel", headers=_h(user_token))
+    assert res.status_code == 200, res.text
+    assert res.json()["status"] == "cancelled"
+
+    res = await _pay(client, db_session, user_token, booking)  # checkout opened earlier completes late
+    assert res.status_code == 409, res.text
+
+    db_session.expire_all()
+    b = await db_session.get(Booking, booking["id"])
+    assert b.status.value == "cancelled"
+    assert (await db_session.scalar(select(func.count()).select_from(Payout))) == 0
+    assert len(fake_razorpay) == 1  # late payment refunded in full
+    assert fake_razorpay[0][1]["amount"] == booking["total"] * 100
+
+
+async def test_partial_refund_webhook_rescales_payout_not_void(client, admin_headers, user_token, db_session):
+    pid = await _listing(client, admin_headers)
+    booking = await _book(client, user_token, pid, check_in=_days_ahead(60), check_out=_days_ahead(63))
+    await _pay(client, db_session, user_token, booking, order="order_p", pay_id="pay_p")
+    half = booking["total"] // 2
+    body = json.dumps({"event": "refund.created", "payload": {"refund": {"entity": {
+        "payment_id": "pay_p", "amount": half * 100}}}}).encode()
+    sig = hmac.new(b"testsecret", body, hashlib.sha256).hexdigest()
+    wh = await client.post("/payments/webhook", content=body, headers={"X-Razorpay-Signature": sig})
+    assert wh.status_code == 200
+
+    db_session.expire_all()
+    payout = await db_session.scalar(select(Payout).where(Payout.booking_id == booking["id"]))
+    assert payout.status == "owed"
+    assert 0 < payout.host_amount < 13550
+    payment = await db_session.scalar(select(Payment).where(Payment.booking_id == booking["id"]))
+    assert payment.status.value == "paid"
+    b = await db_session.get(Booking, booking["id"])
+    assert b.refund_amount == half
+
+
+async def test_repriced_pending_booking_gets_fresh_order(client, admin_headers, user_token, db_session):
+    pid = await _listing(client, admin_headers)
+    booking = await _book(client, user_token, pid, check_in=_days_ahead(60), check_out=_days_ahead(63), guests=2)
+    db_session.add(Payment(booking_id=booking["id"], razorpay_order_id="order_old", amount=(booking["total"] - 500) * 100,
+                           status=RazorpayPaymentStatus.created))
+    await db_session.commit()
+    again = await _book(client, user_token, pid, check_in=_days_ahead(60), check_out=_days_ahead(63), guests=3)
+    assert again["id"] == booking["id"]
+    old = await db_session.scalar(select(Payment).where(Payment.razorpay_order_id == "order_old"))
+    # a stale order whose amount no longer matches the booking must not be reused
+    assert old is None or old.amount == again["total"] * 100

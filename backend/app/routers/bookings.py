@@ -96,6 +96,14 @@ async def create_booking(
         existing_pending.taxes = pricing["taxes"]
         existing_pending.service_fee = pricing["service_fee"]
         existing_pending.total = pricing["total"]
+        # a Razorpay order cannot change amount: drop an unpaid one that no longer matches so a fresh order is made
+        stale = await db.scalar(select(Payment).where(
+            Payment.booking_id == existing_pending.id,
+            Payment.status == RazorpayPaymentStatus.created,
+            Payment.amount != pricing["total"] * 100,
+        ))
+        if stale:
+            await db.delete(stale)
         existing_pending.guest_name = data.guest_name or user.full_name
         existing_pending.guest_email = data.guest_email or user.email
         existing_pending.guest_phone = data.guest_phone or user.phone

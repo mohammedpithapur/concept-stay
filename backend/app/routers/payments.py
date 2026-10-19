@@ -7,6 +7,7 @@ Endpoints:
   POST /payments/webhook        → Razorpay event handler — source of truth (public, sig-verified)
   POST /payments/{id}/refund    → triggers Razorpay refund (admin only)
 """
+import asyncio
 import hashlib
 import hmac
 import json
@@ -49,6 +50,7 @@ from app.schemas.payment import PaymentOrderCreate, PaymentOrderOut, PaymentOut,
 from app.services.email import send_booking_confirmation_email
 from app.models.payout import Payout
 from app.services.cancellation import rescale_payout
+from app.services.refunds import RefundError, issue_refund
 from app.services.payouts import create_payout_for_booking
 from app.services.push import send_push_to_admins, send_push_to_user, send_push_to_all
 from app.services.booking import remove_shadow_blocks
@@ -217,6 +219,10 @@ async def verify_payment(
         await db.commit()
         raise HTTPException(status_code=400, detail="Payment signature verification failed")
 
+    if booking.status != BookingStatus.pending:
+        await _refund_late_payment(db, payment, booking, data.razorpay_payment_id)
+        raise HTTPException(status_code=409, detail="Booking was cancelled before payment completed; payment refunded")
+
     # Atomic update: payment + booking in one transaction
     payment.status = RazorpayPaymentStatus.paid
     payment.razorpay_payment_id = data.razorpay_payment_id
@@ -344,12 +350,15 @@ async def razorpay_webhook(
             payment = await db.scalar(
                 select(Payment).where(Payment.razorpay_order_id == order_id)
             )
-            if payment and payment.status != RazorpayPaymentStatus.paid:
-                payment.status = RazorpayPaymentStatus.paid
-                payment.razorpay_payment_id = payment_id
-                payment.updated_at = utc_now()
-
+            if payment and payment.status == RazorpayPaymentStatus.created:
                 booking = await db.get(Booking, payment.booking_id)
+                if booking and booking.status != BookingStatus.pending:
+                    await _refund_late_payment(db, payment, booking, payment_id)
+                    booking = None
+                elif booking:
+                    payment.status = RazorpayPaymentStatus.paid
+                    payment.razorpay_payment_id = payment_id
+                    payment.updated_at = utc_now()
                 if booking:
                     booking.status = BookingStatus.confirmed
                     booking.payment_status = PaymentStatus.paid
@@ -450,18 +459,36 @@ async def razorpay_webhook(
                 select(Payment).where(Payment.razorpay_payment_id == payment_id)
             )
             if payment:
-                payment.status = RazorpayPaymentStatus.refunded
-                payment.updated_at = utc_now()
-
                 booking = await db.get(Booking, payment.booking_id)
-                if booking and not booking.refund_amount:
+                refunded = (payment_entity.get("amount") or payment.amount) // 100
+                if booking and refunded > (booking.refund_amount or 0):
+                    first_refund = not booking.refund_amount
+                    booking.refund_amount = min(refunded, booking.total)
                     booking.payment_status = PaymentStatus.refunded
-                    booking.refund_amount = booking.total
-                    await _void_payout(db, booking)
-
-                await db.commit()
+                    if booking.refund_amount >= booking.total:
+                        payment.status = RazorpayPaymentStatus.refunded
+                        payment.updated_at = utc_now()
+                    if first_refund:
+                        payout = await db.scalar(select(Payout).where(Payout.booking_id == booking.id))
+                        if payout:
+                            rescale_payout(payout, booking.total, booking.refund_amount)
+                    await db.commit()
 
     return {"status": "ok"}
+
+
+async def _refund_late_payment(db: AsyncSession, payment: Payment, booking: Booking, razorpay_payment_id: str) -> None:
+    """Money arrived for a booking that is no longer pending (cancelled while checkout was open): never
+    resurrect it, since its dates may be rebooked. Record the capture and return the money in full."""
+    payment.razorpay_payment_id = razorpay_payment_id
+    payment.updated_at = utc_now()
+    payment.status = RazorpayPaymentStatus.paid
+    try:
+        await asyncio.to_thread(issue_refund, razorpay_payment_id, payment.amount // 100)
+        payment.status = RazorpayPaymentStatus.refunded
+    except RefundError:
+        pass  # stays 'paid' on a cancelled booking: visible to the admin, who can refund via /payments/{id}/refund
+    await db.commit()
 
 
 async def _void_payout(db: AsyncSession, booking: Booking) -> None:
