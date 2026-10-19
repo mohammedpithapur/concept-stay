@@ -4,7 +4,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import selectinload
 
 from app.database import get_db
@@ -15,7 +15,8 @@ from app.models.user import User, UserRole
 from app.models.price_override import PropertyPriceOverride
 from app.schemas.price_override import PriceOverrideOut
 from app.schemas.property import PropertyListOut, PropertyOut
-from app.services.property import get_property_filters, apply_property_inheritance
+from app.services.property import apply_property_inheritance, get_property_filters, public_listing_clauses
+from app.taxonomy import CATEGORIES, CATEGORY_LABELS
 from app.services.cache import cache_get_json, cache_set_json
 from app.services.booking import auto_cleanup_expired_bookings
 
@@ -35,6 +36,12 @@ async def list_properties(
     check_out: str | None = Query(None),  # YYYY-MM-DD — exclude booked properties
     page: int = Query(1, ge=1),
     limit: int = Query(12, ge=1, le=200),
+    destination: str | None = Query(None),
+    property_type: str | None = Query(None),  # comma-separated
+    category: str | None = Query(None),
+    experience: str | None = Query(None),     # comma-separated
+    verified_only: bool = Query(False),
+    sort: str = Query("newest", pattern="^(newest|price_asc|price_desc|rating)$"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
@@ -54,6 +61,12 @@ async def list_properties(
         "check_out": check_out,
         "page": page,
         "limit": limit,
+        "destination": destination,
+        "property_type": property_type,
+        "category": category,
+        "experience": experience,
+        "verified_only": verified_only,
+        "sort": sort,
     }
     cache_hash = hashlib.sha256(json.dumps(cache_payload, sort_keys=True).encode()).hexdigest()
     cache_key = f"properties:list:{cache_hash}"
@@ -70,6 +83,11 @@ async def list_properties(
         guests=guests, pets_allowed=pets_allowed, amenities=amenity_list,
         check_in=check_in, check_out=check_out,
         page=page, limit=limit,
+        destination=destination,
+        property_type=property_type.split(",") if property_type else None,
+        category=category,
+        experience=experience.split(",") if experience else None,
+        verified_only=verified_only, sort=sort,
     )
     response = PropertyListOut.model_validate(result).model_dump(mode="json")
     try:
@@ -86,7 +104,7 @@ async def get_unique_locations(db: AsyncSession = Depends(get_db)):
     if cached:
         return cached
 
-    query = select(Property.city, Property.state).where(Property.is_published == True).distinct()
+    query = select(Property.city, Property.state).where(*public_listing_clauses()).distinct()
     result = await db.execute(query)
     rows = result.all()
     
@@ -106,6 +124,30 @@ async def get_unique_locations(db: AsyncSession = Depends(get_db)):
     await cache_set_json(cache_key, response, ttl_seconds=3600)
     return response
 
+
+
+@router.get("/destinations")
+async def list_destinations(db: AsyncSession = Depends(get_db)):
+    """Distinct state/city pairs of publicly visible listings with counts."""
+    result = await db.execute(
+        select(Property.state, Property.city, func.count(Property.id))
+        .where(*public_listing_clauses())
+        .group_by(Property.state, Property.city)
+        .order_by(func.count(Property.id).desc(), Property.state, Property.city)
+    )
+    return [{"state": s, "city": c, "count": n} for s, c, n in result.all()]
+
+
+@router.get("/categories")
+async def list_categories(db: AsyncSession = Depends(get_db)):
+    """All curated categories with the number of publicly visible listings in each."""
+    result = await db.execute(select(Property.categories).where(*public_listing_clauses()))
+    counts = {slug: 0 for slug in CATEGORIES}
+    for (cats,) in result.all():
+        for slug in set(cats or []):
+            if slug in counts:
+                counts[slug] += 1
+    return [{"slug": slug, "label": CATEGORY_LABELS[slug], "count": counts[slug]} for slug in CATEGORIES]
 
 
 @router.get("/featured", response_model=list[PropertyOut])
@@ -128,7 +170,7 @@ async def list_featured_properties(
     result = await db.execute(
         select(Property)
         .options(selectinload(Property.images))
-        .where(Property.is_published == True, Property.is_featured == True)
+        .where(*public_listing_clauses(), Property.is_featured == True)
         .order_by(Property.avg_rating.desc())
         .limit(8)
     )
@@ -139,7 +181,7 @@ async def list_featured_properties(
         result = await db.execute(
             select(Property)
             .options(selectinload(Property.images))
-            .where(Property.is_published == True)
+            .where(*public_listing_clauses())
             .order_by(Property.avg_rating.desc())
             .limit(6)
         )
@@ -175,7 +217,7 @@ async def get_property(
     query = select(Property).options(selectinload(Property.images)).where(Property.id == target_uuid)
     is_admin = current_user is not None and current_user.role == UserRole.admin
     if not is_admin:
-        query = query.where(Property.is_published == True)
+        query = query.where(*public_listing_clauses())
 
     result = await db.execute(query)
     property = result.scalar_one_or_none()
@@ -206,7 +248,7 @@ async def get_property_availability(
     query = select(Property.id).where(Property.id == target_uuid)
     is_admin = current_user is not None and current_user.role == UserRole.admin
     if not is_admin:
-        query = query.where(Property.is_published == True)
+        query = query.where(*public_listing_clauses())
 
     result = await db.execute(query)
     if not result.scalar_one_or_none():

@@ -13,6 +13,7 @@ from app.models.property_group import PropertyGroup, PropertyGroupMember
 from app.models.booking import Booking, BookingStatus
 from app.models.price_override import PropertyPriceOverride
 from app.schemas.booking import BookingCreate, BookingOut, BookingStatusUpdate, BookingListOut
+from app.services.property import public_listing_clauses
 from app.services.booking import calculate_pricing, apply_group_blocking, remove_shadow_blocks, auto_cleanup_expired_bookings
 from app.services.email import send_booking_cancellation_email
 from app.services.push import send_push_to_user, send_push_to_admins
@@ -30,8 +31,10 @@ async def create_booking(
     db: AsyncSession = Depends(get_db),
 ):
     await auto_cleanup_expired_bookings(db)
-    property = await db.get(Property, data.property_id)
-    if not property or not property.is_published:
+    property = await db.scalar(
+        select(Property).where(Property.id == data.property_id, *public_listing_clauses())
+    )
+    if not property:
         raise HTTPException(status_code=404, detail="Property not found")
 
     # Acquire pessimistic lock to serialize concurrent bookings on the same property or group

@@ -1,9 +1,37 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import Text, cast, func, or_, select
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import selectinload
 from app.models.property import Property
 from app.models.review import Review
 from app.models.booking import Booking, BookingStatus
+from app.models.user import HostStatus, User
+from app.taxonomy import CATEGORIES, CATEGORY_LABELS
+
+PRICE_UNBOUNDED_FROM = 50000  # the "Rs 50,000+" slider stop means no upper limit
+
+SORT_ORDERS = {
+    "newest": lambda: Property.created_at.desc(),
+    "price_asc": lambda: Property.price_per_night.asc(),
+    "price_desc": lambda: Property.price_per_night.desc(),
+    "rating": lambda: Property.avg_rating.desc(),
+}
+
+
+def _jsonb_has_any(column, values: list[str]):
+    """JSONB array/key contains ANY of values (the ?| operator, with a proper text[] parameter)."""
+    return func.jsonb_exists_any(column, cast(values, ARRAY(Text)))
+
+
+def public_listing_clauses() -> list:
+    """Conditions every guest-facing query must apply: live, approved, not suspended, host in good standing."""
+    suspended_hosts = select(User.id).where(User.host_status == HostStatus.suspended)
+    return [
+        Property.is_published == True,  # noqa: E712
+        Property.approval_status == "approved",
+        Property.verification_status != "suspended",
+        Property.owner_id.notin_(suspended_hosts),
+    ]
 
 
 async def get_property_filters(
@@ -19,8 +47,25 @@ async def get_property_filters(
     check_out: str | None = None,
     page: int = 1,
     limit: int = 12,
+    destination: str | None = None,
+    property_type: list[str] | None = None,
+    category: str | None = None,
+    experience: list[str] | None = None,
+    verified_only: bool = False,
+    sort: str = "newest",
 ):
-    base = select(Property).where(Property.is_published == True)
+    base = select(Property).where(*public_listing_clauses())
+    if destination:
+        like = f"%{destination}%"
+        base = base.where(or_(Property.city.ilike(like), Property.state.ilike(like)))
+    if property_type:
+        base = base.where(Property.property_type.in_(property_type))
+    if category:
+        base = base.where(Property.categories.contains([category]))
+    if experience:
+        base = base.where(_jsonb_has_any(Property.experience_tags, experience))
+    if verified_only:
+        base = base.where(Property.verification_status == "verified")
 
     if city:
         base = base.where(Property.city.ilike(f"%{city}%"))
@@ -28,14 +73,14 @@ async def get_property_filters(
         base = base.where(Property.state.ilike(f"%{state}%"))
     if min_price is not None:
         base = base.where(Property.price_per_night >= min_price)
-    if max_price is not None:
+    if max_price is not None and max_price < PRICE_UNBOUNDED_FROM:
         base = base.where(Property.price_per_night <= max_price)
     if guests is not None:
         base = base.where(Property.max_guests >= guests)
     if pets_allowed is not None:
         base = base.where(Property.pets_allowed == pets_allowed)
     if amenities:
-        base = base.where(Property.amenities.op("?|")(amenities))
+        base = base.where(_jsonb_has_any(Property.amenities, amenities))
 
     # ── Availability filter: exclude properties booked in requested range ──
     if check_in and check_out:
@@ -68,7 +113,7 @@ async def get_property_filters(
 
     # Paginate with eager-loaded images
     offset = (page - 1) * limit
-    query = base.options(selectinload(Property.images)).offset(offset).limit(limit).order_by(Property.created_at.desc())
+    query = base.options(selectinload(Property.images)).offset(offset).limit(limit).order_by(SORT_ORDERS.get(sort, SORT_ORDERS['newest'])())
 
     result = await db.execute(query)
     properties = result.scalars().all()
