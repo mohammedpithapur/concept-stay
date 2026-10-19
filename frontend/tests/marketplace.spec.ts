@@ -67,3 +67,24 @@ test.describe('Admin marketplace tabs', () => {
     await expect(page.getByRole('button', { name: /Approve/ })).toBeVisible()
   })
 })
+
+test.describe('Discovery', () => {
+  const listing = {
+    id: 'p1', name: 'Lake Cottage', city: 'Udaipur', state: 'Rajasthan', description: '', images: [], amenities: [],
+    price_per_night: 60000, avg_rating: 4.5, review_count: 2, bedrooms: 2, bathrooms: 1, bathrooms_detail: [],
+    pets_allowed: false, latitude: 24.58, longitude: 73.68, max_guests: 4,
+  }
+
+  test('top price stop means 50,000+ and keeps pricier stays; map toggle shows the map', async ({ page }) => {
+    await page.route('**/properties?**', json({ items: [listing], total: 1, page: 1, limit: 200 }))
+    await page.goto('/properties')
+    await expect(page.getByText('Lake Cottage').first()).toBeVisible()
+    await page.getByRole('button', { name: 'Map' }).click()
+    await expect(page.getByTestId('properties-map')).toBeVisible()
+    await page.getByRole('button', { name: 'List' }).click()
+    await expect(page.getByTestId('properties-map')).toHaveCount(0)
+    await expect(page.getByText('Lake Cottage').first()).toBeVisible() // ₹60,000 stay survives the default "₹50,000+" cap
+    await page.getByRole('button', { name: /Filters/ }).click()
+    await expect(page.getByText('₹50,000+').first()).toBeVisible()
+  })
+})

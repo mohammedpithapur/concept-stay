@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_, func
 
-from app.database import get_db, utc_now
+from app.database import get_db, today_ist, utc_now
 from app.dependencies import get_current_user, get_admin
 from app.models.user import User
 from app.rate_limit import limiter
@@ -312,8 +312,8 @@ async def refund_preview(
     prop = await db.get(Property, booking.property_id)
     policy = prop.cancellation_policy if prop else "non_refundable"
     paid = booking.payment_status == PaymentStatus.paid
-    can_cancel = _cancel_blocker(booking, date.today()) is None
-    refund = compute_refund(policy, booking.total, booking.check_in, date.today()) if (paid and can_cancel) else 0
+    can_cancel = _cancel_blocker(booking, today_ist()) is None
+    refund = compute_refund(policy, booking.total, booking.check_in, today_ist()) if (paid and can_cancel) else 0
     return {"can_cancel": can_cancel, "policy": policy, "refund_amount": refund, "total_paid": booking.total if paid else 0}
 
 
@@ -325,7 +325,7 @@ async def cancel_my_booking(
     db: AsyncSession = Depends(get_db),
 ):
     booking = await _load_cancellable(db, booking_id, user, lock=True)
-    today = date.today()
+    today = today_ist()
     blocker = _cancel_blocker(booking, today)
     if blocker:
         raise HTTPException(status_code=409, detail=blocker)

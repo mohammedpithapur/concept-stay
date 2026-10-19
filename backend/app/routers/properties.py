@@ -18,7 +18,7 @@ from app.schemas.price_override import PriceOverrideOut
 from app.schemas.property import PropertyListOut, PropertyOut
 from app.services.booking import calculate_pricing
 from app.services.property import apply_property_inheritance, get_property_filters, public_listing_clauses
-from app.taxonomy import CATEGORIES, CATEGORY_LABELS
+from app.taxonomy import CATEGORIES, CATEGORY_LABELS, EXPERIENCE_TAGS, PROPERTY_TYPES
 from app.services.cache import cache_get_json, cache_set_json
 from app.services.booking import auto_cleanup_expired_bookings
 
@@ -51,6 +51,11 @@ async def list_properties(
     except Exception:
         pass
 
+    # Only known taxonomy values reach the query and the cache key, so junk input cannot mint cache entries.
+    property_type = ",".join(sorted({v for v in property_type.split(",") if v in PROPERTY_TYPES})) if property_type else None
+    experience = ",".join(sorted({v for v in experience.split(",") if v in EXPERIENCE_TAGS})) if experience else None
+    if category and category not in CATEGORIES:
+        category = None
     cache_payload = {
         "city": city,
         "state": state,
@@ -248,6 +253,15 @@ async def get_property_quote(
     prop = await db.scalar(select(Property).where(Property.id == target_uuid, *public_listing_clauses()))
     if not prop:
         raise HTTPException(status_code=404, detail="Property not found")
+    nights = (check_out - check_in).days
+    if nights > 365:
+        raise HTTPException(status_code=400, detail="Stays are limited to 365 nights")
+    if nights < prop.min_nights:
+        raise HTTPException(status_code=400, detail=f"Minimum stay is {prop.min_nights} nights")
+    if guests > prop.max_guests:
+        raise HTTPException(status_code=400, detail=f"Maximum allowed guests is {prop.max_guests}")
+    if pets > 0 and (not prop.pets_allowed or pets > prop.max_pets):
+        raise HTTPException(status_code=400, detail="Pets are not allowed in that number at this property")
     overrides = (
         await db.execute(
             select(PropertyPriceOverride).where(

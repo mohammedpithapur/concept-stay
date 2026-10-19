@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import case, select, func, delete
 from uuid import UUID
 
-from app.database import get_db, utc_now
+from app.database import get_db, today_ist, utc_now
 from app.dependencies import get_admin, get_current_user
 from app.models.booking import Booking, BookingStatus, PaymentStatus
 from app.models.user import User
@@ -146,7 +146,7 @@ async def create_verified_review(
     stay_over = booking.status == BookingStatus.completed or (
         booking.status == BookingStatus.confirmed
         and booking.payment_status == PaymentStatus.paid
-        and booking.check_out <= date.today()
+        and booking.check_out <= today_ist()
     )
     if not stay_over:
         raise HTTPException(status_code=409, detail="You can review a stay after it has been completed")

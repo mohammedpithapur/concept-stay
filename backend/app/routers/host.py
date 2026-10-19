@@ -3,12 +3,13 @@ from calendar import monthrange
 from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-from sqlalchemy import and_, select
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.database import get_db
+from app.database import get_db, today_ist
 from app.dependencies import get_host
+from app.models.payout import Payout
 from app.models.booking import Booking, BookingStatus, PaymentStatus
 from app.models.property import Property
 from app.models.user import User, UserRole
@@ -181,18 +182,22 @@ async def my_bookings(
         _host_bookings_query(host).order_by(Booking.check_in.desc()).offset((page - 1) * limit).limit(limit)
     )
     items = result.scalars().all()
-    total = len((await db.execute(_host_bookings_query(host))).scalars().all())
+    total = await db.scalar(select(func.count()).select_from(_host_bookings_query(host).subquery()))
     return BookingListOut(items=[BookingOut.model_validate(b) for b in items], total=total, page=page, limit=limit)
 
 
 @router.get("/dashboard")
 async def my_dashboard(host: User = Depends(get_host), db: AsyncSession = Depends(get_db)):
-    today = date.today()
+    today = today_ist()
     month_start = today.replace(day=1)
     days_in_month = monthrange(today.year, today.month)[1]
     month_end = month_start + timedelta(days=days_in_month)
 
-    live_count = len((await db.execute(select(Property.id).where(Property.owner_id == host.id))).all())
+    live_count = await db.scalar(
+        select(func.count()).select_from(Property).where(
+            Property.owner_id == host.id, Property.is_published == True, Property.approval_status == "approved"  # noqa: E712
+        )
+    )
     bookings = (
         await db.execute(
             _host_bookings_query(host).where(
@@ -207,9 +212,11 @@ async def my_dashboard(host: User = Depends(get_host), db: AsyncSession = Depend
     for b in bookings:
         booked_nights += (min(b.check_out, month_end) - max(b.check_in, month_start)).days
     capacity = max(live_count, 1) * days_in_month
-    revenue = sum(
-        b.total for b in bookings if b.payment_status == PaymentStatus.paid and month_start <= b.check_in < month_end
-    )
+    # Net to the host (what /host/payouts shows), not the guest-paid total with taxes and platform fees.
+    month_ids = [b.id for b in bookings if b.payment_status == PaymentStatus.paid and month_start <= b.check_in < month_end]
+    revenue = 0
+    if month_ids:
+        revenue = await db.scalar(select(func.coalesce(func.sum(Payout.host_amount), 0)).where(Payout.booking_id.in_(month_ids))) or 0
     upcoming = (
         await db.execute(
             _host_bookings_query(host)

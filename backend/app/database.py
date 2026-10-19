@@ -1,11 +1,19 @@
 import os
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.pool import NullPool, AsyncAdaptedQueuePool
 
 from app.config import settings
+
+
+IST = timezone(timedelta(hours=5, minutes=30))  # India has no DST
+
+
+def today_ist() -> date:
+    """Calendar date in India: check-in/out dates are local dates, so day-based rules must not use the server's clock."""
+    return datetime.now(IST).date()
 
 
 def utc_now() -> datetime:

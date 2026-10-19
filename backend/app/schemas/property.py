@@ -190,9 +190,9 @@ class PropertyCreate(BaseModel):
     check_out_time: str = "11:00 AM"
     house_rules: list[str] = []
     local_recommendations: list[str] = []
-    price_per_night: int
-    cleaning_fee: int = 0
-    extra_guest_charge_per_night: int = 0
+    price_per_night: int = Field(ge=0)
+    cleaning_fee: int = Field(0, ge=0)
+    extra_guest_charge_per_night: int = Field(0, ge=0)
     base_guests: int = 2
     max_guests: int
     bedrooms: int
@@ -202,7 +202,7 @@ class PropertyCreate(BaseModel):
     min_nights: int = 1
     pets_allowed: bool = False
     max_pets: int = 0
-    pet_charge_per_night: int = 0
+    pet_charge_per_night: int = Field(0, ge=0)
     amenities: list[str] = []
     is_published: bool = False
     is_featured: bool = False
@@ -240,9 +240,9 @@ class PropertyUpdate(BaseModel):
     check_out_time: str | None = None
     house_rules: list[str] | None = None
     local_recommendations: list[str] | None = None
-    price_per_night: int | None = None
-    cleaning_fee: int | None = None
-    extra_guest_charge_per_night: int | None = None
+    price_per_night: int | None = Field(None, ge=0)
+    cleaning_fee: int | None = Field(None, ge=0)
+    extra_guest_charge_per_night: int | None = Field(None, ge=0)
     base_guests: int | None = None
     max_guests: int | None = None
     bedrooms: int | None = None
@@ -252,7 +252,7 @@ class PropertyUpdate(BaseModel):
     min_nights: int | None = None
     pets_allowed: bool | None = None
     max_pets: int | None = None
-    pet_charge_per_night: int | None = None
+    pet_charge_per_night: int | None = Field(None, ge=0)
     amenities: list[str] | None = None
     is_published: bool | None = None
     is_featured: bool | None = None

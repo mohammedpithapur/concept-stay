@@ -30,6 +30,22 @@ const show = (v: unknown) => (typeof v === 'string' ? v : JSON.stringify(v))
 
 // ── Listing review queue ──────────────────────────────────────────────────────
 
+function Photos({ items }: { items: unknown[] }) {
+  const urls = items
+    .map(i => (i as { image_url?: string; url?: string })?.image_url ?? (i as { url?: string })?.url)
+    .filter((u): u is string => typeof u === 'string' && u.length > 0)
+  if (!urls.length) return <>{items.length} photos</>
+  return (
+    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+      {urls.slice(0, 8).map(u => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={u} src={u} alt="" style={{ width: '56px', height: '42px', objectFit: 'cover', borderRadius: '4px' }} />
+      ))}
+      {urls.length > 8 && <span style={{ fontSize: '12px', alignSelf: 'center' }}>+{urls.length - 8}</span>}
+    </div>
+  )
+}
+
 function ReviewCard({ p, onChanged, onError }: { p: HostProperty; onChanged: () => void; onError: (m: string) => void }) {
   const { fetchWithAuth } = useAuth()
   const [reason, setReason] = useState('')
@@ -71,9 +87,9 @@ function ReviewCard({ p, onChanged, onError }: { p: HostProperty; onChanged: () 
               <tr key={key} style={{ borderTop: '1px solid var(--color-border)', verticalAlign: 'top' }}>
                 <td style={{ padding: '6px 8px 6px 0', fontWeight: 600 }}>{key}</td>
                 <td style={{ padding: '6px 8px', color: 'var(--color-text-secondary)' }}>
-                  {key === 'images' ? `${p.images.length} photos` : show((p as unknown as Record<string, unknown>)[key])}
+                  {key === 'images' ? <Photos items={p.images} /> : show((p as unknown as Record<string, unknown>)[key])}
                 </td>
-                <td style={{ padding: '6px 0' }}>{key === 'images' ? `${(next as unknown[]).length} photos` : show(next)}</td>
+                <td style={{ padding: '6px 0' }}>{key === 'images' ? <Photos items={next as unknown[]} /> : show(next)}</td>
               </tr>
             ))}
           </tbody>

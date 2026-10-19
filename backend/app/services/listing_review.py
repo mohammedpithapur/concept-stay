@@ -33,8 +33,9 @@ async def apply_pending_changes(db: AsyncSession, prop: Property) -> Property:
 
 async def approve_listing(db: AsyncSession, prop: Property) -> Property:
     await apply_pending_changes(db, prop)
+    if prop.approval_status != "approved":
+        prop.is_published = True  # first approval publishes; an approved edit never re-publishes a hidden listing
     prop.approval_status = "approved"
-    prop.is_published = True
     prop.rejection_reason = None
     return prop
 
@@ -43,7 +44,7 @@ def reject_listing(prop: Property, reason: str) -> Property:
     """Rejecting an edit to a live listing keeps it live; rejecting a new listing keeps it hidden."""
     prop.pending_changes = None
     prop.rejection_reason = reason
-    prop.approval_status = "approved" if prop.is_published else "rejected"
+    prop.approval_status = "approved" if prop.approval_status == "approved" else "rejected"
     return prop
 
 

@@ -34,6 +34,11 @@ def public_listing_clauses() -> list:
     ]
 
 
+def _escape_like(value: str) -> str:
+    """Treat user input as literal text inside a LIKE pattern."""
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
 async def get_property_filters(
     db: AsyncSession,
     city: str | None = None,
@@ -56,8 +61,8 @@ async def get_property_filters(
 ):
     base = select(Property).where(*public_listing_clauses())
     if destination:
-        like = f"%{destination}%"
-        base = base.where(or_(Property.city.ilike(like), Property.state.ilike(like)))
+        like = f"%{_escape_like(destination)}%"
+        base = base.where(or_(Property.city.ilike(like, escape="\\"), Property.state.ilike(like, escape="\\")))
     if property_type:
         base = base.where(Property.property_type.in_(property_type))
     if category:
@@ -68,9 +73,9 @@ async def get_property_filters(
         base = base.where(Property.verification_status == "verified")
 
     if city:
-        base = base.where(Property.city.ilike(f"%{city}%"))
+        base = base.where(Property.city.ilike(f"%{_escape_like(city)}%", escape="\\"))
     if state:
-        base = base.where(Property.state.ilike(f"%{state}%"))
+        base = base.where(Property.state.ilike(f"%{_escape_like(state)}%", escape="\\"))
     if min_price is not None:
         base = base.where(Property.price_per_night >= min_price)
     if max_price is not None and max_price < PRICE_UNBOUNDED_FROM:

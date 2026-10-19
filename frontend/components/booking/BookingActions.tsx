@@ -15,7 +15,8 @@ const buttonBase = {
   padding: '10px 18px', borderRadius: '8px', fontSize: '13px', fontWeight: 700 as const, cursor: 'pointer',
 }
 
-const todayIso = () => new Date().toISOString().slice(0, 10)
+// Stay dates are India dates and the server applies them in IST, so compute "today" there rather than in UTC.
+const todayIso = () => new Date(Date.now() + 5.5 * 3600 * 1000).toISOString().slice(0, 10)
 
 type Props = {
   booking: MyBooking

@@ -1,11 +1,18 @@
 "use client"
 import React, { useState, useMemo, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { useSearchParams } from 'next/navigation'
 import PropertyCard from '@/components/property/PropertyCard'
 import { buildApiUrl } from '@/lib/api'
 import MarketplaceFilters, { EMPTY_MARKETPLACE_FILTERS, type MarketplaceFilterState } from '@/components/property/MarketplaceFilters'
 import type { Property } from '@/lib/types'
-import { Building2, SlidersHorizontal, Search, RotateCcw, PawPrint, Calendar, Users, X } from 'lucide-react'
+import { Building2, Map as MapIcon, LayoutGrid, SlidersHorizontal, Search, RotateCcw, PawPrint, Calendar, Users, X } from 'lucide-react'
+
+const PropertiesMap = dynamic(() => import('@/components/property/PropertiesMap'), { ssr: false })
+
+// The price sliders top out at ₹50,000; the top stop means "₹50,000+" (no upper bound), like the API's max_price.
+const PRICE_CAP = 50000
+const PRICE_STEP = 500
 
 const roomTypeOptions = [
   { value: 'all', label: 'Any Room Type' },
@@ -27,10 +34,7 @@ const bathroomTypeOptions = [
 ]
 
 const formatPrice = (value: number) => {
-  if (value >= 1000000) {
-    const lakhs = value / 100000
-    return `₹${Number.isInteger(lakhs) ? lakhs.toFixed(0) : lakhs.toFixed(1)} Lakhs`
-  }
+  if (value >= PRICE_CAP) return `₹${PRICE_CAP.toLocaleString('en-IN')}+`
 
   return `₹${value.toLocaleString('en-IN')}`
 }
@@ -65,7 +69,7 @@ export default function PropertiesClient() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [location, setLocation] = useState(urlLocation)
-  const [maxPrice, setMaxPrice] = useState(1000000)
+  const [maxPrice, setMaxPrice] = useState(PRICE_CAP)
   const [minPrice, setMinPrice] = useState(0)
   const [minBedrooms, setMinBedrooms] = useState(1)
   const [petsOnly, setPetsOnly] = useState(urlPets !== '0')
@@ -77,6 +81,7 @@ export default function PropertiesClient() {
   const [searchQuery, setSearchQuery] = useState('')
   const [mkt, setMkt] = useState<MarketplaceFilterState>(EMPTY_MARKETPLACE_FILTERS)
   const [loadedOnce, setLoadedOnce] = useState(false)
+  const [showMap, setShowMap] = useState(false)
 
   // Sync location + pets from URL if URL changes (e.g. hero re-search)
   useEffect(() => { setLocation(urlLocation) }, [urlLocation])
@@ -150,7 +155,7 @@ export default function PropertiesClient() {
         p.name?.toLowerCase().includes(q)
       )
     }
-    result = result.filter(p => p.price_per_night >= minPrice && p.price_per_night <= maxPrice)
+    result = result.filter(p => p.price_per_night >= minPrice && (maxPrice >= PRICE_CAP || p.price_per_night <= maxPrice))
     if (minBedrooms > 1) result = result.filter(p => p.bedrooms >= minBedrooms)
     if (petsOnly) result = result.filter(p => p.pets_allowed)
     if (roomType !== 'all') result = result.filter(p => getRoomType(p) === roomType)
@@ -167,7 +172,7 @@ export default function PropertiesClient() {
     setSearchQuery('')
     setLocation('')
     setMinPrice(0)
-    setMaxPrice(1000000)
+    setMaxPrice(PRICE_CAP)
     setMinBedrooms(1)
     setPetsOnly(false)
     setRoomType('all')
@@ -349,6 +354,19 @@ export default function PropertiesClient() {
 
           {/* Right: Sort By */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0, marginLeft: 'auto' }}>
+            <button
+              onClick={() => setShowMap(m => !m)}
+              aria-pressed={showMap}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px',
+                border: '1px solid var(--color-border)', borderRadius: '8px', cursor: 'pointer',
+                backgroundColor: showMap ? 'var(--color-gold)' : '#ffffff',
+                color: showMap ? '#ffffff' : 'var(--color-text-primary)', fontSize: '14px',
+              }}
+            >
+              {showMap ? <LayoutGrid style={{ width: '16px', height: '16px' }} /> : <MapIcon style={{ width: '16px', height: '16px' }} />}
+              {showMap ? 'List' : 'Map'}
+            </button>
             <label style={{ fontSize: '11px', color: 'var(--color-text-muted)', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: '700', whiteSpace: 'nowrap' }}>Sort By</label>
             <select
               value={sortBy}
@@ -374,7 +392,9 @@ export default function PropertiesClient() {
 
         <div style={{ minWidth: 0 }}>
 
-          {filtered.length > 0 ? (
+          {filtered.length > 0 && showMap ? (
+            <PropertiesMap properties={filtered} />
+          ) : filtered.length > 0 ? (
             <div className="responsive-card-grid">
               {filtered.map(property => (
                 <PropertyCard key={property.id} property={property} />
@@ -510,14 +530,14 @@ export default function PropertiesClient() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', minWidth: '24px' }}>Min</span>
-                    <input type="range" min={0} max={1000000} step={5000} value={minPrice}
-                      onChange={e => { const v = Number(e.target.value); setMinPrice(Math.min(v, maxPrice - 5000)) }}
+                    <input type="range" min={0} max={PRICE_CAP} step={PRICE_STEP} value={minPrice}
+                      onChange={e => { const v = Number(e.target.value); setMinPrice(Math.min(v, maxPrice - PRICE_STEP)) }}
                       style={{ flex: 1, accentColor: 'var(--color-gold)' }} />
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', minWidth: '24px' }}>Max</span>
-                    <input type="range" min={0} max={1000000} step={5000} value={maxPrice}
-                      onChange={e => { const v = Number(e.target.value); setMaxPrice(Math.max(v, minPrice + 5000)) }}
+                    <input type="range" min={0} max={PRICE_CAP} step={PRICE_STEP} value={maxPrice}
+                      onChange={e => { const v = Number(e.target.value); setMaxPrice(Math.max(v, minPrice + PRICE_STEP)) }}
                       style={{ flex: 1, accentColor: 'var(--color-gold)' }} />
                   </div>
                 </div>
