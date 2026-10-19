@@ -40,6 +40,7 @@ class BookingOut(BaseModel):
     pet_charge: int
     extra_guest_charge: int = 0
     taxes: int = 0
+    refund_amount: int = 0
     service_fee: int = 0
     total: int
     status: str

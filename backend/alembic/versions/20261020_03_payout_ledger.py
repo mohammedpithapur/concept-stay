@@ -14,7 +14,7 @@ depends_on = None
 
 
 def upgrade() -> None:
-    for col in ('extra_guest_charge', 'taxes', 'service_fee'):
+    for col in ('extra_guest_charge', 'taxes', 'service_fee', 'refund_amount'):
         op.add_column('bookings', sa.Column(col, sa.Integer(), server_default='0', nullable=False))
     op.create_table(
         'payouts',
@@ -38,5 +38,5 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table('payouts')
-    for col in ('service_fee', 'taxes', 'extra_guest_charge'):
+    for col in ('refund_amount', 'service_fee', 'taxes', 'extra_guest_charge'):
         op.drop_column('bookings', col)

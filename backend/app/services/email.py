@@ -161,7 +161,7 @@ async def send_booking_cancellation_email(
 ) -> bool:
     dashboard_url = f"{settings.FRONTEND_BASE_URL}/dashboard"
     if refund:
-        refund_status_message = f"A full refund of \u20b9{total} has been initiated to your original payment method. Please allow 5-7 business days for it to reflect in your account."
+        refund_status_message = f"A refund of \u20b9{total} has been initiated to your original payment method. Please allow 5-7 business days for it to reflect in your account."
     else:
         refund_status_message = "As per our booking terms, this cancellation is non-refundable."
 

@@ -53,6 +53,7 @@ class Booking(Base):
     cleaning_fee: Mapped[int] = mapped_column(Integer, nullable=False)
     pet_charge: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     extra_guest_charge: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
+    refund_amount: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     taxes: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     service_fee: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     total: Mapped[int] = mapped_column(Integer, nullable=False)
