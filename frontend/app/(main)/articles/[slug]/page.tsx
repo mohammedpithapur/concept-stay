@@ -97,7 +97,7 @@ export default function ArticleDetailPage() {
           href="/articles"
           style={{
             padding: '12px 24px',
-            backgroundColor: 'var(--color-terra)',
+            backgroundColor: 'var(--color-brand)',
             color: '#fff',
             borderRadius: '8px',
             textDecoration: 'none',
@@ -105,7 +105,7 @@ export default function ArticleDetailPage() {
             fontWeight: 700,
           }}
         >
-          ← Back to All Stories
+          <ArrowLeft size={16} aria-hidden="true" style={{ marginRight: '6px', verticalAlign: '-3px' }} />Back to All Stories
         </Link>
       </div>
     )
@@ -120,7 +120,7 @@ export default function ArticleDetailPage() {
   return (
     <article style={{ backgroundColor: '#ffffff', minHeight: '100vh', paddingBottom: '100px' }}>
       {/* Top Breadcrumb & Nav */}
-      <div
+      <div className="surface-deep"
         style={{
           borderBottom: '1px solid var(--color-border)',
           backgroundColor: 'var(--color-deep)',
@@ -180,7 +180,7 @@ export default function ArticleDetailPage() {
         {article.tags && article.tags.length > 0 && (
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
             {article.tags.map(tag => (
-              <span
+              <span className="surface-deep"
                 key={tag}
                 style={{
                   fontSize: '11px',
@@ -241,7 +241,7 @@ export default function ArticleDetailPage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div
+            <div className="surface-deep"
               style={{
                 width: '38px',
                 height: '38px',
@@ -334,7 +334,7 @@ export default function ArticleDetailPage() {
                 alignItems: 'center',
                 gap: '6px',
                 padding: '8px 16px',
-                backgroundColor: 'var(--color-terra)',
+                backgroundColor: 'var(--color-brand)',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
@@ -357,12 +357,12 @@ export default function ArticleDetailPage() {
               textDecoration: 'none',
             }}
           >
-            ← Browse More Articles
+            <ArrowLeft size={16} aria-hidden="true" style={{ marginRight: '6px', verticalAlign: '-3px' }} />Browse More Articles
           </Link>
         </div>
 
         {/* CTA Card */}
-        <div
+        <div className="surface-deep"
           style={{
             marginTop: '64px',
             backgroundColor: 'var(--color-deep)',
@@ -384,8 +384,8 @@ export default function ArticleDetailPage() {
             style={{
               display: 'inline-block',
               padding: '14px 28px',
-              backgroundColor: 'var(--color-terra)',
-              color: '#f6eddc',
+              backgroundColor: 'var(--color-brand)',
+              color: 'var(--color-on-accent)',
               borderRadius: '8px',
               fontSize: '13px',
               fontWeight: 700,

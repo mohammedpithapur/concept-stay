@@ -184,7 +184,7 @@ function BookingPageContent() {
     return (
       <div style={{ textAlign: 'center', padding: '120px 24px' }}>
         <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>{loadError}</h2>
-        <button onClick={() => router.push('/properties')} style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}>
+        <button onClick={() => router.push('/properties')} style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}>
           Back to Properties
         </button>
       </div>
@@ -195,7 +195,7 @@ function BookingPageContent() {
     return (
       <div style={{ textAlign: 'center', padding: '120px 24px' }}>
         <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px' }}>Property not found</h2>
-        <button onClick={() => router.push('/properties')} style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}>
+        <button onClick={() => router.push('/properties')} style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}>
           Back to Properties
         </button>
       </div>
@@ -270,7 +270,7 @@ function BookingPageContent() {
             email: form.email,
             contact: form.phone,
           },
-          theme: { color: '#C9A84C' },
+          theme: { color: '#a23a1f' },
           modal: {
             ondismiss: () => {
               // User closed the modal without paying
@@ -362,7 +362,7 @@ function BookingPageContent() {
     <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
 
       {/* Header */}
-      <div style={{ backgroundColor: 'var(--color-deep)', padding: '40px 24px', textAlign: 'center' }}>
+      <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '40px 24px', textAlign: 'center' }}>
         <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '8px', fontWeight: '600' }}>
           Almost There
         </p>
@@ -390,7 +390,7 @@ function BookingPageContent() {
             <h2 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               1. Guest Information
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '28px' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '28px' }} />
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '20px' }}>
               <div style={{ gridColumn: '1 / -1' }}>
@@ -427,7 +427,7 @@ function BookingPageContent() {
             <h2 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               2. Booking Summary
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '28px' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '28px' }} />
 
             <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
               {(() => {
@@ -461,7 +461,7 @@ function BookingPageContent() {
             <h2 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               3. Cancellation Policy
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '20px' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '20px' }} />
 
             <div style={{ marginBottom: '20px' }}>
               <h4 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
@@ -481,7 +481,7 @@ function BookingPageContent() {
                 width: '20px', height: '20px', flexShrink: 0,
                 border: `2px solid ${errors.agreed ? '#E53E3E' : agreed ? 'var(--color-terra)' : 'var(--color-text-muted)'}`,
                 borderRadius: '4px',
-                backgroundColor: agreed ? 'var(--color-terra)' : 'transparent',
+                backgroundColor: agreed ? 'var(--color-brand)' : 'transparent',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 marginTop: '2px', transition: 'all 0.2s ease',
               }}>
@@ -574,8 +574,8 @@ function BookingPageContent() {
             disabled={isProcessing}
             style={{
               width: '100%',
-              backgroundColor: isProcessing ? '#C9A84C99' : 'var(--color-terra)',
-              color: '#f6eddc',
+              backgroundColor: isProcessing ? 'rgba(162, 58, 31, 0.6)' : 'var(--color-brand)',
+              color: 'var(--color-on-accent)',
               border: 'none',
               padding: '20px',
               fontSize: '14px',
@@ -629,7 +629,7 @@ class BookingPageErrorBoundary extends Component<{ children: React.ReactNode }, 
         <div style={{ textAlign: 'center', padding: '120px 24px' }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Something went wrong loading booking details</h2>
           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>{this.state.error}</p>
-          <a href="/properties" style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', borderRadius: '8px', textDecoration: 'none', display: 'inline-block' }}>
+          <a href="/properties" style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', borderRadius: '8px', textDecoration: 'none', display: 'inline-block' }}>
             Back to Properties
           </a>
         </div>

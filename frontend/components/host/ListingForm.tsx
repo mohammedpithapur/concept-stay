@@ -68,8 +68,8 @@ function Chips({ options, selected, onToggle }: {
         return (
           <button key={o.value} type="button" aria-pressed={on} onClick={() => onToggle(o.value)}
             style={{ padding: '7px 12px', borderRadius: '999px', fontSize: '13px', cursor: 'pointer',
-              border: `1px solid ${on ? 'var(--color-gold)' : 'var(--color-border)'}`,
-              backgroundColor: on ? 'var(--color-gold)' : '#ffffff', fontWeight: on ? 700 : 400 }}>
+              border: `1px solid ${on ? 'var(--color-terra)' : 'var(--color-border)'}`,
+              backgroundColor: on ? 'var(--color-brand)' : '#ffffff', fontWeight: on ? 700 : 400 }}>
             {o.label}
           </button>
         )
@@ -255,7 +255,7 @@ export default function ListingForm({ property, onSaved, onCancel }: Props) {
         <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{d.images.length} photo{d.images.length === 1 ? '' : 's'} added</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '10px' }}>
           {d.images.map((img, i) => (
-            <div key={img.image_url} style={{ border: `2px solid ${img.is_primary ? 'var(--color-gold)' : 'var(--color-border)'}`, borderRadius: '8px', overflow: 'hidden' }}>
+            <div key={img.image_url} style={{ border: `2px solid ${img.is_primary ? 'var(--color-terra)' : 'var(--color-border)'}`, borderRadius: '8px', overflow: 'hidden' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={img.image_url} alt="" style={{ width: '100%', height: '90px', objectFit: 'cover', display: 'block' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 6px', fontSize: '11px' }}>

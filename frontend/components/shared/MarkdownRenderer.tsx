@@ -103,8 +103,8 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
           <pre
             key={`code-${elements.length}`}
             style={{
-              backgroundColor: '#1a1611',
-              color: '#e8d5a3',
+              backgroundColor: 'var(--color-dark)',
+              color: 'var(--color-gold)',
               padding: '16px 20px',
               borderRadius: '10px',
               overflowX: 'auto',

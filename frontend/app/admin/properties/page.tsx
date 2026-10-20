@@ -9,7 +9,7 @@ import { useRequireAuth } from '@/lib/auth/useRequireAuth'
 import { uploadPropertyImage, uploadPropertyImagesBatch, type BatchUploadProgress } from '@/lib/supabase/storage'
 // NOTE: admin UI now loads properties from the API via `listAdminProperties`
 import { Property, type PropertyImage, type BathroomDetail, type SpaceDetail } from '@/lib/types'
-import { Folder, Pencil, Trash2, Camera, MapPin, AlertTriangle, Plus, X, Check, Calendar as CalendarIcon, Info, Lightbulb } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Folder, Pencil, Trash2, Camera, MapPin, AlertTriangle, Plus, X, Check, Calendar as CalendarIcon, Info, Lightbulb } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -285,7 +285,7 @@ const inputStyle = {
   border: '1px solid var(--color-border)', borderRadius: '8px',
   fontSize: '14px', color: 'var(--color-text-primary)', outline: 'none',
   backgroundColor: '#ffffff', boxSizing: 'border-box' as const,
-  fontFamily: "'Figtree', sans-serif",
+  fontFamily: "var(--font-sans)",
 }
 
 const selectStyle = {
@@ -1104,7 +1104,7 @@ function PhotosSection({
             </p>
           </div>
           {!isCreatingFolder && (
-            <button
+            <button className="surface-dark"
               type="button"
               onClick={() => setIsCreatingFolder(true)}
               style={{
@@ -1129,7 +1129,7 @@ function PhotosSection({
               onKeyDown={e => e.key === 'Enter' && handleCreateFolder()}
               autoFocus
             />
-            <button
+            <button className="surface-dark"
               type="button"
               onClick={handleCreateFolder}
               disabled={!newFolderName.trim()}
@@ -1154,7 +1154,7 @@ function PhotosSection({
             onClick={() => setActiveFolder('All')}
             style={{
               padding: '7px 14px', borderRadius: '20px',
-              border: activeFolder === 'All' ? '1.5px solid var(--color-gold)' : '1px solid var(--color-border)',
+              border: activeFolder === 'All' ? '1.5px solid var(--color-terra)' : '1px solid var(--color-border)',
               backgroundColor: activeFolder === 'All' ? 'var(--color-text-primary)' : '#ffffff',
               color: activeFolder === 'All' ? '#ffffff' : 'var(--color-text-secondary)',
               fontSize: '13px', fontWeight: activeFolder === 'All' ? '700' : '500', cursor: 'pointer',
@@ -1175,13 +1175,13 @@ function PhotosSection({
                 {renamingFolder === folder ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <input
-                      style={{ padding: '4px 8px', fontSize: '12px', borderRadius: '6px', border: '1px solid var(--color-gold)', width: '130px' }}
+                      style={{ padding: '4px 8px', fontSize: '12px', borderRadius: '6px', border: '1px solid var(--color-terra)', width: '130px' }}
                       value={renameInput}
                       onChange={e => setRenameInput(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && handleRenameFolder(folder)}
                       autoFocus
                     />
-                    <button type="button" onClick={() => handleRenameFolder(folder)} style={{ padding: '4px 8px', fontSize: '11px', fontWeight: '700', borderRadius: '4px', border: 'none', backgroundColor: 'var(--color-text-primary)', color: '#fff', cursor: 'pointer' }}>Save</button>
+                    <button className="surface-dark" type="button" onClick={() => handleRenameFolder(folder)} style={{ padding: '4px 8px', fontSize: '11px', fontWeight: '700', borderRadius: '4px', border: 'none', backgroundColor: 'var(--color-text-primary)', color: '#fff', cursor: 'pointer' }}>Save</button>
                     <button type="button" onClick={() => setRenamingFolder(null)} style={{ padding: '4px 6px', fontSize: '11px', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: '#fff', cursor: 'pointer' }}>x</button>
                   </div>
                 ) : (
@@ -1191,7 +1191,7 @@ function PhotosSection({
                       onClick={() => setActiveFolder(folder)}
                       style={{
                         padding: '7px 14px', borderRadius: '20px',
-                        border: isActive ? '1.5px solid var(--color-gold)' : '1px solid var(--color-border)',
+                        border: isActive ? '1.5px solid var(--color-terra)' : '1px solid var(--color-border)',
                         backgroundColor: isActive ? 'var(--color-text-primary)' : '#ffffff',
                         color: isActive ? '#ffffff' : 'var(--color-text-secondary)',
                         fontSize: '13px', fontWeight: isActive ? '700' : '500', cursor: 'pointer',
@@ -1239,14 +1239,14 @@ function PhotosSection({
           backgroundColor: 'var(--color-bg-card)', transition: 'all 0.2s ease',
           opacity: isUploading ? 0.6 : 1,
         }}
-        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-gold)' }}
+        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-terra)' }}
         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-border)' }}
       >
         <p style={{ fontSize: '15px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '4px' }}>
           {activeFolder === 'All' ? 'Upload photos to General folder' : `Upload photos to "${activeFolder}"`}
         </p>
         <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginBottom: '14px' }}>Drag & drop or click to choose. JPG, PNG, WEBP (max 10MB each).</p>
-        <div style={{
+        <div className="surface-dark" style={{
           display: 'inline-block', backgroundColor: 'var(--color-text-primary)', color: '#ffffff',
           padding: '8px 20px', borderRadius: '8px', fontSize: '12px', fontWeight: '700',
           letterSpacing: '0.8px', textTransform: 'uppercase',
@@ -1269,14 +1269,14 @@ function PhotosSection({
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '16px', height: '16px', border: '2px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              <div style={{ width: '16px', height: '16px', border: '2px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
               <p style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-text-primary)', margin: 0 }}>
                 {batchProgress
                   ? `Uploading ${batchProgress.completed} of ${batchProgress.total} photos (${batchProgress.percent}%)`
                   : `Optimizing & preparing ${activeUploadCountRef.current} photos for direct S3 upload...`}
               </p>
             </div>
-            <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--color-gold)' }}>
+            <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--color-terra)' }}>
               {batchProgress ? `${batchProgress.percent}%` : '0%'}
             </span>
           </div>
@@ -1284,7 +1284,7 @@ function PhotosSection({
             <div style={{
               height: '100%',
               width: `${batchProgress?.percent || 0}%`,
-              backgroundColor: 'var(--color-gold)',
+              backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)',
               borderRadius: '999px',
               transition: 'width 0.2s ease',
             }} />
@@ -1318,7 +1318,7 @@ function PhotosSection({
                   key={img.id}
                   style={{
                     position: 'relative', borderRadius: '10px', overflow: 'hidden',
-                    border: img.is_primary ? '2.5px solid var(--color-gold)' : '1px solid var(--color-border)',
+                    border: img.is_primary ? '2.5px solid var(--color-terra)' : '1px solid var(--color-border)',
                     backgroundColor: 'var(--color-bg-card)', display: 'flex', flexDirection: 'column',
                   }}
                   draggable={!uploading}
@@ -1351,7 +1351,7 @@ function PhotosSection({
                     )}
 
                     {img.is_primary && (
-                      <div style={{ position: 'absolute', top: '8px', left: '8px', backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', fontSize: '10px', fontWeight: '800', padding: '3px 8px', borderRadius: '4px', letterSpacing: '0.5px', zIndex: 4 }}>
+                      <div style={{ position: 'absolute', top: '8px', left: '8px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', fontSize: '10px', fontWeight: '800', padding: '3px 8px', borderRadius: '4px', letterSpacing: '0.5px', zIndex: 4 }}>
                         COVER
                       </div>
                     )}
@@ -1391,7 +1391,7 @@ function PhotosSection({
             type="button"
             onClick={() => { if (!isUploading) fileInputRef.current?.click() }}
             disabled={isUploading}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', border: '1.5px dashed var(--color-border)', borderRadius: '8px', backgroundColor: 'transparent', fontSize: '13px', cursor: isUploading ? 'not-allowed' : 'pointer', color: 'var(--color-text-muted)', fontFamily: "'Figtree', sans-serif", fontWeight: '600', opacity: isUploading ? 0.5 : 1 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', border: '1.5px dashed var(--color-border)', borderRadius: '8px', backgroundColor: 'transparent', fontSize: '13px', cursor: isUploading ? 'not-allowed' : 'pointer', color: 'var(--color-text-muted)', fontFamily: "var(--font-sans)", fontWeight: '600', opacity: isUploading ? 0.5 : 1 }}
           >
             + Add more photos {activeFolder !== 'All' ? `to "${activeFolder}"` : ''}
           </button>
@@ -1442,13 +1442,13 @@ function AmenitiesSection({ form, setForm }: { form: typeof EMPTY_FORM; setForm:
                   onClick={() => toggle(amenity)}
                   style={{
                     padding: '8px 14px',
-                    border: `1.5px solid ${active ? 'var(--color-gold)' : 'var(--color-border)'}`,
+                    border: `1.5px solid ${active ? 'var(--color-terra)' : 'var(--color-border)'}`,
                     borderRadius: '100px',
                     backgroundColor: active ? 'rgba(201,168,76,0.12)' : '#ffffff',
                     color: active ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                     fontSize: '13px', fontWeight: active ? '700' : '400',
                     cursor: 'pointer', transition: 'all 0.15s ease',
-                    fontFamily: "'Figtree', sans-serif",
+                    fontFamily: "var(--font-sans)",
                   }}
                 >
                   {active && <Check size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: '-1px' }} />}
@@ -1480,7 +1480,7 @@ function AmenitiesSection({ form, setForm }: { form: typeof EMPTY_FORM; setForm:
               color: customInput.trim() ? '#ffffff' : 'var(--color-text-muted)',
               border: 'none', borderRadius: '8px', fontSize: '13px',
               fontWeight: '700', cursor: customInput.trim() ? 'pointer' : 'not-allowed',
-              fontFamily: "'Figtree', sans-serif", whiteSpace: 'nowrap' as const,
+              fontFamily: "var(--font-sans)", whiteSpace: 'nowrap' as const,
             }}
           >+ Add</button>
         </div>
@@ -1497,12 +1497,12 @@ function AmenitiesSection({ form, setForm }: { form: typeof EMPTY_FORM; setForm:
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '6px',
                   padding: '8px 14px',
-                  border: '1.5px solid var(--color-gold)',
+                  border: '1.5px solid var(--color-terra)',
                   borderRadius: '100px',
                   backgroundColor: 'rgba(201,168,76,0.12)',
                   color: 'var(--color-text-primary)',
                   fontSize: '13px', fontWeight: '700',
-                  fontFamily: "'Figtree', sans-serif",
+                  fontFamily: "var(--font-sans)",
                 }}
               >
                 <Check size={12} style={{ display: 'inline', verticalAlign: '-1px' }} />
@@ -1704,7 +1704,7 @@ function PoliciesSection({
                     display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px',
                     borderRadius: '8px', cursor: 'pointer',
                     backgroundColor: isChecked ? 'rgba(201,168,76,0.12)' : '#ffffff',
-                    border: `1px solid ${isChecked ? 'var(--color-gold)' : 'var(--color-border)'}`,
+                    border: `1px solid ${isChecked ? 'var(--color-terra)' : 'var(--color-border)'}`,
                     transition: 'all 0.15s ease',
                   }}
                 >
@@ -1712,7 +1712,7 @@ function PoliciesSection({
                     type="checkbox"
                     checked={isChecked}
                     onChange={() => togglePropertyInGroup(item.id)}
-                    style={{ accentColor: 'var(--color-gold)', width: '18px', height: '18px', cursor: 'pointer' }}
+                    style={{ accentColor: 'var(--color-terra)', width: '18px', height: '18px', cursor: 'pointer' }}
                   />
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-text-primary)' }}>{item.name}</div>
@@ -1752,7 +1752,7 @@ function PoliciesSection({
       )}
 
       {/* Cancellation notice */}
-      <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-gold)', borderRadius: '12px', padding: '20px 24px' }}>
+      <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-terra)', borderRadius: '12px', padding: '20px 24px' }}>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
           <div>
             <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Non-Refundable Policy</p>
@@ -1827,7 +1827,7 @@ function HouseRulesSection({ form, setForm }: { form: typeof EMPTY_FORM; setForm
                   color: active ? '#ffffff' : 'var(--color-text-secondary)',
                   fontSize: '13px', fontWeight: active ? '600' : '400',
                   cursor: 'pointer', transition: 'all 0.15s ease',
-                  fontFamily: "'Figtree', sans-serif",
+                  fontFamily: "var(--font-sans)",
                   textAlign: 'left' as const,
                 }}
               >
@@ -1858,7 +1858,7 @@ function HouseRulesSection({ form, setForm }: { form: typeof EMPTY_FORM; setForm
               color: customInput.trim() ? '#ffffff' : 'var(--color-text-muted)',
               border: 'none', borderRadius: '8px', fontSize: '13px',
               fontWeight: '700', cursor: customInput.trim() ? 'pointer' : 'not-allowed',
-              fontFamily: "'Figtree', sans-serif", whiteSpace: 'nowrap',
+              fontFamily: "var(--font-sans)", whiteSpace: 'nowrap',
             }}
           >
             + Add
@@ -1914,14 +1914,14 @@ function HouseRulesSection({ form, setForm }: { form: typeof EMPTY_FORM; setForm
             disabled={!recInput.trim()}
             style={{
               padding: '12px 20px',
-              backgroundColor: recInput.trim() ? 'var(--color-gold)' : 'var(--color-border)',
+              backgroundColor: recInput.trim() ? 'var(--color-brand)' : 'var(--color-border)',
               color: recInput.trim() ? '#ffffff' : 'var(--color-text-muted)',
               border: 'none',
               borderRadius: '8px',
               fontSize: '13px',
               fontWeight: '700',
               cursor: recInput.trim() ? 'pointer' : 'not-allowed',
-              fontFamily: "'Figtree', sans-serif",
+              fontFamily: "var(--font-sans)",
               whiteSpace: 'nowrap',
             }}
           >
@@ -2294,7 +2294,7 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
   if (loading || !user) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     )
@@ -2345,7 +2345,7 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
           {/* Center: overall progress bar */}
           <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
             <div style={{ width: '200px', height: '4px', backgroundColor: 'var(--color-border)', borderRadius: '2px' }}>
-              <div style={{ height: '100%', width: `${overallCompletion}%`, backgroundColor: 'var(--color-gold)', borderRadius: '2px', transition: 'width 0.3s ease' }} />
+              <div style={{ height: '100%', width: `${overallCompletion}%`, backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', borderRadius: '2px', transition: 'width 0.3s ease' }} />
             </div>
             <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>{overallCompletion}% complete</p>
           </div>
@@ -2362,12 +2362,12 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
               onClick={() => void handleSave()}
               disabled={disableSaveActions}
               style={{
-                backgroundColor: 'var(--color-gold)',
-                color: 'var(--color-text-primary)', border: 'none', padding: '10px 24px',
+                backgroundColor: 'var(--color-brand)',
+                color: 'var(--color-on-accent)', border: 'none', padding: '10px 24px',
                 borderRadius: '8px', fontSize: '13px', fontWeight: '700',
                 letterSpacing: '1px', textTransform: 'uppercase',
                 cursor: disableSaveActions ? 'not-allowed' : 'pointer',
-                fontFamily: "'Figtree', sans-serif",
+                fontFamily: "var(--font-sans)",
               }}
             >
               {isUploadingImages ? 'Uploading Images...' : isEdit ? 'Save Changes' : 'Publish Listing'}
@@ -2396,12 +2396,12 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
                     backgroundColor: isActive ? '#ffffff' : 'transparent',
                     borderLeft: isActive ? '3px solid var(--color-text-primary)' : '3px solid transparent',
                     cursor: 'pointer', transition: 'all 0.15s ease',
-                    fontFamily: "'Figtree', sans-serif",
+                    fontFamily: "var(--font-sans)",
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '14px', color: isActive ? 'var(--color-text-primary)' : 'var(--color-gold)' }}>{section.icon}</span>
+                      <span style={{ fontSize: '14px', color: isActive ? 'var(--color-text-primary)' : 'var(--color-terra)' }}>{section.icon}</span>
                       <span style={{ fontSize: '14px', fontWeight: isActive ? '700' : '500', color: isActive ? 'var(--color-text-primary)' : 'var(--color-text-secondary)' }}>
                         {section.label}
                       </span>
@@ -2418,7 +2418,7 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
                   {/* Mini progress bar */}
                   {completion > 0 && completion < 100 && (
                     <div style={{ marginTop: '6px', marginLeft: '24px', height: '2px', backgroundColor: 'var(--color-border)', borderRadius: '1px' }}>
-                      <div style={{ height: '100%', width: `${completion}%`, backgroundColor: 'var(--color-gold)', borderRadius: '1px', transition: 'width 0.3s ease' }} />
+                      <div style={{ height: '100%', width: `${completion}%`, backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', borderRadius: '1px', transition: 'width 0.3s ease' }} />
                     </div>
                   )}
                 </button>
@@ -2428,7 +2428,7 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
             {/* Sidebar footer tip */}
             <div style={{ margin: '24px 16px 0', padding: '16px', backgroundColor: 'var(--color-bg-soft)', borderRadius: '10px' }}>
               <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', lineHeight: '1.6', letterSpacing: '0.2px', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                <Lightbulb size={14} style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '2px' }} />
+                <Lightbulb size={14} style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '2px' }} />
                 <span>Complete all sections for the best listing quality. Listings with full details get more bookings.</span>
               </p>
             </div>
@@ -2441,12 +2441,12 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
               {/* Section header */}
               <div style={{ marginBottom: '36px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '28px', color: 'var(--color-gold)' }}>{SECTIONS[activeIdx].icon}</span>
+                  <span style={{ fontSize: '28px', color: 'var(--color-terra)' }}>{SECTIONS[activeIdx].icon}</span>
                   <h2 style={{ fontSize: '28px', fontWeight: '800', color: 'var(--color-text-primary)' }}>
                     {SECTIONS[activeIdx].label}
                   </h2>
                 </div>
-                <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginLeft: '40px' }} />
+                <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginLeft: '40px' }} />
               </div>
 
               {/* Section content */}
@@ -2494,10 +2494,10 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
                     color: activeIdx === 0 ? '#ccc' : 'var(--color-text-secondary)',
                     fontSize: '13px', fontWeight: '600',
                     cursor: activeIdx === 0 ? 'not-allowed' : 'pointer',
-                    fontFamily: "'Figtree', sans-serif",
+                    fontFamily: "var(--font-sans)",
                   }}
                 >
-                  ← {activeIdx > 0 ? SECTIONS[activeIdx - 1].label : 'Back'}
+                  <ArrowLeft size={14} aria-hidden="true" style={{ marginRight: '4px', verticalAlign: '-2px' }} />{activeIdx > 0 ? SECTIONS[activeIdx - 1].label : 'Back'}
                 </button>
                 <button
                   onClick={async () => {
@@ -2514,16 +2514,16 @@ function PropertyEditorModal({ property, onClose, onSave }: PropertyEditorProps)
                     padding: '12px 20px',
                     border: 'none',
                     borderRadius: '8px',
-                    backgroundColor: disableSaveActions ? 'var(--color-border)' : isLastSection ? 'var(--color-gold)' : 'var(--color-text-primary)',
+                    backgroundColor: disableSaveActions ? 'var(--color-border)' : isLastSection ? 'var(--color-brand)' : 'var(--color-text-primary)',
                     color: disableSaveActions ? '#ccc' : '#ffffff',
                     fontSize: '13px', fontWeight: '700',
                     cursor: disableSaveActions ? 'not-allowed' : 'pointer',
-                    fontFamily: "'Figtree', sans-serif",
+                    fontFamily: "var(--font-sans)",
                     letterSpacing: '0.5px',
                   }}
                 >
                   {isLastSection ? 'Done' : SECTIONS[activeIdx + 1].label}
-                  {!isLastSection && ' →'}
+                  {!isLastSection && <ArrowRight size={14} aria-hidden="true" style={{ marginLeft: '4px', verticalAlign: '-2px' }} />}
                 </button>
               </div>
             </div>
@@ -2572,7 +2572,7 @@ function AdminPropertiesPageContent() {
   if (loading || !user || user.role !== 'admin' || properties === null) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: 'var(--color-bg-subtle)' }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     )

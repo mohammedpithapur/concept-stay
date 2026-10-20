@@ -72,7 +72,7 @@ export default function WhyChooseUs() {
           }}>
             Why Choose Us
           </h2>
-          <div style={{ width: '50px', height: '2px', backgroundColor: 'var(--color-text-primary)', margin: '0 auto 16px' }} />
+          <div className="surface-dark" style={{ width: '50px', height: '2px', backgroundColor: 'var(--color-text-primary)', margin: '0 auto 16px' }} />
           <p style={{
             color: 'var(--color-text-secondary)',
             fontSize: '15px',
@@ -105,8 +105,8 @@ export default function WhyChooseUs() {
               onMouseLeave={() => setHoveredTags(prev => ({ ...prev, [point]: false }))}
               style={{
                 border: hoveredTags[point] ? '1px solid var(--color-terra)' : '1px solid var(--color-border)',
-                backgroundColor: hoveredTags[point] ? 'var(--color-terra)' : 'transparent',
-                color: hoveredTags[point] ? '#f6eddc' : 'var(--color-text-primary)',
+                backgroundColor: hoveredTags[point] ? 'var(--color-brand)' : 'transparent',
+                color: hoveredTags[point] ? 'var(--color-on-accent)' : 'var(--color-text-primary)',
                 padding: '8px 14px',
                 borderRadius: '999px',
                 fontSize: '11px',
@@ -161,7 +161,7 @@ export default function WhyChooseUs() {
                   }}
                 />
               </div>
-              <div style={{ width: '32px', height: '2px', backgroundColor: 'var(--color-text-primary)', marginBottom: '20px' }} />
+              <div className="surface-dark" style={{ width: '32px', height: '2px', backgroundColor: 'var(--color-text-primary)', marginBottom: '20px' }} />
               <h3 style={{
                 fontSize: '22px',
                 fontWeight: '700',
@@ -201,8 +201,8 @@ export default function WhyChooseUs() {
           <Link
             href="/properties"
             style={{
-              backgroundColor: 'var(--color-terra)',
-              color: '#f6eddc',
+              backgroundColor: 'var(--color-brand)',
+              color: 'var(--color-on-accent)',
               border: 'none',
               padding: '14px 42px',
               fontSize: '12px',

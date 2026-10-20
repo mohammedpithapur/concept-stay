@@ -57,7 +57,7 @@ export default function CancellationPage() {
     <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
 
       {/* Hero */}
-      <div style={{ backgroundColor: 'var(--color-deep)', padding: '72px 24px 64px' }}>
+      <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '72px 24px 64px' }}>
         <div className="content-shell" style={{ textAlign: 'center' }}>
           <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
             Legal
@@ -65,7 +65,7 @@ export default function CancellationPage() {
           <h1 style={{ color: 'var(--color-text-primary)', fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: '800', marginBottom: '16px', lineHeight: '1.2' }}>
             Cancellation Policy
           </h1>
-          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 24px' }} />
+          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto 24px' }} />
           <p style={{ color: 'var(--color-text-primary)', fontSize: '15px', maxWidth: '560px', margin: '0 auto', lineHeight: '1.7' }}>
             Understanding our cancellation policy before you book ensures a smooth experience. Please read this carefully.
           </p>
@@ -73,7 +73,7 @@ export default function CancellationPage() {
       </div>
 
       {/* Main Policy Banner */}
-      <div style={{ backgroundColor: 'var(--color-text-primary)', padding: '48px 24px' }}>
+      <div className="surface-dark" style={{ backgroundColor: 'var(--color-text-primary)', padding: '48px 24px' }}>
         <div className="content-shell" style={{ textAlign: 'center' }}>
           <AlertTriangle size={40} style={{ color: 'var(--color-terra)', margin: '0 auto 16px' }} />
           <h2 style={{ color: 'var(--color-terra)', fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: '800', marginBottom: '16px', letterSpacing: '1px' }}>
@@ -96,7 +96,7 @@ export default function CancellationPage() {
             <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 38px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               What This Means for You
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto' }} />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
@@ -154,7 +154,7 @@ export default function CancellationPage() {
             <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 38px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               How to Book With Confidence
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 16px' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto 16px' }} />
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '15px', maxWidth: '500px', margin: '0 auto', lineHeight: '1.7' }}>
               Follow these steps to ensure you are fully informed before committing to a booking.
             </p>
@@ -166,7 +166,7 @@ export default function CancellationPage() {
                 key={i}
                 style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', padding: '28px 0', borderBottom: i < steps.length - 1 ? '1px solid var(--color-border)' : 'none' }}
               >
-                <div style={{ flexShrink: 0, width: '56px', height: '56px', backgroundColor: 'var(--color-deep)', border: '2px solid var(--color-terra)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '800', color: 'var(--color-terra)', letterSpacing: '1px' }}>
+                <div className="surface-deep" style={{ flexShrink: 0, width: '56px', height: '56px', backgroundColor: 'var(--color-deep)', border: '2px solid var(--color-terra)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '800', color: 'var(--color-terra)', letterSpacing: '1px' }}>
                   {step.number}
                 </div>
                 <div>
@@ -191,7 +191,7 @@ export default function CancellationPage() {
             <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 38px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               Frequently Asked Questions
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto' }} />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -210,7 +210,7 @@ export default function CancellationPage() {
         </div>
 
         {/* Final CTA */}
-        <div style={{ backgroundColor: 'var(--color-text-primary)', borderRadius: '12px', padding: 'clamp(28px, 5vw, 48px)', display: 'flex', gap: '24px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        <div className="surface-dark" style={{ backgroundColor: 'var(--color-text-primary)', borderRadius: '12px', padding: 'clamp(28px, 5vw, 48px)', display: 'flex', gap: '24px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <div>
             <h3 style={{ fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: '800', color: '#ffffff', marginBottom: '8px' }}>
               Ready to Book?
@@ -222,7 +222,7 @@ export default function CancellationPage() {
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <Link
               href="/properties"
-              style={{ backgroundColor: '#a23a1f', color: '#f6eddc', padding: '14px 28px', fontSize: '13px', letterSpacing: '1.5px', fontWeight: '700', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '8px', display: 'inline-block' }}
+              style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', padding: '14px 28px', fontSize: '13px', letterSpacing: '1.5px', fontWeight: '700', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '8px', display: 'inline-block' }}
             >
               Explore Properties
             </Link>

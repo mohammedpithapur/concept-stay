@@ -63,7 +63,7 @@ export default function FeaturedProperties() {
 
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
           <p style={{
-            color: 'var(--color-accent)',
+            color: 'var(--color-brand)',
             fontSize: '11px',
             letterSpacing: '3px',
             textTransform: 'uppercase',
@@ -81,7 +81,7 @@ export default function FeaturedProperties() {
           }}>
             Featured Properties
           </h2>
-          <div style={{ width: '50px', height: '2px', backgroundColor: 'var(--color-accent)', margin: '0 auto 16px' }} />
+          <div style={{ width: '50px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto 16px' }} />
           <p style={{
             color: 'var(--color-text-secondary)',
             fontSize: '15px',
@@ -119,8 +119,8 @@ export default function FeaturedProperties() {
             href="/properties"
             style={{
               display: 'inline-block',
-              border: '2px solid var(--color-accent)',
-              color: 'var(--color-accent)',
+              border: '2px solid var(--color-brand)',
+              color: 'var(--color-brand)',
               padding: '14px 42px',
               fontSize: '12px',
               letterSpacing: '2px',
@@ -132,14 +132,14 @@ export default function FeaturedProperties() {
             }}
             onMouseEnter={e => {
               const el = e.currentTarget as HTMLAnchorElement
-              el.style.backgroundColor = 'var(--color-accent)'
+              el.style.backgroundColor = 'var(--color-brand)'
               el.style.color = 'var(--color-terra)'
               el.style.transform = 'scale(1.03)'
             }}
             onMouseLeave={e => {
               const el = e.currentTarget as HTMLAnchorElement
               el.style.backgroundColor = 'transparent'
-              el.style.color = 'var(--color-accent)'
+              el.style.color = 'var(--color-brand)'
               el.style.transform = 'scale(1)'
             }}
           >

@@ -10,7 +10,7 @@ import VerifiedBadge from '@/components/property/VerifiedBadge'
 import { CANCELLATION_POLICIES, PROPERTY_TYPES, getPriceQuote, getReviewSummary, labelFor, type PriceQuote, type ReviewSummary } from '@/lib/marketplace'
 import type { DateRange } from 'react-day-picker'
 import { useAuth } from '@/lib/auth/AuthContext'
-import { Star, MapPin, Users, User, Bed, Bath, Calendar, Moon, Dog, Check, Phone, Mail, Clock, ShieldAlert, Sparkles, ChevronLeft, ChevronRight, Armchair, Sofa, Utensils, UtensilsCrossed, DoorOpen, LayoutDashboard, TreePalm, Camera, X, Folder, Share2, Compass } from 'lucide-react'
+import { Star, MapPin, Users, User, Bed, Bath, Calendar, Moon, Dog, Check, Phone, Mail, Clock, ShieldAlert, Sparkles, ChevronLeft, ChevronRight, Armchair, Sofa, Utensils, UtensilsCrossed, DoorOpen, LayoutDashboard, TreePalm, Camera, X, Folder, Share2, Compass, ArrowRight } from 'lucide-react'
 
 const bathroomLabel: Record<string, string> = {
   ensuite: 'Private Ensuite',
@@ -301,7 +301,7 @@ export default function PropertyDetailPage() {
     return (
       <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
         {/* Gallery skeleton */}
-        <div style={{ backgroundColor: 'var(--color-deep)', padding: '6px' }}>
+        <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '6px' }}>
           <div style={{
             height: 'clamp(280px, 55vw, 520px)',
             background: 'linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%)',
@@ -346,7 +346,7 @@ export default function PropertyDetailPage() {
         <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>{loadError}</h2>
         <button
           onClick={() => router.push('/properties')}
-          style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}
+          style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}
         >
           Back to Properties
         </button>
@@ -360,7 +360,7 @@ export default function PropertyDetailPage() {
         <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px' }}>Property not found</h2>
         <button
           onClick={() => router.push('/properties')}
-          style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}
+          style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}
         >
           Back to Properties
         </button>
@@ -414,7 +414,7 @@ export default function PropertyDetailPage() {
     <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
 
       {/* Photo Gallery */}
-      <div style={{ backgroundColor: 'var(--color-deep)', padding: '6px' }}>
+      <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '6px' }}>
         <div style={{ position: 'relative', minHeight: 'clamp(300px, 60vw, 540px)', overflow: 'hidden', marginBottom: '8px', borderRadius: '4px' }}>
           {(() => {
             const mainSrc = property.images[activeImage]?.image_url || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200'
@@ -492,7 +492,7 @@ export default function PropertyDetailPage() {
               <span style={{ backgroundColor: 'var(--color-bg-soft)', color: 'var(--color-text-primary)', padding: '5px 12px', fontSize: '12px', letterSpacing: '0.5px', borderRadius: '6px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <MapPin size={13} /> {property.city}, {property.state}
               </span>
-              <span style={{ backgroundColor: 'var(--color-text-primary)', color: 'var(--color-terra)', padding: '5px 12px', fontSize: '12px', borderRadius: '6px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span className="surface-dark" style={{ backgroundColor: 'var(--color-text-primary)', color: 'var(--color-terra)', padding: '5px 12px', fontSize: '12px', borderRadius: '6px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <Star size={13} fill="currentColor" /> {property.avg_rating} ({property.review_count} reviews)
               </span>
               {property.pets_allowed && (
@@ -850,7 +850,7 @@ export default function PropertyDetailPage() {
                     <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', marginBottom: '16px' }}>
                       Curated recommendations from your host for nearby spots, food, and attractions
                     </p>
-                    <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '20px' }} />
+                    <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '20px' }} />
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))', gap: '12px' }}>
                       {property.local_recommendations!.map((rec, i) => (
                         <div
@@ -893,7 +893,7 @@ export default function PropertyDetailPage() {
                   <h3 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)', margin: 0 }}>Photo Tour</h3>
                   <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: '4px 0 0 0' }}>All photos organized by room and space</p>
                 </div>
-                <button
+                <button className="surface-dark"
                   onClick={() => openTourForAlbum('All')}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 18px',
@@ -919,7 +919,7 @@ export default function PropertyDetailPage() {
                       onClick={() => openTourForAlbum(album.name)}
                       style={{ fontSize: '12px', color: 'var(--color-terra)', fontWeight: '700', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}
                     >
-                      View Space →
+                      View Space<ArrowRight size={14} aria-hidden="true" style={{ marginLeft: '4px', verticalAlign: '-2px' }} />
                     </button>
                   </div>
 
@@ -1052,7 +1052,7 @@ export default function PropertyDetailPage() {
             <div>
               <div style={cardStyle}>
                 <h3 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>House Rules</h3>
-                <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '24px' }} />
+                <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '24px' }} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {(() => {
                     const existing = property.house_rules ?? []
@@ -1077,9 +1077,9 @@ export default function PropertyDetailPage() {
                       onMouseEnter={() => setHoveredTags(prev => ({ ...prev, [item]: true }))}
                       onMouseLeave={() => setHoveredTags(prev => ({ ...prev, [item]: false }))}
                       style={{
-                      border: '1px solid var(--color-navbar-border)',
+                      border: '1px solid var(--color-on-deep-border)',
                       backgroundColor: hoveredTags[item] ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)',
-                      color: 'var(--color-navbar-text)',
+                      color: 'var(--color-on-deep)',
                       padding: '8px 14px',
                       borderRadius: '999px',
                       fontSize: '11px',
@@ -1158,7 +1158,7 @@ export default function PropertyDetailPage() {
                       <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <span style={{ width: '96px', fontSize: '13px', textTransform: 'capitalize', color: 'var(--color-text-secondary)' }}>{name}</span>
                         <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'var(--color-border)' }}>
-                          <div style={{ width: `${((value ?? 0) / 5) * 100}%`, height: '100%', borderRadius: '3px', backgroundColor: 'var(--color-terra)' }} />
+                          <div style={{ width: `${((value ?? 0) / 5) * 100}%`, height: '100%', borderRadius: '3px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)' }} />
                         </div>
                         <span style={{ fontSize: '13px', fontWeight: 700, width: '28px', textAlign: 'right' }}>{value?.toFixed(1)}</span>
                       </div>
@@ -1182,7 +1182,7 @@ export default function PropertyDetailPage() {
                       <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', width: '24px', display: 'inline-flex', alignItems: 'center', gap: '2px' }}>{star}<Star size={10} fill="currentColor" color="var(--color-terra)" /></span>
                       <div style={{ flex: 1, height: '6px', backgroundColor: 'var(--color-border)', borderRadius: '3px' }}>
                         <div style={{
-                          height: '100%', backgroundColor: 'var(--color-terra)', borderRadius: '3px',
+                          height: '100%', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', borderRadius: '3px',
                           width: reviews.length > 0 ? `${Math.round((count / reviews.length) * 100)}%` : '0%',
                           transition: 'width 0.4s ease',
                         }} />
@@ -1207,7 +1207,7 @@ export default function PropertyDetailPage() {
                     <div key={review.id} style={{ backgroundColor: '#ffffff', padding: '24px', border: '1px solid var(--color-border)', borderRadius: '12px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--color-terra)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f6eddc', fontWeight: '700', fontSize: '16px', flexShrink: 0 }}>
+                          <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--color-brand)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-accent)', fontWeight: '700', fontSize: '16px', flexShrink: 0 }}>
                             {review.guest_name[0]?.toUpperCase()}
                           </div>
                           <div>
@@ -1378,7 +1378,7 @@ export default function PropertyDetailPage() {
 
           <button
             onClick={handleBook}
-            style={{ width: '100%', backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '18px', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', cursor: 'pointer', marginBottom: '12px', borderRadius: '8px', transition: 'all 0.2s ease' }}
+            style={{ width: '100%', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '18px', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', cursor: 'pointer', marginBottom: '12px', borderRadius: '8px', transition: 'all 0.2s ease' }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(0,0,0,0.15)' }}
             onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
           >
@@ -1412,8 +1412,8 @@ export default function PropertyDetailPage() {
                 style={{
                   padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '700',
                   border: tourActiveAlbum === 'All' ? '1.5px solid var(--color-terra)' : '1px solid rgba(255,255,255,0.2)',
-                  backgroundColor: tourActiveAlbum === 'All' ? 'var(--color-terra)' : 'transparent',
-                  color: tourActiveAlbum === 'All' ? 'var(--color-text-primary)' : '#ffffff',
+                  backgroundColor: tourActiveAlbum === 'All' ? 'var(--color-brand)' : 'transparent',
+                  color: tourActiveAlbum === 'All' ? 'var(--color-on-accent)' : '#ffffff',
                   cursor: 'pointer', whiteSpace: 'nowrap',
                 }}
               >
@@ -1428,8 +1428,8 @@ export default function PropertyDetailPage() {
                   style={{
                     padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '700',
                     border: tourActiveAlbum === album.name ? '1.5px solid var(--color-terra)' : '1px solid rgba(255,255,255,0.2)',
-                    backgroundColor: tourActiveAlbum === album.name ? 'var(--color-terra)' : 'transparent',
-                    color: tourActiveAlbum === album.name ? 'var(--color-text-primary)' : '#ffffff',
+                    backgroundColor: tourActiveAlbum === album.name ? 'var(--color-brand)' : 'transparent',
+                    color: tourActiveAlbum === album.name ? 'var(--color-on-accent)' : '#ffffff',
                     cursor: 'pointer', whiteSpace: 'nowrap',
                   }}
                 >

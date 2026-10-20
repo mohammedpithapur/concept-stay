@@ -73,7 +73,7 @@ export default function ContactPage() {
         <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
           Contact Us
         </h1>
-        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 16px' }} />
+        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto 16px' }} />
         <p style={{ fontSize: '15px', color: 'var(--color-text-secondary)', maxWidth: '480px', margin: '0 auto', lineHeight: '1.7' }}>
           Have a question about a property or your booking? We&apos;re here to help.
         </p>
@@ -144,7 +144,7 @@ export default function ContactPage() {
             <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               Send a Message
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '28px' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '28px' }} />
 
             {!submitted ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -200,8 +200,8 @@ export default function ContactPage() {
                   onClick={handleSubmit}
                   disabled={loading}
                   style={{
-                    backgroundColor: loading ? 'var(--color-terra)' : 'var(--color-terra)',
-                    color: '#f6eddc', border: 'none', padding: '16px 32px',
+                    backgroundColor: loading ? 'rgba(162, 58, 31, 0.6)' : 'var(--color-brand)',
+                    color: 'var(--color-on-accent)', border: 'none', padding: '16px 32px',
                     fontSize: '13px', letterSpacing: '2px', fontWeight: '700',
                     textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer',
                     borderRadius: '8px', width: '100%'
@@ -213,10 +213,10 @@ export default function ContactPage() {
             ) : (
               <div style={{ backgroundColor: 'var(--color-bg-soft)', borderRadius: '12px', padding: '40px 32px', textAlign: 'center' }}>
                 <div style={{
-                  width: '64px', height: '64px', backgroundColor: 'var(--color-terra)',
+                  width: '64px', height: '64px', backgroundColor: 'var(--color-brand)',
                   borderRadius: '50%', display: 'flex', alignItems: 'center',
                   justifyContent: 'center', margin: '0 auto 20px',
-                  fontSize: '28px', fontWeight: '700', color: '#f6eddc'
+                  fontSize: '28px', fontWeight: '700', color: 'var(--color-on-accent)'
                 }}>
                   &#10003;
                 </div>
@@ -233,7 +233,7 @@ export default function ContactPage() {
             <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               Our Reach
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '28px' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '28px' }} />
             <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.7' }}>
               We operate across Kolkata with handpicked properties in the city — with more properties added regularly.
             </p>

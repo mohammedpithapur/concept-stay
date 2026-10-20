@@ -10,9 +10,9 @@ import {
 
 const card: CSSProperties = { backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '20px 24px' }
 const input: CSSProperties = { padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '13px', backgroundColor: '#ffffff' }
-const gold: CSSProperties = { padding: '8px 16px', border: 'none', borderRadius: '8px', backgroundColor: 'var(--color-gold)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }
-const ghost: CSSProperties = { ...gold, border: '1px solid var(--color-border)', backgroundColor: '#ffffff' }
-const danger: CSSProperties = { ...gold, backgroundColor: '#C62828', color: '#ffffff' }
+const primary: CSSProperties = { padding: '8px 16px', border: 'none', borderRadius: '8px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }
+const ghost: CSSProperties = { ...primary, border: '1px solid var(--color-border)', backgroundColor: '#ffffff', color: 'var(--color-dark)' }
+const danger: CSSProperties = { ...primary, backgroundColor: '#C62828', color: '#ffffff' }
 const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`
 
 function useLoader<T>(fetcher: () => Promise<T>) {
@@ -97,7 +97,7 @@ function ReviewCard({ p, onChanged, onError }: { p: HostProperty; onChanged: () 
       )}
 
       <div style={{ display: 'flex', gap: '10px', marginTop: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-        <button disabled={busy} style={gold} onClick={() => run(() => approveListing(p.id, fetchWithAuth))}>Approve &amp; publish</button>
+        <button disabled={busy} style={primary} onClick={() => run(() => approveListing(p.id, fetchWithAuth))}>Approve &amp; publish</button>
         {!rejecting && <button disabled={busy} style={ghost} onClick={() => setRejecting(true)}>Reject…</button>}
         {rejecting && (
           <>
@@ -151,7 +151,7 @@ export function HostsTab() {
             </div>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase' }}>{h.host_status}</span>
-              {h.host_status !== 'approved' && <button style={gold} onClick={() => change(h, 'approved')}>Approve</button>}
+              {h.host_status !== 'approved' && <button style={primary} onClick={() => change(h, 'approved')}>Approve</button>}
               {h.host_status !== 'suspended' && <button style={ghost} onClick={() => change(h, 'suspended')}>Suspend</button>}
             </div>
           </div>
@@ -202,7 +202,7 @@ export function PayoutsTab() {
             {p.status === 'owed' ? (
               <div style={{ display: 'flex', gap: '8px' }}>
                 <input placeholder="UTR / reference" style={input} value={refs[p.id] ?? ''} onChange={e => setRefs({ ...refs, [p.id]: e.target.value })} />
-                <button style={gold} disabled={!(refs[p.id] ?? '').trim()} onClick={() => pay(p)}>Mark paid</button>
+                <button style={primary} disabled={!(refs[p.id] ?? '').trim()} onClick={() => pay(p)}>Mark paid</button>
               </div>
             ) : (
               <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase' }}>{p.status}{p.reference ? ` · ${p.reference}` : ''}</span>

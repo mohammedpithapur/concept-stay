@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 
 const sections = [
   {
@@ -165,7 +166,7 @@ export default function TermsPage() {
     <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
 
       {/* Hero */}
-      <div style={{ backgroundColor: 'var(--color-deep)', padding: '72px 24px 64px' }}>
+      <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '72px 24px 64px' }}>
         <div className="content-shell" style={{ textAlign: 'center' }}>
           <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
             Legal
@@ -173,7 +174,7 @@ export default function TermsPage() {
           <h1 style={{ color: 'var(--color-text-primary)', fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: '800', marginBottom: '16px', lineHeight: '1.2' }}>
             Terms & Conditions
           </h1>
-          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 24px' }} />
+          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto 24px' }} />
           <p style={{ color: 'var(--color-text-primary)', fontSize: '15px', maxWidth: '560px', margin: '0 auto', lineHeight: '1.7' }}>
             Please read these terms carefully before using our platform. By booking with Concept Stay, you agree to be bound by the following terms and conditions.
           </p>
@@ -209,7 +210,7 @@ export default function TermsPage() {
                 onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-terra)'}
                 onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-secondary)'}
               >
-                <span style={{ color: 'var(--color-terra)', fontSize: '10px' }}>→</span>
+                <ArrowRight size={12} aria-hidden="true" style={{ color: 'var(--color-terra)', flexShrink: 0 }} />
                 {section.title}
               </a>
             ))}
@@ -257,7 +258,7 @@ export default function TermsPage() {
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
             <a
               href="mailto:staysearthy@gmail.com"
-              style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', padding: '12px 24px', fontSize: '13px', letterSpacing: '1px', fontWeight: '700', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '8px', display: 'inline-block' }}
+              style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', padding: '12px 24px', fontSize: '13px', letterSpacing: '1px', fontWeight: '700', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '8px', display: 'inline-block' }}
             >
               Email Legal Team
             </a>

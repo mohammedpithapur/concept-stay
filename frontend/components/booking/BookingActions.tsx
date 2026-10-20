@@ -78,7 +78,7 @@ export default function BookingActions({ booking, property, onChanged }: Props) 
   }
 
   return (
-    <div style={{ marginTop: '16px', backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-gold)', borderRadius: '8px', padding: '14px 16px' }}>
+    <div style={{ marginTop: '16px', backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-terra)', borderRadius: '8px', padding: '14px 16px' }}>
       <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
         <strong>Cancellation policy: {policy.label}.</strong> {policy.summary}
       </p>
@@ -126,7 +126,7 @@ export default function BookingActions({ booking, property, onChanged }: Props) 
       {stayOver && !reviewOpen && !message && (
         <button
           onClick={() => setReviewOpen(true)}
-          style={{ ...buttonBase, marginTop: '12px', border: 'none', backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)' }}
+          style={{ ...buttonBase, marginTop: '12px', border: 'none', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)' }}
         >
           Rate your stay
         </button>
@@ -166,7 +166,7 @@ export default function BookingActions({ booking, property, onChanged }: Props) 
             <button
               onClick={doReview}
               disabled={busy}
-              style={{ ...buttonBase, border: 'none', backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', opacity: busy ? 0.6 : 1 }}
+              style={{ ...buttonBase, border: 'none', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', opacity: busy ? 0.6 : 1 }}
             >
               {busy ? 'Submitting…' : 'Submit review'}
             </button>

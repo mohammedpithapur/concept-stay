@@ -5,7 +5,7 @@ import Copy from '@/lib/copy'
 
 export default function CTASection() {
   return (
-    <section style={{
+    <section className="surface-deep" style={{
       backgroundColor: 'var(--color-deep)', backgroundImage: 'var(--clay-texture-dark)',
       padding: '52px 24px',
     }}>
@@ -26,7 +26,7 @@ export default function CTASection() {
         <h2 style={{
           fontSize: 'clamp(24px, 4vw, 42px)',
           fontWeight: '800',
-          color: 'var(--color-navbar-text)',
+          color: 'var(--color-on-deep)',
           marginBottom: '12px',
           lineHeight: '1.2',
         }}>
@@ -46,7 +46,7 @@ export default function CTASection() {
           href="/properties"
           style={{
             backgroundColor: 'var(--color-gold)',
-            color: '#2a1810',
+            color: 'var(--color-dark)',
             border: 'none',
             padding: '14px 42px',
             fontSize: '12px',

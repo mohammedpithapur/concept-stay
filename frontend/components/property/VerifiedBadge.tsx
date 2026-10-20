@@ -7,7 +7,7 @@ export default function VerifiedBadge({ status, size = 'sm' }: Props) {
   if (status !== 'verified') return null
   const small = size === 'sm'
   return (
-    <span
+    <span className="surface-dark"
       title="Concept Verified: the property, photos, location and host have been checked by our team"
       style={{
         display: 'inline-flex',

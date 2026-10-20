@@ -54,7 +54,7 @@ export default function GoogleCallbackClient() {
           <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', marginBottom: '24px' }}>{error}</p>
           <button
             onClick={() => router.replace('/login')}
-            style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
+            style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
           >
             Back to Login
           </button>

@@ -20,7 +20,7 @@ export default function FaqPage() {
         <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
           Frequently Asked Questions
         </h1>
-        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 16px' }} />
+        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto 16px' }} />
         <p style={{ fontSize: '15px', color: 'var(--color-text-secondary)', maxWidth: '560px', margin: '0 auto', lineHeight: '1.7' }}>
           Find quick answers about bookings, cancellations, and stays.
         </p>

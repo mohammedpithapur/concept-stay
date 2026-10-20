@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { Mail, MessageCircle, MapPin as MapPinIcon } from 'lucide-react'
+import { Mail, MessageCircle, MapPin as MapPinIcon, ChevronRight } from 'lucide-react'
 import Copy from '@/lib/copy'
 
 export default function Footer() {
@@ -11,7 +11,7 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer style={{ backgroundColor: 'var(--color-deep)', backgroundImage: 'var(--clay-texture-dark)', color: 'var(--color-navbar-text)' }}>
+    <footer className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', backgroundImage: 'var(--clay-texture-dark)', color: 'var(--color-on-deep)' }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
@@ -24,7 +24,7 @@ export default function Footer() {
 
         {/* Brand column */}
         <div>
-          <h2 style={{ color: 'var(--color-navbar-text)', fontSize: '22px', letterSpacing: '3px', marginBottom: '16px', fontWeight: '800' }}>
+          <h2 style={{ color: 'var(--color-on-deep)', fontSize: '22px', letterSpacing: '3px', marginBottom: '16px', fontWeight: '800' }}>
             CONCEPT STAY
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '18px', lineHeight: '1.8', marginBottom: '28px' }}>
@@ -63,7 +63,7 @@ export default function Footer() {
                 style={{
                   width: '40px',
                   height: '40px',
-                  border: '1px solid var(--color-navbar-border)',
+                  border: '1px solid var(--color-on-deep-border)',
                   borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
@@ -73,10 +73,10 @@ export default function Footer() {
                   transition: 'border-color 0.3s ease',
                 }}
                 onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  e.currentTarget.style.borderColor = 'var(--color-navbar-text)'
+                  e.currentTarget.style.borderColor = 'var(--color-on-deep)'
                 }}
                 onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  e.currentTarget.style.borderColor = 'var(--color-navbar-border)'
+                  e.currentTarget.style.borderColor = 'var(--color-on-deep-border)'
                 }}
               >
                 {social.icon}
@@ -87,7 +87,7 @@ export default function Footer() {
 
         {/* Quick Links column */}
         <div>
-          <h4 style={{ color: 'var(--color-navbar-text)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '24px', fontWeight: '700' }}>
+          <h4 style={{ color: 'var(--color-on-deep)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '24px', fontWeight: '700' }}>
             Quick Links
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -109,10 +109,10 @@ export default function Footer() {
                   gap: '8px',
                   transition: 'color 0.2s ease',
                 }}
-                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'var(--color-navbar-text)' }}
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'var(--color-on-deep)' }}
                 onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'rgba(255,255,255,0.82)' }}
               >
-                <span style={{ color: 'var(--color-navbar-text)', fontSize: '9px' }}>→</span>
+                <ChevronRight size={12} aria-hidden="true" style={{ color: 'var(--color-on-deep)', flexShrink: 0 }} />
                 {link.label}
               </a>
             ))}
@@ -121,7 +121,7 @@ export default function Footer() {
 
         {/* Contact + Policies column */}
         <div>
-          <h4 style={{ color: 'var(--color-navbar-text)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '24px', fontWeight: '700' }}>
+          <h4 style={{ color: 'var(--color-on-deep)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '24px', fontWeight: '700' }}>
             Contact Us
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
@@ -141,7 +141,7 @@ export default function Footer() {
             ))}
           </div>
 
-          <h4 style={{ color: 'var(--color-navbar-text)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '700' }}>
+          <h4 style={{ color: 'var(--color-on-deep)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '700' }}>
             Policies
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -155,7 +155,7 @@ export default function Footer() {
                 key={link.href}
                 href={link.href}
                 style={{ color: 'rgba(255,255,255,0.82)', fontSize: '13px', textDecoration: 'none', transition: 'color 0.2s ease' }}
-                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'var(--color-navbar-text)' }}
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'var(--color-on-deep)' }}
                 onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'rgba(255,255,255,0.82)' }}
               >
                 {link.label}
@@ -165,7 +165,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div style={{ borderTop: '1px solid var(--color-navbar-border)' }} />
+      <div style={{ borderTop: '1px solid var(--color-on-deep-border)' }} />
 
       <div style={{
         maxWidth: '1200px',
@@ -181,7 +181,7 @@ export default function Footer() {
           &copy; {year} Concept Stay. All rights reserved.
         </p>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px' }}>
-          Payments secured by <span style={{ color: 'var(--color-navbar-text)' }}>Razorpay</span>
+          Payments secured by <span style={{ color: 'var(--color-on-deep)' }}>Razorpay</span>
         </p>
       </div>
     </footer>

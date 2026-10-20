@@ -53,7 +53,7 @@ export default function ArticlesClient() {
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', minHeight: '100vh', paddingBottom: '80px' }}>
       {/* Hero Header */}
-      <section
+      <section className="surface-deep"
         style={{
           backgroundColor: 'var(--color-deep)',
           borderBottom: '1px solid var(--color-border)',
@@ -177,7 +177,7 @@ export default function ArticlesClient() {
                     padding: '8px 18px',
                     borderRadius: '100px',
                     border: `1.5px solid ${active ? 'var(--color-terra)' : 'var(--color-border)'}`,
-                    backgroundColor: active ? 'var(--color-terra)' : '#ffffff',
+                    backgroundColor: active ? 'var(--color-brand)' : '#ffffff',
                     color: active ? '#ffffff' : 'var(--color-text-secondary)',
                     fontSize: '13px',
                     fontWeight: active ? 700 : 500,
@@ -229,7 +229,7 @@ export default function ArticlesClient() {
               onClick={() => window.location.reload()}
               style={{
                 padding: '10px 20px',
-                backgroundColor: 'var(--color-terra)',
+                backgroundColor: 'var(--color-brand)',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
@@ -273,7 +273,7 @@ export default function ArticlesClient() {
                 }}
                 style={{
                   padding: '10px 22px',
-                  backgroundColor: 'var(--color-terra)',
+                  backgroundColor: 'var(--color-brand)',
                   color: '#ffffff',
                   border: 'none',
                   borderRadius: '100px',
@@ -348,7 +348,7 @@ export default function ArticlesClient() {
                         unoptimized
                       />
                     ) : (
-                      <div
+                      <div className="surface-deep"
                         style={{
                           width: '100%',
                           height: '100%',

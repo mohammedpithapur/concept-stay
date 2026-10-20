@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
               <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
                 Forgot Password
               </h2>
-              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '16px' }} />
+              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '16px' }} />
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '28px', lineHeight: '1.6' }}>
                 Enter the email address associated with your account and we will send you a link to reset your password.
               </p>
@@ -80,8 +80,8 @@ export default function ForgotPasswordPage() {
                 onClick={handleSubmit}
                 disabled={loading}
                 style={{
-                  width: '100%', backgroundColor: 'var(--color-terra)',
-                  color: '#f6eddc', border: 'none', padding: '16px',
+                  width: '100%', backgroundColor: 'var(--color-brand)',
+                  color: 'var(--color-on-accent)', border: 'none', padding: '16px',
                   fontSize: '13px', letterSpacing: '2px', fontWeight: '700',
                   textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer',
                   marginBottom: '24px', borderRadius: '8px', opacity: loading ? 0.7 : 1
@@ -100,17 +100,17 @@ export default function ForgotPasswordPage() {
           ) : (
             <div style={{ textAlign: 'center', padding: '16px 0' }}>
               <div style={{
-                width: '64px', height: '64px', backgroundColor: 'var(--color-terra)',
+                width: '64px', height: '64px', backgroundColor: 'var(--color-brand)',
                 borderRadius: '50%', display: 'flex', alignItems: 'center',
                 justifyContent: 'center', margin: '0 auto 24px',
-                fontSize: '28px', fontWeight: '700', color: '#f6eddc'
+                fontSize: '28px', fontWeight: '700', color: 'var(--color-on-accent)'
               }}>
                 &#10003;
               </div>
               <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '12px' }}>
                 Check Your Email
               </h2>
-              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 16px' }} />
+              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto 16px' }} />
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.7', marginBottom: '28px' }}>
                 If an account exists for <strong>{email}</strong>, a password reset link has been sent.
               </p>
@@ -126,8 +126,8 @@ export default function ForgotPasswordPage() {
               <Link
                 href="/login"
                 style={{
-                  display: 'inline-block', backgroundColor: 'var(--color-terra)',
-                  color: '#f6eddc', padding: '14px 32px', fontSize: '13px',
+                  display: 'inline-block', backgroundColor: 'var(--color-brand)',
+                  color: 'var(--color-on-accent)', padding: '14px 32px', fontSize: '13px',
                   letterSpacing: '1.5px', fontWeight: '700', textTransform: 'uppercase',
                   textDecoration: 'none', borderRadius: '8px'
                 }}

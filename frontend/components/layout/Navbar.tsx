@@ -56,7 +56,7 @@ export default function Navbar() {
             <div style={{
               width: '42px',
               height: '42px',
-              color: 'var(--color-gold)',
+              color: 'var(--color-terra)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -75,7 +75,7 @@ export default function Navbar() {
                 <div style={{ width: '42px', height: '42px' }} />
               )}
             </div>
-            <span style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', fontFamily: "'Figtree', sans-serif" }}>
+            <span style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', fontFamily: "var(--font-sans)" }}>
               CONCEPT STAY
             </span>
           </div>
@@ -110,7 +110,7 @@ export default function Navbar() {
                 onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-terra)'}
                 onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-border)'}
               >
-                <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--color-terra)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '800', color: '#f6eddc' }}>
+                <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--color-brand)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '800', color: 'var(--color-on-accent)' }}>
                   {userInitial}
                 </div>
                 <span style={{ fontSize: '13px', fontWeight: '600', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -159,7 +159,7 @@ export default function Navbar() {
 
           <Link
             href="/properties"
-            style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '10px 20px', fontSize: '12px', letterSpacing: '1px', fontWeight: '700', textDecoration: 'none', borderRadius: '8px', textTransform: 'uppercase' as const, transition: 'all 0.2s ease' }}
+            style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '10px 20px', fontSize: '12px', letterSpacing: '1px', fontWeight: '700', textDecoration: 'none', borderRadius: '8px', textTransform: 'uppercase' as const, transition: 'all 0.2s ease' }}
             onMouseEnter={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.opacity = '0.9'; el.style.transform = 'scale(1.03)' }}
             onMouseLeave={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.opacity = '1'; el.style.transform = 'scale(1)' }}
           >
@@ -173,7 +173,7 @@ export default function Navbar() {
             user ? (
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                style={{ width: '36px', height: '36px', backgroundColor: 'var(--color-terra)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '800', color: '#f6eddc', border: 'none', cursor: 'pointer' }}
+                style={{ width: '36px', height: '36px', backgroundColor: 'var(--color-brand)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '800', color: 'var(--color-on-accent)', border: 'none', cursor: 'pointer' }}
               >
                 {userInitial}
               </button>
@@ -192,9 +192,9 @@ export default function Navbar() {
             aria-label="Toggle navigation menu"
             style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            <span style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
-            <span style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
-            <span style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
+            <span className="surface-dark" style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
+            <span className="surface-dark" style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
+            <span className="surface-dark" style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
           </button>
         </div>
       </div>
@@ -228,7 +228,7 @@ export default function Navbar() {
               </Link>
               {user.role === 'admin' && (
                 <Link href="/admin" onClick={() => setMenuOpen(false)}
-                  style={{ color: 'var(--color-gold)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '700' }}>
+                  style={{ color: 'var(--color-terra)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '700' }}>
                   Admin Panel
                 </Link>
               )}
@@ -240,7 +240,7 @@ export default function Navbar() {
           )}
 
           <Link href="/properties" onClick={() => setMenuOpen(false)}
-            style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '12px 24px', fontSize: '12px', letterSpacing: '1px', fontWeight: '700', textAlign: 'center', textDecoration: 'none', borderRadius: '8px', textTransform: 'uppercase' }}>
+            style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '12px 24px', fontSize: '12px', letterSpacing: '1px', fontWeight: '700', textAlign: 'center', textDecoration: 'none', borderRadius: '8px', textTransform: 'uppercase' }}>
             Book Now
           </Link>
         </div>

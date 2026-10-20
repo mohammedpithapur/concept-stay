@@ -97,11 +97,11 @@ export default function EventsPageClient() {
   return (
     <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
       {/* Header */}
-      <div style={{ backgroundColor: 'var(--color-deep)', padding: '64px 24px', textAlign: 'center' }}>
-        <p style={{ color: 'var(--color-navbar-text)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>
+      <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '64px 24px', textAlign: 'center' }}>
+        <p style={{ color: 'var(--color-on-deep)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>
           EVENT BOOKING
         </p>
-        <h1 style={{ color: 'var(--color-navbar-text)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', marginBottom: '8px' }}>
+        <h1 style={{ color: 'var(--color-on-deep)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', marginBottom: '8px' }}>
           Plan Your Event
         </h1>
         <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '15px' }}>
@@ -311,7 +311,7 @@ export default function EventsPageClient() {
                 onClick={handleSubmit}
                 disabled={loading}
                 style={{
-                  backgroundColor: loading ? '#a23a1f99' : 'var(--color-deep)',
+                  backgroundColor: loading ? 'rgba(162, 58, 31, 0.6)' : 'var(--color-deep)',
                   color: '#ffffff',
                   border: 'none',
                   padding: '14px 32px',
@@ -360,7 +360,7 @@ export default function EventsPageClient() {
           <p style={{ fontSize: '16px', color: 'var(--color-text-muted)', marginBottom: '32px', lineHeight: '1.7' }}>
             Thank you for your event booking request. Our team will review your details and contact you shortly to confirm your event and answer any questions.
           </p>
-          <button
+          <button className="surface-deep"
             onClick={() => window.location.href = '/'}
             style={{
               backgroundColor: 'var(--color-deep)',

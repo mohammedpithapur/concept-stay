@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { ApiFetcher, CalendarEvent, PriceOverride } from '@/lib/api'
 import { getPropertyCalendarFull, createAdminBlock, deleteAdminBlock, createPriceOverride, deletePriceOverride } from '@/lib/api'
-import { Calendar, Tag, ShieldAlert, X, Percent } from 'lucide-react'
+import { Calendar, Tag, ShieldAlert, X, Percent, Circle, Square } from 'lucide-react'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -239,11 +239,11 @@ export default function CalendarModal({ propertyId, propertyName, onClose, fetch
     } else {
       const inBlockRange = blockStart && blockEnd && dateStr >= blockStart && dateStr < blockEnd
       if (inSel || inBlockRange) {
-        return { background: 'rgba(201,168,76,0.22)', border: '1px solid #c9a84c', color: '#e8d5a3', fontWeight: '600' }
+        return { background: 'rgba(233, 201, 160,0.22)', border: '1px solid #c9a84c', color: '#e8d5a3', fontWeight: '600' }
       }
     }
 
-    if (types.has('guest_booking')) return { background: '#2a1a0a', border: '1px solid rgba(201,168,76,0.4)', color: '#c9a84c' }
+    if (types.has('guest_booking')) return { background: '#2a1a0a', border: '1px solid rgba(233, 201, 160,0.4)', color: '#c9a84c' }
     if (types.has('admin_block')) return { background: '#0f0d08', border: '1px solid #c9a84c', color: '#5a5040' }
     if (types.has('shadow_block')) return {
       background: 'repeating-linear-gradient(45deg,#1a1611,#1a1611 4px,#221d12 4px,#221d12 8px)',
@@ -268,7 +268,7 @@ export default function CalendarModal({ propertyId, propertyName, onClose, fetch
       }
     }
 
-    if (dateStr === todayStr) return { border: '1px solid rgba(201,168,76,0.5)', color: '#e8d5a3', fontWeight: '700' }
+    if (dateStr === todayStr) return { border: '1px solid rgba(233, 201, 160,0.5)', color: '#e8d5a3', fontWeight: '700' }
     return { border: '1px solid transparent', color: '#c4a96d' }
   }
 
@@ -589,7 +589,7 @@ export default function CalendarModal({ propertyId, propertyName, onClose, fetch
                       {/* Event indicators */}
                       {dayEvents.length > 0 && (
                         <span style={{ fontSize: '0.55rem', marginTop: 2 }}>
-                          {guestEvs.length > 0 ? '•' : adminEvs.length > 0 ? '■' : '◦'}
+                          {guestEvs.length > 0 ? <Circle size={7} fill="currentColor" aria-hidden="true" /> : adminEvs.length > 0 ? <Square size={7} fill="currentColor" aria-hidden="true" /> : <Circle size={7} aria-hidden="true" />}
                         </span>
                       )}
                     </div>
@@ -605,11 +605,11 @@ export default function CalendarModal({ propertyId, propertyName, onClose, fetch
             {/* Legend */}
             <div style={{ marginTop: 20, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               {[
-                { bg: '#2a1a0a', border: '1px solid rgba(201,168,76,0.4)', label: 'Guest Booking' },
+                { bg: '#2a1a0a', border: '1px solid rgba(233, 201, 160,0.4)', label: 'Guest Booking' },
                 { bg: '#0f0d08', border: '1px solid #c9a84c', label: 'Admin Block' },
                 { bg: 'repeating-linear-gradient(45deg,#1a1611,#1a1611 4px,#221d12 4px,#221d12 8px)', border: '1px solid #2e2618', label: 'Group Shadow Block' },
                 { bg: 'rgba(147, 51, 234, 0.18)', border: '1px solid #c084fc', label: 'Custom Price Override' },
-                { bg: 'rgba(201,168,76,0.22)', border: '1px solid #c9a84c', label: 'Selected Range' },
+                { bg: 'rgba(233, 201, 160,0.22)', border: '1px solid #c9a84c', label: 'Selected Range' },
               ].map(item => (
                 <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: '0.7rem', color: '#8a7a5a' }}>
                   <div style={{ width: 12, height: 12, borderRadius: 3, flexShrink: 0, background: item.bg, border: item.border }} />

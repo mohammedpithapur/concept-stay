@@ -160,7 +160,7 @@ export default function RegisterClient() {
 
         <div style={{ backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: 'clamp(24px, 4vw, 40px)' }}>
           <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>Create Account</h2>
-          <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '28px' }} />
+          <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '28px' }} />
 
           {apiError && (
             <div style={{ backgroundColor: '#FFF5F5', border: '1px solid #FEB2B2', borderRadius: '8px', padding: '12px 16px', marginBottom: '20px', color: '#C53030', fontSize: '14px' }}>
@@ -212,7 +212,7 @@ export default function RegisterClient() {
             id="register-submit"
             onClick={handleSubmit}
             disabled={submitting}
-            style={{ width: '100%', backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '16px', fontSize: '13px', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', cursor: submitting ? 'not-allowed' : 'pointer', marginBottom: '24px', borderRadius: '8px', opacity: submitting ? 0.7 : 1 }}
+            style={{ width: '100%', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', padding: '16px', fontSize: '13px', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', cursor: submitting ? 'not-allowed' : 'pointer', marginBottom: '24px', borderRadius: '8px', opacity: submitting ? 0.7 : 1 }}
           >
             {submitting ? 'Creating Account...' : 'Create Account'}
           </button>

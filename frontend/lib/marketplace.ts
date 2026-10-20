@@ -1,3 +1,4 @@
+import { Compass, Mountain, Waves, Wheat, House, Gem, TentTree, IndianRupee } from "lucide-react"
 import { buildApiUrl, type ApiFetcher } from "@/lib/api"
 import type { Property, Review } from "@/lib/types"
 
@@ -14,14 +15,14 @@ export const PROPERTY_TYPES = [
 ] as const
 
 export const CATEGORIES = [
-  { value: "offbeat", label: "Offbeat Stays" },
-  { value: "mountain", label: "Mountain Stays" },
-  { value: "lakeside", label: "Lakeside" },
-  { value: "farm", label: "Farm Stays" },
-  { value: "homestay", label: "Homestays" },
-  { value: "boutique", label: "Boutique" },
-  { value: "nature", label: "Nature Stays" },
-  { value: "budget", label: "Budget Gems" },
+  { value: "offbeat", label: "Offbeat Stays", icon: Compass },
+  { value: "mountain", label: "Mountain Stays", icon: Mountain },
+  { value: "lakeside", label: "Lakeside", icon: Waves },
+  { value: "farm", label: "Farm Stays", icon: Wheat },
+  { value: "homestay", label: "Homestays", icon: House },
+  { value: "boutique", label: "Boutique", icon: Gem },
+  { value: "nature", label: "Nature Stays", icon: TentTree },
+  { value: "budget", label: "Budget Gems", icon: IndianRupee },
 ] as const
 
 export const EXPERIENCE_TAGS = [

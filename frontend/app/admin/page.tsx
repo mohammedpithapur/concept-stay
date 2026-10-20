@@ -22,7 +22,7 @@ import {
   type AdminPayment, type AdminPaymentList, type SettlementBatch, type PaymentSummary,
 } from '@/lib/api'
 import type { Property, Review, Article } from '@/lib/types'
-import { Printer, Building2, Users, Calendar, Download, Share2, Plus, Trash2, Edit3, Star, Check, X, Bed, Mail, Phone, Wallet, BadgeCheck, Clock, RefreshCw, AlertTriangle, CheckCircle, XCircle, CreditCard, BookOpen, Eye, FileText, Sparkles, Upload, Image as ImageIcon } from 'lucide-react'
+import { Printer, Building2, Users, Calendar, Download, Share2, Plus, Trash2, Edit3, Star, Check, X, Bed, Mail, Phone, Wallet, BadgeCheck, Clock, RefreshCw, AlertTriangle, CheckCircle, XCircle, CreditCard, BookOpen, Eye, FileText, Sparkles, Upload, Image as ImageIcon, ArrowRight, ArrowLeft } from 'lucide-react'
 import { uploadPropertyImage } from '@/lib/supabase/storage'
 import CalendarModal from './properties/CalendarModal'
 import MarkdownRenderer from '@/components/shared/MarkdownRenderer'
@@ -65,7 +65,7 @@ const E2E_SEED_PROPERTY: Property = {
 
 const statusColors: Record<string, { bg: string, color: string }> = {
   confirmed: { bg: '#E8F5E9', color: '#2E7D32' },
-  pending: { bg: '#FFF8E7', color: '#F57F17' },
+  pending: { bg: '#FFF8E7', color: '#B45309' },
   completed: { bg: '#E3F2FD', color: '#1565C0' },
   cancelled: { bg: '#FFEBEE', color: '#C62828' },
 }
@@ -471,7 +471,7 @@ export default function AdminPage() {
   if (loading || !user) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     )
@@ -684,7 +684,7 @@ export default function AdminPage() {
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', cursor: 'pointer', gap: '10px' }}
         >
           <div style={{ minWidth: 0, flex: 1 }}>
-            <p style={{ fontSize: '13px', color: 'var(--color-gold)', fontWeight: '800', marginBottom: '2px' }}>{booking.booking_ref}</p>
+            <p style={{ fontSize: '13px', color: 'var(--color-terra)', fontWeight: '800', marginBottom: '2px' }}>{booking.booking_ref}</p>
             <p style={{ fontSize: '12px', color: 'var(--color-text-primary)', fontWeight: '600', marginBottom: '1px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{booking.guest_name}</p>
             <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{property.name}</p>
           </div>
@@ -928,9 +928,9 @@ export default function AdminPage() {
 
   const cardStyle = { backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '24px' }
   const buttonStyle = {
-    border: '1px solid var(--color-gold)',
+    border: '1px solid var(--color-terra)',
     backgroundColor: '#ffffff',
-    color: 'var(--color-text-primary)',
+    color: 'var(--color-dark)',
     padding: '10px 20px',
     fontSize: '13px',
     fontWeight: '700' as const,
@@ -941,14 +941,16 @@ export default function AdminPage() {
   }
   const primaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: 'var(--color-gold)',
+    border: '1px solid var(--color-brand)',
+    backgroundColor: 'var(--color-brand)',
+    color: 'var(--color-on-accent)',
   }
 
   // Show spinner while checking session / redirecting
   if (loading || !user) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     )
@@ -958,17 +960,17 @@ export default function AdminPage() {
     <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
 
       {/* Header */}
-      <div style={{ backgroundColor: 'var(--color-deep)', padding: '32px 24px' }}>
+      <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '32px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '8px', fontWeight: '600' }}>Admin Panel</p>
+            <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '8px', fontWeight: '600' }}>Admin Panel</p>
             <h1 style={{ color: 'var(--color-text-primary)', fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: '800' }}>
               Concept Stay Dashboard
             </h1>
           </div>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <PushSubscribeButton token={accessToken} showTestButton={true} />
-            <button onClick={() => router.push('/')} style={buttonStyle} onMouseEnter={e => { const target = e.currentTarget as HTMLButtonElement; target.style.borderColor = 'var(--color-gold)'; target.style.color = 'var(--color-gold)' }} onMouseLeave={e => { const target = e.currentTarget as HTMLButtonElement; target.style.borderColor = 'var(--color-gold)'; target.style.color = 'var(--color-text-primary)' }}>
+            <button onClick={() => router.push('/')} style={buttonStyle} onMouseEnter={e => { const target = e.currentTarget as HTMLButtonElement; target.style.borderColor = 'var(--color-terra)'; target.style.color = 'var(--color-terra)' }} onMouseLeave={e => { const target = e.currentTarget as HTMLButtonElement; target.style.borderColor = 'var(--color-terra)'; target.style.color = 'var(--color-text-primary)' }}>
               View Site
             </button>
             <Link href="/admin/properties" style={{ ...primaryButtonStyle, display: 'inline-block', textDecoration: 'none', textAlign: 'center' }}>
@@ -988,9 +990,9 @@ export default function AdminPage() {
               style={{
                 padding: '16px 24px',
                 border: 'none',
-                borderBottom: activeTab === tab.id ? '2px solid var(--color-gold)' : '2px solid transparent',
+                borderBottom: activeTab === tab.id ? '2px solid var(--color-terra)' : '2px solid transparent',
                 backgroundColor: 'transparent',
-                color: activeTab === tab.id ? 'var(--color-gold)' : 'var(--color-text-muted)',
+                color: activeTab === tab.id ? 'var(--color-terra)' : 'var(--color-text-muted)',
                 fontSize: '14px',
                 cursor: 'pointer',
                 fontWeight: activeTab === tab.id ? '700' : '500',
@@ -1011,9 +1013,9 @@ export default function AdminPage() {
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '40px' }}>
               {[
-                { label: 'Total Revenue', value: `&#8377;${totalRevenue.toLocaleString('en-IN')}`, color: 'var(--color-gold)' },
+                { label: 'Total Revenue', value: `&#8377;${totalRevenue.toLocaleString('en-IN')}`, color: 'var(--color-terra)' },
                 { label: 'Confirmed Bookings', value: confirmedBookings, color: '#2E7D32' },
-                { label: 'Pending Bookings', value: pendingBookings, color: '#F57F17' },
+                { label: 'Pending Bookings', value: pendingBookings, color: '#B45309' },
                 { label: 'Total Properties', value: dashStats?.total_properties ?? apiProperties.length, color: '#1565C0' },
                 { label: 'Completed Stays', value: completedBookings, color: '#6A1B9A' },
                 { label: 'Total Bookings', value: totalBookingsCount, color: '#00838F' },
@@ -1034,8 +1036,8 @@ export default function AdminPage() {
                   <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '4px' }}>Recent Bookings</h2>
                   <p style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>Latest confirmed and pending stays at a glance</p>
                 </div>
-                <button onClick={() => setActiveTab('bookings')} style={{ background: 'none', border: 'none', color: 'var(--color-gold)', fontSize: '13px', cursor: 'pointer', fontWeight: '700' }}>
-                  View All →
+                <button onClick={() => setActiveTab('bookings')} style={{ background: 'none', border: 'none', color: 'var(--color-terra)', fontSize: '13px', cursor: 'pointer', fontWeight: '700' }}>
+                  View All<ArrowRight size={14} aria-hidden="true" style={{ marginLeft: '4px', verticalAlign: '-2px' }} />
                 </button>
               </div>
               <div className="hidden md:block" style={{ overflowX: 'auto' }}>
@@ -1052,7 +1054,7 @@ export default function AdminPage() {
                       const property = getProperty(booking.property_id)
                       return (
                         <tr key={booking.id} style={{ borderBottom: '1px solid var(--color-bg-soft)', backgroundColor: i % 2 === 0 ? '#ffffff' : 'var(--color-bg-card)' }}>
-                          <td data-label="Ref" style={{ padding: '14px 16px', fontSize: '13px', color: 'var(--color-gold)', fontWeight: '700' }}>{booking.booking_ref}</td>
+                          <td data-label="Ref" style={{ padding: '14px 16px', fontSize: '13px', color: 'var(--color-terra)', fontWeight: '700' }}>{booking.booking_ref}</td>
                           <td style={{ padding: '14px 16px' }}>
                             <div className="responsive-table-label">Guest</div>
                             <p style={{ fontSize: '13px', color: 'var(--color-text-primary)', fontWeight: '700', marginBottom: '2px' }}>{booking.guest_name}</p>
@@ -1087,8 +1089,8 @@ export default function AdminPage() {
             <div style={cardStyle}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)' }}>Properties</h2>
-                <button onClick={() => setActiveTab('properties')} style={{ background: 'none', border: 'none', color: 'var(--color-gold)', fontSize: '13px', cursor: 'pointer', fontWeight: '700' }}>
-                  Manage All →
+                <button onClick={() => setActiveTab('properties')} style={{ background: 'none', border: 'none', color: 'var(--color-terra)', fontSize: '13px', cursor: 'pointer', fontWeight: '700' }}>
+                  Manage All<ArrowRight size={14} aria-hidden="true" style={{ marginLeft: '4px', verticalAlign: '-2px' }} />
                 </button>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
@@ -1124,7 +1126,7 @@ export default function AdminPage() {
                     })()}
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontSize: '14px', color: 'var(--color-text-primary)', fontWeight: '700', marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{property.name}</p>
-                      <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>&#8377;{property.price_per_night.toLocaleString('en-IN')}/night · <Star size={12} fill="currentColor" style={{ display: 'inline-block', verticalAlign: '-1px', color: 'var(--color-gold)' }} /> {property.avg_rating}</p>
+                      <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>&#8377;{property.price_per_night.toLocaleString('en-IN')}/night · <Star size={12} fill="currentColor" style={{ display: 'inline-block', verticalAlign: '-1px', color: 'var(--color-terra)' }} /> {property.avg_rating}</p>
                     </div>
                     <span style={{ fontSize: '11px', backgroundColor: '#E8F5E9', color: '#2E7D32', padding: '3px 8px', fontWeight: '700', flexShrink: 0, borderRadius: '6px' }}>Live</span>
                   </div>
@@ -1153,7 +1155,7 @@ export default function AdminPage() {
                       padding: '8px 16px',
                       borderRadius: '6px',
                       border: 'none',
-                      backgroundColor: timeframeMode === 'monthly' ? 'var(--color-gold)' : 'transparent',
+                      backgroundColor: timeframeMode === 'monthly' ? 'var(--color-brand)' : 'transparent',
                       color: timeframeMode === 'monthly' ? '#1A1A1A' : 'var(--color-text-muted)',
                       fontSize: '13px',
                       fontWeight: '700',
@@ -1168,7 +1170,7 @@ export default function AdminPage() {
                       padding: '8px 16px',
                       borderRadius: '6px',
                       border: 'none',
-                      backgroundColor: timeframeMode === 'daily' ? 'var(--color-gold)' : 'transparent',
+                      backgroundColor: timeframeMode === 'daily' ? 'var(--color-brand)' : 'transparent',
                       color: timeframeMode === 'daily' ? '#1A1A1A' : 'var(--color-text-muted)',
                       fontSize: '13px',
                       fontWeight: '700',
@@ -1208,7 +1210,7 @@ export default function AdminPage() {
 
             {analyticsLoading && (
               <div style={{ textAlign: 'center', padding: '60px 0' }}>
-                <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
+                <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
                 <p style={{ fontSize: '14px', color: 'var(--color-text-muted)' }}>Loading analytical reports…</p>
               </div>
             )}
@@ -1219,7 +1221,7 @@ export default function AdminPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
                   <div style={{ padding: '20px 24px', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px' }}>
                     <p style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--color-text-muted)', fontWeight: '700', marginBottom: '8px' }}>Total Revenue</p>
-                    <p style={{ fontSize: '28px', fontWeight: '800', color: 'var(--color-gold)' }}>&#8377;{analyticsData.summary.total_revenue.toLocaleString('en-IN')}</p>
+                    <p style={{ fontSize: '28px', fontWeight: '800', color: 'var(--color-terra)' }}>&#8377;{analyticsData.summary.total_revenue.toLocaleString('en-IN')}</p>
                     <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '4px' }}>Gross earnings from all stays</p>
                   </div>
                   <div style={{ padding: '20px 24px', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px' }}>
@@ -1401,7 +1403,7 @@ export default function AdminPage() {
                               <td style={{ padding: '14px 16px', fontSize: '13px', color: 'var(--color-text-secondary)', textAlign: 'right', fontWeight: '600' }}>&#8377;{prop.price_per_night.toLocaleString('en-IN')}</td>
                               <td style={{ padding: '14px 16px', fontSize: '13px', color: 'var(--color-text-secondary)', textAlign: 'right', fontWeight: '700' }}>{prop.bookings_count}</td>
                               <td style={{ padding: '14px 16px', fontSize: '13px', color: 'var(--color-text-secondary)', textAlign: 'right', fontWeight: '700' }}>{prop.nights_booked} nights</td>
-                              <td style={{ padding: '14px 16px', fontSize: '14px', color: 'var(--color-gold)', textAlign: 'right', fontWeight: '800' }}>&#8377;{prop.total_revenue.toLocaleString('en-IN')}</td>
+                              <td style={{ padding: '14px 16px', fontSize: '14px', color: 'var(--color-terra)', textAlign: 'right', fontWeight: '800' }}>&#8377;{prop.total_revenue.toLocaleString('en-IN')}</td>
                               <td style={{ padding: '14px 16px', fontSize: '13px', color: 'var(--color-text-primary)', textAlign: 'right', fontWeight: '700' }}>&#8377;{adr.toLocaleString('en-IN')}</td>
                             </tr>
                           )
@@ -1440,7 +1442,7 @@ export default function AdminPage() {
                   </div>
                   <p style={{ fontSize: '28px', fontWeight: '800', color: '#2E7D32', marginBottom: '4px' }}>₹{paymentSummary.total_collected_rupees.toLocaleString('en-IN')}</p>
                   <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{paymentSummary.paid_transactions} paid transactions</p>
-                  <p style={{ fontSize: '11px', color: '#4CAF50', marginTop: '6px', fontWeight: '600' }}>Captured by Razorpay</p>
+                  <p style={{ fontSize: '11px', color: '#2E7D32', marginTop: '6px', fontWeight: '600' }}>Captured by Razorpay</p>
                 </div>
 
                 {/* Settled to Bank */}
@@ -1449,9 +1451,9 @@ export default function AdminPage() {
                     <BadgeCheck size={15} color="#C8A951" />
                     <p style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: '700', margin: 0 }}>Settled to Bank</p>
                   </div>
-                  <p style={{ fontSize: '28px', fontWeight: '800', color: 'var(--color-gold)', marginBottom: '4px' }}>₹{paymentSummary.total_settled_rupees.toLocaleString('en-IN')}</p>
+                  <p style={{ fontSize: '28px', fontWeight: '800', color: 'var(--color-terra)', marginBottom: '4px' }}>₹{paymentSummary.total_settled_rupees.toLocaleString('en-IN')}</p>
                   <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{paymentSummary.settlement_batches} settlement batches</p>
-                  <p style={{ fontSize: '11px', color: 'var(--color-gold)', marginTop: '6px', fontWeight: '600' }}>Actually in your bank</p>
+                  <p style={{ fontSize: '11px', color: 'var(--color-terra)', marginTop: '6px', fontWeight: '600' }}>Actually in your bank</p>
                 </div>
 
                 {/* Pending with Razorpay */}
@@ -1462,7 +1464,7 @@ export default function AdminPage() {
                   </div>
                   <p style={{ fontSize: '28px', fontWeight: '800', color: '#E65100', marginBottom: '4px' }}>₹{paymentSummary.pending_with_razorpay_rupees.toLocaleString('en-IN')}</p>
                   <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Being processed by Razorpay</p>
-                  <p style={{ fontSize: '11px', color: '#FF9800', marginTop: '6px', fontWeight: '600' }}>Expected in 1-2 business days</p>
+                  <p style={{ fontSize: '11px', color: '#B45309', marginTop: '6px', fontWeight: '600' }}>Expected in 1-2 business days</p>
                 </div>
 
                 {/* Refunded */}
@@ -1565,7 +1567,7 @@ export default function AdminPage() {
 
               {paymentsLoading ? (
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '48px' }}>
-                  <div style={{ width: '32px', height: '32px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                  <div style={{ width: '32px', height: '32px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                   <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
                 </div>
               ) : (
@@ -1588,7 +1590,7 @@ export default function AdminPage() {
                       ) : (paymentsData?.items ?? []).map((p: AdminPayment, i: number) => {
                         const statusConfig: Record<string, { bg: string; color: string; icon: React.ReactNode; label: string }> = {
                           paid:     { bg: '#E8F5E9', color: '#2E7D32', icon: <CheckCircle size={12} />, label: 'Paid' },
-                          created:  { bg: '#FFF8E7', color: '#F57F17', icon: <Clock size={12} />,        label: 'Pending' },
+                          created:  { bg: '#FFF8E7', color: '#B45309', icon: <Clock size={12} />,        label: 'Pending' },
                           refunded: { bg: '#E3F2FD', color: '#1565C0', icon: <RefreshCw size={12} />,    label: 'Refunded' },
                           failed:   { bg: '#FFEBEE', color: '#C62828', icon: <XCircle size={12} />,      label: 'Failed' },
                         }
@@ -1599,7 +1601,7 @@ export default function AdminPage() {
                               {p.created_at ? new Date(p.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
                             </td>
                             <td style={{ padding: '12px 14px' }}>
-                              <span style={{ fontSize: '13px', color: 'var(--color-gold)', fontWeight: '800' }}>{p.booking_ref || '—'}</span>
+                              <span style={{ fontSize: '13px', color: 'var(--color-terra)', fontWeight: '800' }}>{p.booking_ref || '—'}</span>
                             </td>
                             <td style={{ padding: '12px 14px' }}>
                               <p style={{ fontSize: '13px', color: 'var(--color-text-primary)', fontWeight: '600', marginBottom: '2px' }}>{p.guest_name || '—'}</p>
@@ -1625,7 +1627,7 @@ export default function AdminPage() {
                         onClick={() => { const p = paymentsPage - 1; setPaymentsPage(p); void loadPayments(p, paymentsSearch, paymentsStatusFilter) }}
                         disabled={paymentsPage <= 1}
                         style={{ padding: '8px 16px', border: '1px solid var(--color-border)', borderRadius: '8px', cursor: paymentsPage <= 1 ? 'not-allowed' : 'pointer', opacity: paymentsPage <= 1 ? 0.4 : 1, fontSize: '13px', backgroundColor: '#fff' }}
-                      >← Prev</button>
+                      ><ArrowLeft size={14} aria-hidden="true" style={{ marginRight: '4px', verticalAlign: '-2px' }} />Prev</button>
                       <span style={{ padding: '8px 16px', fontSize: '13px', color: 'var(--color-text-muted)' }}>
                         Page {paymentsPage} of {Math.ceil(paymentsData.total / 20)}
                       </span>
@@ -1633,7 +1635,7 @@ export default function AdminPage() {
                         onClick={() => { const p = paymentsPage + 1; setPaymentsPage(p); void loadPayments(p, paymentsSearch, paymentsStatusFilter) }}
                         disabled={paymentsPage >= Math.ceil(paymentsData.total / 20)}
                         style={{ padding: '8px 16px', border: '1px solid var(--color-border)', borderRadius: '8px', cursor: paymentsPage >= Math.ceil(paymentsData.total / 20) ? 'not-allowed' : 'pointer', opacity: paymentsPage >= Math.ceil(paymentsData.total / 20) ? 0.4 : 1, fontSize: '13px', backgroundColor: '#fff' }}
-                      >Next →</button>
+                      >Next<ArrowRight size={14} aria-hidden="true" style={{ marginLeft: '4px', verticalAlign: '-2px' }} /></button>
                     </div>
                   )}
                 </div>
@@ -1673,7 +1675,7 @@ export default function AdminPage() {
                         </div>
                       </div>
                     ) : vProp ? (
-                      <div style={{ padding: '24px 28px 0', backgroundColor: 'var(--color-deep)' }}>
+                      <div className="surface-deep" style={{ padding: '24px 28px 0', backgroundColor: 'var(--color-deep)' }}>
                         <p style={{ fontSize: '18px', fontWeight: '800', color: 'var(--color-text-primary)' }}>{vProp.name}</p>
                         <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{vProp.city}, {vProp.state}</p>
                       </div>
@@ -1683,7 +1685,7 @@ export default function AdminPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                     <div>
                       <p style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: '700', marginBottom: '6px' }}>Booking Voucher</p>
-                      <p style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-gold)' }}>{voucherBooking.booking_ref}</p>
+                      <p style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-terra)' }}>{voucherBooking.booking_ref}</p>
                     </div>
                     <button onClick={() => setVoucherBooking(null)} style={{ background: 'none', border: 'none', fontSize: '22px', cursor: 'pointer', color: 'var(--color-text-muted)', lineHeight: 1 }}>×</button>
                   </div>
@@ -1712,7 +1714,7 @@ export default function AdminPage() {
                       <p style={{ fontSize: '28px', fontWeight: '800', color: 'var(--color-text-primary)' }}>&#8377;{voucherBooking.total.toLocaleString('en-IN')}</p>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      <button onClick={() => handleAdminDownloadPDF(voucherBooking.booking_ref)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 16px', backgroundColor: 'var(--color-gold)', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '700', cursor: 'pointer', color: 'var(--color-text-primary)' }}>
+                      <button onClick={() => handleAdminDownloadPDF(voucherBooking.booking_ref)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 16px', backgroundColor: 'var(--color-brand)', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '700', cursor: 'pointer', color: 'var(--color-on-accent)' }}>
                         <Download style={{ width: '15px', height: '15px' }} />
                         Download PDF
                       </button>
@@ -1757,9 +1759,9 @@ export default function AdminPage() {
                   <div className="hidden md:block" style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                       <thead>
-                        <tr style={{ backgroundColor: 'var(--color-deep)' }}>
+                        <tr className="surface-deep" style={{ backgroundColor: 'var(--color-deep)' }}>
                           {['Ref', 'Guest', 'Property', 'Check In', 'Check Out', 'Guests', 'Amount', 'Status', 'Actions'].map(h => (
-                            <th key={h} style={{ padding: '14px 16px', textAlign: 'left', fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
+                            <th key={h} style={{ padding: '14px 16px', textAlign: 'left', fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-terra)', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
                           ))}
                         </tr>
                       </thead>
@@ -1768,7 +1770,7 @@ export default function AdminPage() {
                           const property = getProperty(booking.property_id)
                           return (
                             <tr key={booking.id} style={{ borderBottom: '1px solid var(--color-bg-soft)', backgroundColor: i % 2 === 0 ? '#ffffff' : 'var(--color-bg-card)' }}>
-                              <td style={{ padding: '14px 16px', fontSize: '13px', color: 'var(--color-gold)', fontWeight: '700', whiteSpace: 'nowrap' }}>{booking.booking_ref}</td>
+                              <td style={{ padding: '14px 16px', fontSize: '13px', color: 'var(--color-terra)', fontWeight: '700', whiteSpace: 'nowrap' }}>{booking.booking_ref}</td>
                               <td style={{ padding: '14px 16px' }}>
                                 <p style={{ fontSize: '13px', color: 'var(--color-text-primary)', fontWeight: '700', marginBottom: '2px', whiteSpace: 'nowrap' }}>{booking.guest_name}</p>
                                 <p style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>{booking.guest_phone}</p>
@@ -1828,12 +1830,12 @@ export default function AdminPage() {
                           disabled={bookingsPage <= 1}
                           onClick={() => loadBookings(bookingsPage - 1, searchBooking, statusFilter)}
                           style={{ padding: '8px 16px', border: '1px solid var(--color-border)', borderRadius: '8px', backgroundColor: '#fff', cursor: bookingsPage <= 1 ? 'not-allowed' : 'pointer', opacity: bookingsPage <= 1 ? 0.4 : 1, fontSize: '13px', fontWeight: '600' }}
-                        >← Prev</button>
+                        ><ArrowLeft size={14} aria-hidden="true" style={{ marginRight: '4px', verticalAlign: '-2px' }} />Prev</button>
                         <span style={{ padding: '8px 14px', fontSize: '13px', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Page {bookingsPage} of {Math.ceil(bookingsTotal / BOOKINGS_PER_PAGE)}</span>
                         <button
                           disabled={bookingsPage >= Math.ceil(bookingsTotal / BOOKINGS_PER_PAGE)}
                           onClick={() => loadBookings(bookingsPage + 1, searchBooking, statusFilter)}
-                          style={{ padding: '8px 16px', border: '1px solid var(--color-border)', borderRadius: '8px', backgroundColor: '#fff', cursor: bookingsPage >= Math.ceil(bookingsTotal / BOOKINGS_PER_PAGE) ? 'not-allowed' : 'pointer', opacity: bookingsPage >= Math.ceil(bookingsTotal / BOOKINGS_PER_PAGE) ? 0.4 : 1, fontSize: '13px', fontWeight: '600' }}>Next →</button>
+                          style={{ padding: '8px 16px', border: '1px solid var(--color-border)', borderRadius: '8px', backgroundColor: '#fff', cursor: bookingsPage >= Math.ceil(bookingsTotal / BOOKINGS_PER_PAGE) ? 'not-allowed' : 'pointer', opacity: bookingsPage >= Math.ceil(bookingsTotal / BOOKINGS_PER_PAGE) ? 0.4 : 1, fontSize: '13px', fontWeight: '600' }}>Next<ArrowRight size={14} aria-hidden="true" style={{ marginLeft: '4px', verticalAlign: '-2px' }} /></button>
                       </div>
                     </div>
                   )}
@@ -1923,7 +1925,7 @@ export default function AdminPage() {
                           <span key={label} style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontWeight: '500' }}>{label}</span>
                         ))}
                         <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                          <Star size={11} fill="currentColor" color="var(--color-gold)" />{property.avg_rating}
+                          <Star size={11} fill="currentColor" color="var(--color-terra)" />{property.avg_rating}
                         </span>
                       </div>
                     </div>
@@ -1970,7 +1972,7 @@ export default function AdminPage() {
                           }}
                           style={{ padding: '8px 16px', border: '1px solid var(--color-border)', borderRadius: '8px', backgroundColor: '#ffffff', color: 'var(--color-text-primary)', fontSize: '13px', cursor: 'pointer', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                         >
-                          <Star size={14} fill="currentColor" style={{ color: 'var(--color-gold)' }} /> Reviews
+                          <Star size={14} fill="currentColor" style={{ color: 'var(--color-terra)' }} /> Reviews
                         </button>
                         <button onClick={() => handleDeleteProperty(property.id, property.name)} style={{ padding: '8px 16px', border: '1px solid #FFCDD2', borderRadius: '8px', backgroundColor: '#FFEBEE', color: '#C62828', fontSize: '13px', cursor: 'pointer', fontWeight: '700' }}>Delete</button>
                       </div>
@@ -2007,7 +2009,7 @@ export default function AdminPage() {
                 />
                 <button
                   onClick={handleCreateGroup}
-                  style={{ padding: '12px 24px', backgroundColor: 'var(--color-gold)', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '800', cursor: 'pointer', letterSpacing: '0.5px' }}
+                  style={{ padding: '12px 24px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '800', cursor: 'pointer', letterSpacing: '0.5px' }}
                 >
                   + Create Group
                 </button>
@@ -2020,7 +2022,7 @@ export default function AdminPage() {
             ) : groups.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px', color: 'var(--color-text-muted)', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-                  <Building2 size={36} style={{ color: 'var(--color-gold)' }} />
+                  <Building2 size={36} style={{ color: 'var(--color-terra)' }} />
                 </div>
                 <p style={{ fontSize: '16px', fontWeight: '700', marginBottom: '6px' }}>No groups yet</p>
                 <p style={{ fontSize: '13px' }}>Create your first group above to group sub-properties</p>
@@ -2037,7 +2039,7 @@ export default function AdminPage() {
                       {/* Group header */}
                       <div style={{ padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap', cursor: 'pointer' }} onClick={() => setExpandedGroup(isExpanded ? null : group.id)}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
-                          <Building2 size={20} style={{ color: 'var(--color-gold)', flexShrink: 0 }} />
+                          <Building2 size={20} style={{ color: 'var(--color-terra)', flexShrink: 0 }} />
                           {isEditingName ? (
                             <input
                               autoFocus
@@ -2045,7 +2047,7 @@ export default function AdminPage() {
                               onChange={e => setEditingGroupName(e.target.value)}
                               onKeyDown={e => { if (e.key === 'Enter') handleRenameGroup(group.id); if (e.key === 'Escape') setEditingGroupId(null) }}
                               onClick={e => e.stopPropagation()}
-                              style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--color-gold)', borderRadius: '6px', fontSize: '16px', fontWeight: '700', outline: 'none' }}
+                              style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--color-terra)', borderRadius: '6px', fontSize: '16px', fontWeight: '700', outline: 'none' }}
                             />
                           ) : (
                             <div>
@@ -2057,7 +2059,7 @@ export default function AdminPage() {
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
                           {isEditingName ? (
                             <>
-                              <button onClick={() => handleRenameGroup(group.id)} style={{ padding: '7px 14px', backgroundColor: 'var(--color-gold)', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>Save</button>
+                              <button onClick={() => handleRenameGroup(group.id)} style={{ padding: '7px 14px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>Save</button>
                               <button onClick={() => setEditingGroupId(null)} style={{ padding: '7px 14px', backgroundColor: 'var(--color-bg-soft)', border: '1px solid var(--color-border)', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Cancel</button>
                             </>
                           ) : (
@@ -2074,7 +2076,7 @@ export default function AdminPage() {
                       {isExpanded && (
                         <div style={{ borderTop: '1px solid var(--color-border)', padding: '20px 24px', backgroundColor: 'var(--color-bg-card)' }}>
                           {/* Members */}
-                          <h4 style={{ fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: '12px', fontWeight: '700' }}>Members</h4>
+                          <h4 style={{ fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-terra)', marginBottom: '12px', fontWeight: '700' }}>Members</h4>
                           {group.members.length === 0 ? (
                             <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', marginBottom: '16px' }}>No properties in this group yet.</p>
                           ) : (
@@ -2082,7 +2084,7 @@ export default function AdminPage() {
                               {group.members.map(member => (
                                 <div key={member.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', padding: '12px 16px', backgroundColor: '#ffffff', borderRadius: '10px', border: '1px solid var(--color-border)', flexWrap: 'wrap' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
-                                    <span style={{ display: 'flex', alignItems: 'center' }}>{member.is_whole_property ? <Building2 size={16} style={{ color: 'var(--color-gold)' }} /> : <Bed size={16} style={{ color: 'var(--color-text-muted)' }} />}</span>
+                                    <span style={{ display: 'flex', alignItems: 'center' }}>{member.is_whole_property ? <Building2 size={16} style={{ color: 'var(--color-terra)' }} /> : <Bed size={16} style={{ color: 'var(--color-text-muted)' }} />}</span>
                                     <div style={{ minWidth: 0 }}>
                                       <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{member.property.name}</p>
                                       <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{member.property.city}, {member.property.state} · {member.is_whole_property ? <strong>Whole Property</strong> : 'Sub-property'}</p>
@@ -2119,7 +2121,7 @@ export default function AdminPage() {
                                   <input type="checkbox" checked={memberIsWhole} onChange={e => setMemberIsWhole(e.target.checked)} />
                                   Whole Property (master)
                                 </label>
-                                <button onClick={() => handleAddMember(group.id)} style={{ padding: '10px 20px', backgroundColor: 'var(--color-gold)', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '800', cursor: 'pointer' }}>Add</button>
+                                <button onClick={() => handleAddMember(group.id)} style={{ padding: '10px 20px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '800', cursor: 'pointer' }}>Add</button>
                                 <button onClick={() => { setAddingMemberGroupId(null); setMemberPropertyId(''); setMemberIsWhole(false) }} style={{ padding: '10px 20px', backgroundColor: 'var(--color-bg-soft)', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '13px', fontWeight: '700', cursor: 'pointer' }}>Cancel</button>
                               </div>
                             </div>
@@ -2142,7 +2144,7 @@ export default function AdminPage() {
           <div>
             <div style={{ ...cardStyle, marginBottom: '24px' }}>
               <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>iCal Calendar Sync</h2>
-              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '16px' }} />
+              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '16px' }} />
               <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px', lineHeight: '1.7', maxWidth: '760px' }}>
                 Keep your availability in sync across all platforms. Import calendars from Airbnb or Booking.com to block those dates here automatically. Export your calendar link to paste into other platforms.
               </p>
@@ -2252,7 +2254,7 @@ export default function AdminPage() {
           <div>
             <div style={{ ...cardStyle, marginBottom: '24px' }}>
               <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>Event Inquiry Requests</h2>
-              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '16px' }} />
+              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '16px' }} />
               <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px', lineHeight: '1.7', maxWidth: '760px' }}>
                 View and manage wedding, corporate, and private event requests submitted by guests.
               </p>
@@ -2298,7 +2300,7 @@ export default function AdminPage() {
             {/* List */}
             {eventsLoading ? (
               <div style={{ textAlign: 'center', padding: '48px 0' }}>
-                <div style={{ width: '32px', height: '32px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto' }} />
+                <div style={{ width: '32px', height: '32px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto' }} />
               </div>
             ) : events.length === 0 ? (
               <div style={{ ...cardStyle, textAlign: 'center', padding: '64px 24px', color: 'var(--color-text-muted)' }}>
@@ -2326,7 +2328,7 @@ export default function AdminPage() {
                           {ev.name}
                         </h3>
                         <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                          <Mail size={13} style={{ color: 'var(--color-gold)' }} /> {ev.email} &bull; <Phone size={13} style={{ color: 'var(--color-gold)' }} /> {ev.phone}
+                          <Mail size={13} style={{ color: 'var(--color-terra)' }} /> {ev.email} &bull; <Phone size={13} style={{ color: 'var(--color-terra)' }} /> {ev.phone}
                         </p>
                       </div>
 
@@ -2362,7 +2364,7 @@ export default function AdminPage() {
                             )}
                             <button
                               onClick={() => handleUpdateEventStatus(ev.id, 'confirmed')}
-                              style={{ ...buttonStyle, padding: '6px 12px', fontSize: '12px', cursor: 'pointer', backgroundColor: 'var(--color-gold)', border: 'none', fontWeight: '700' }}
+                              style={{ ...buttonStyle, padding: '6px 12px', fontSize: '12px', cursor: 'pointer', backgroundColor: 'var(--color-brand)', border: 'none', fontWeight: '700' }}
                             >
                               Confirm
                             </button>
@@ -2399,7 +2401,7 @@ export default function AdminPage() {
                     </div>
 
                     {ev.additional_details && (
-                      <div style={{ backgroundColor: 'var(--color-bg-soft)', borderRadius: '8px', padding: '12px 16px', fontSize: '13px', color: 'var(--color-text-secondary)', borderLeft: '3px solid var(--color-gold)' }}>
+                      <div style={{ backgroundColor: 'var(--color-bg-soft)', borderRadius: '8px', padding: '12px 16px', fontSize: '13px', color: 'var(--color-text-secondary)', borderLeft: '3px solid var(--color-terra)' }}>
                         <p style={{ fontWeight: '600', marginBottom: '4px', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>Additional Details</p>
                         <p style={{ whiteSpace: 'pre-line' }}>{ev.additional_details}</p>
                       </div>
@@ -2456,7 +2458,7 @@ export default function AdminPage() {
                     alignItems: 'center',
                     gap: '6px',
                     padding: '10px 20px',
-                    backgroundColor: 'var(--color-gold)',
+                    backgroundColor: 'var(--color-brand)',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '8px',
@@ -2477,7 +2479,7 @@ export default function AdminPage() {
               </div>
             ) : adminArticles.length === 0 ? (
               <div style={{ ...cardStyle, textAlign: 'center', padding: '60px 24px' }}>
-                <BookOpen size={48} style={{ color: 'var(--color-gold)', margin: '0 auto 16px', opacity: 0.7 }} />
+                <BookOpen size={48} style={{ color: 'var(--color-terra)', margin: '0 auto 16px', opacity: 0.7 }} />
                 <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
                   No Articles Yet
                 </h3>
@@ -2488,7 +2490,7 @@ export default function AdminPage() {
                   onClick={openNewArticleModal}
                   style={{
                     padding: '10px 22px',
-                    backgroundColor: 'var(--color-gold)',
+                    backgroundColor: 'var(--color-brand)',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '8px',
@@ -2523,7 +2525,7 @@ export default function AdminPage() {
                           <Image src={art.cover_image_url} alt={art.title} fill style={{ objectFit: 'cover' }} unoptimized />
                         </div>
                       ) : (
-                        <div style={{ width: '80px', height: '60px', borderRadius: '8px', backgroundColor: 'var(--color-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold)', flexShrink: 0 }}>
+                        <div className="surface-deep" style={{ width: '80px', height: '60px', borderRadius: '8px', backgroundColor: 'var(--color-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-terra)', flexShrink: 0 }}>
                           <FileText size={24} />
                         </div>
                       )}
@@ -2558,7 +2560,7 @@ export default function AdminPage() {
                           <span>•</span>
                           <span>{art.read_time_minutes} min read</span>
                           <span>•</span>
-                          <span style={{ fontFamily: 'monospace', color: 'var(--color-gold)' }}>/articles/{art.slug}</span>
+                          <span style={{ fontFamily: 'monospace', color: 'var(--color-terra)' }}>/articles/{art.slug}</span>
                         </div>
                       </div>
                     </div>
@@ -2689,7 +2691,7 @@ export default function AdminPage() {
                 }}
                 style={{
                   padding: '9px 18px', border: 'none', borderRadius: '8px',
-                  backgroundColor: confirmModal.isDanger ? '#C62828' : 'var(--color-gold)',
+                  backgroundColor: confirmModal.isDanger ? '#C62828' : 'var(--color-brand)',
                   color: '#ffffff', fontSize: '13px', fontWeight: '800', cursor: 'pointer'
                 }}
               >
@@ -2743,7 +2745,7 @@ export default function AdminPage() {
             }}
           >
             {/* Header */}
-            <div
+            <div className="surface-deep"
               style={{
                 padding: '20px 24px',
                 borderBottom: '1px solid var(--color-border)',
@@ -2935,7 +2937,7 @@ export default function AdminPage() {
                     onChange={handleCoverFileUpload}
                     style={{ display: 'none' }}
                   />
-                  <button
+                  <button className="surface-deep"
                     type="button"
                     onClick={() => articleFileInputRef.current?.click()}
                     disabled={coverUploading}
@@ -2945,7 +2947,7 @@ export default function AdminPage() {
                       gap: '6px',
                       padding: '10px 16px',
                       backgroundColor: 'var(--color-deep)',
-                      border: '1px solid var(--color-gold)',
+                      border: '1px solid var(--color-terra)',
                       borderRadius: '8px',
                       color: 'var(--color-text-primary)',
                       fontSize: '13px',
@@ -2962,7 +2964,7 @@ export default function AdminPage() {
                       </>
                     ) : (
                       <>
-                        <Upload size={14} style={{ color: 'var(--color-gold)' }} />
+                        <Upload size={14} style={{ color: 'var(--color-terra)' }} />
                         {articleForm.cover_image_url ? 'Upload New Photo' : 'Upload Photo'}
                       </>
                     )}
@@ -3095,7 +3097,7 @@ export default function AdminPage() {
                         { label: 'H2', tip: 'Heading 2', action: () => insertMarkdown('\n## ') },
                         { label: 'H3', tip: 'Heading 3', action: () => insertMarkdown('\n### ') },
                         { label: '“ ”', tip: 'Quote', action: () => insertMarkdown('\n> ') },
-                        { label: '• List', tip: 'Bullet List', action: () => insertMarkdown('\n- ') },
+                        { label: 'List', tip: 'Bullet List', action: () => insertMarkdown('\n- ') },
                         { label: '1. List', tip: 'Numbered List', action: () => insertMarkdown('\n1. ') },
                         { label: 'Link', tip: 'Link', action: () => insertMarkdown('[Title](', ')') },
                         { label: 'Image', tip: 'Image', action: () => insertMarkdown('![Alt](', ')') },
@@ -3158,7 +3160,7 @@ export default function AdminPage() {
             </div>
 
             {/* Footer */}
-            <div
+            <div className="surface-deep"
               style={{
                 padding: '16px 24px',
                 borderTop: '1px solid var(--color-border)',
@@ -3194,7 +3196,7 @@ export default function AdminPage() {
                   padding: '10px 24px',
                   borderRadius: '8px',
                   border: 'none',
-                  backgroundColor: 'var(--color-gold)',
+                  backgroundColor: 'var(--color-brand)',
                   color: '#ffffff',
                   fontSize: '13px',
                   fontWeight: 700,
@@ -3241,9 +3243,9 @@ export default function AdminPage() {
             }}
           >
             {/* Header */}
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--color-deep)' }}>
+            <div className="surface-deep" style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--color-deep)' }}>
               <div>
-                <p style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: '700', marginBottom: '2px' }}>
+                <p style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--color-terra)', fontWeight: '700', marginBottom: '2px' }}>
                   Property Reviews
                 </p>
                 <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--color-text-primary)', margin: 0 }}>
@@ -3318,8 +3320,8 @@ export default function AdminPage() {
                   onClick={() => handleAddReview(reviewProperty.id)}
                   style={{
                     padding: '10px 22px',
-                    backgroundColor: addingReview || !newReview.guest_name.trim() ? 'var(--color-bg-soft)' : 'var(--color-gold)',
-                    color: addingReview || !newReview.guest_name.trim() ? 'var(--color-text-muted)' : 'var(--color-text-primary)',
+                    backgroundColor: addingReview || !newReview.guest_name.trim() ? 'var(--color-bg-soft)' : 'var(--color-brand)',
+                    color: addingReview || !newReview.guest_name.trim() ? 'var(--color-text-muted)' : 'var(--color-on-accent)',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '13px',
@@ -3359,7 +3361,7 @@ export default function AdminPage() {
                             </select>
                             <textarea value={editReviewForm.comment} onChange={e => setEditReviewForm(f => ({ ...f, comment: e.target.value }))} rows={3} placeholder="Comment" style={{ padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: '6px', fontSize: '13px', resize: 'vertical', outline: 'none', fontFamily: 'inherit' }} />
                             <div style={{ display: 'flex', gap: '8px' }}>
-                              <button onClick={() => handleUpdateReview(review.id, reviewProperty.id)} style={{ padding: '7px 14px', backgroundColor: 'var(--color-gold)', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>Save</button>
+                              <button onClick={() => handleUpdateReview(review.id, reviewProperty.id)} style={{ padding: '7px 14px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>Save</button>
                               <button onClick={() => setEditingReviewId(null)} style={{ padding: '7px 14px', backgroundColor: 'var(--color-bg-soft)', border: '1px solid var(--color-border)', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Cancel</button>
                             </div>
                           </div>
@@ -3370,7 +3372,7 @@ export default function AdminPage() {
                                 <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', margin: 0 }}>{review.guest_name}</p>
                                 {review.platform && <span style={{ fontSize: '11px', backgroundColor: '#E3F2FD', color: '#1565C0', padding: '2px 8px', borderRadius: '999px', fontWeight: '700' }}>{review.platform}</span>}
                                 <span style={{ display: 'inline-flex', gap: '1px' }}>
-                                  {Array.from({ length: review.rating }).map((_, i) => <Star key={i} size={13} fill="currentColor" color="var(--color-gold)" />)}
+                                  {Array.from({ length: review.rating }).map((_, i) => <Star key={i} size={13} fill="currentColor" color="var(--color-terra)" />)}
                                 </span>
                               </div>
                               {review.comment && <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.5', margin: '4px 0 0' }}>{review.comment}</p>}

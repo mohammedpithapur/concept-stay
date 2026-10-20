@@ -141,7 +141,7 @@ export default function PropertyCard({ property }: Props) {
           </button>
 
           {/* Rating Badge */}
-          <div style={{
+          <div className="surface-dark" style={{
             position: 'absolute', top: '14px', right: '14px',
             backgroundColor: 'var(--color-text-primary)',
             color: 'var(--color-terra)',

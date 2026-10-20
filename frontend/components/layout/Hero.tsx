@@ -76,7 +76,7 @@ export default function Hero() {
     color: 'var(--color-text-primary)',
     backgroundColor: 'transparent',
     width: '100%',
-    fontFamily: "'Figtree', sans-serif",
+    fontFamily: "var(--font-sans)",
   }
 
   const filteredLocations = availableLocations.filter(loc =>
@@ -98,7 +98,7 @@ export default function Hero() {
           transition: all 0.2s ease !important;
         }
         .hero-search-field:focus-within {
-          border-color: var(--color-beige) !important;
+          border-color: var(--color-brand) !important;
           box-shadow: 0 0 0 3px rgba(183, 137, 95, 0.12) !important;
         }
         

@@ -18,7 +18,7 @@ import BookingActions from '@/components/booking/BookingActions'
 
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   confirmed: { bg: '#E8F5E9', color: '#2E7D32' },
-  pending:   { bg: '#FFF8E7', color: '#F57F17' },
+  pending:   { bg: '#FFF8E7', color: '#B45309' },
   completed: { bg: '#E3F2FD', color: '#1565C0' },
   cancelled: { bg: '#FFEBEE', color: '#C62828' },
 }
@@ -134,7 +134,7 @@ function VoucherModal({ booking, property: propFromCache, onClose }: {
           {/* Property Hero Image */}
           {property === null ? (
             <div style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-bg-card)' }}>
-              <div style={{ width: '28px', height: '28px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              <div style={{ width: '28px', height: '28px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
             </div>
           ) : heroImage ? (
             <div style={{ position: 'relative', height: '160px', width: '100%' }}>
@@ -156,7 +156,7 @@ function VoucherModal({ booking, property: propFromCache, onClose }: {
           <div style={{ padding: '32px 40px 40px' }}>
             {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: '28px', paddingBottom: '24px', borderBottom: '1px solid var(--color-border)' }}>
-              <p style={{ fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: '700', marginBottom: '6px' }}>Booking Confirmation</p>
+              <p style={{ fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-terra)', fontWeight: '700', marginBottom: '6px' }}>Booking Confirmation</p>
               <h2 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--color-text-primary)', letterSpacing: '3px', margin: '0 0 8px' }}>{booking.booking_ref}</h2>
               <span style={{ ...STATUS_COLORS[booking.status], padding: '4px 14px', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', borderRadius: '999px', letterSpacing: '0.8px', display: 'inline-block' }}>
                 {booking.status}
@@ -235,7 +235,7 @@ function VoucherModal({ booking, property: propFromCache, onClose }: {
               <button
                 onClick={handleSharePDF}
                 disabled={isPdfGenerating}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 20px', border: 'none', borderRadius: '8px', backgroundColor: 'var(--color-gold)', fontSize: '13px', cursor: isPdfGenerating ? 'not-allowed' : 'pointer', fontWeight: '700', color: 'var(--color-text-primary)', opacity: isPdfGenerating ? 0.7 : 1 }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 20px', border: 'none', borderRadius: '8px', backgroundColor: 'var(--color-brand)', fontSize: '13px', cursor: isPdfGenerating ? 'not-allowed' : 'pointer', fontWeight: '700', color: 'var(--color-on-accent)', opacity: isPdfGenerating ? 0.7 : 1 }}
               >
                 <Share2 style={{ width: '15px', height: '15px' }} />
                 {isPdfGenerating ? 'Sharing…' : 'Share Voucher'}
@@ -332,7 +332,7 @@ function BookingCard({ booking, property, expanded, onToggle, onVoucher, onChang
               {expanded ? 'Hide Details' : 'View Details'}
             </button>
             <button onClick={onVoucher}
-              style={{ width: '100%', padding: '8px 12px', border: 'none', borderRadius: '8px', backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', fontSize: '13px', fontWeight: '700', cursor: 'pointer', textAlign: 'center' }}>
+              style={{ width: '100%', padding: '8px 12px', border: 'none', borderRadius: '8px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', fontSize: '13px', fontWeight: '700', cursor: 'pointer', textAlign: 'center' }}>
               Booking Voucher
             </button>
           </div>
@@ -346,7 +346,7 @@ function BookingCard({ booking, property, expanded, onToggle, onVoucher, onChang
 
             <div>
               <p style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '6px', fontWeight: '700' }}>Booking Reference</p>
-              <p style={{ fontSize: '22px', color: 'var(--color-gold)', fontWeight: '900', letterSpacing: '2px' }}>{booking.booking_ref}</p>
+              <p style={{ fontSize: '22px', color: 'var(--color-terra)', fontWeight: '900', letterSpacing: '2px' }}>{booking.booking_ref}</p>
             </div>
 
             {property?.check_in_time && (
@@ -490,7 +490,7 @@ export default function DashboardPage() {
   if (loading || !user) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gold)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-terra)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } } @keyframes fadeDown { from { opacity:0; transform:translateY(-8px) } to { opacity:1; transform:translateY(0) } }`}</style>
       </div>
     )
@@ -547,11 +547,11 @@ export default function DashboardPage() {
       return (
         <div style={{ textAlign: 'center', padding: '80px 24px', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '14px' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-            <Building2 style={{ width: '48px', height: '48px', color: 'var(--color-gold)', strokeWidth: 1.5 }} />
+            <Building2 style={{ width: '48px', height: '48px', color: 'var(--color-terra)', strokeWidth: 1.5 }} />
           </div>
           <h3 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '10px' }}>{emptyTitle}</h3>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', marginBottom: '24px' }}>{emptyBody}</p>
-          <Link href="/properties" style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', textDecoration: 'none', borderRadius: '8px', display: 'inline-block' }}>
+          <Link href="/properties" style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', textDecoration: 'none', borderRadius: '8px', display: 'inline-block' }}>
             Explore Our Properties
           </Link>
         </div>
@@ -584,7 +584,7 @@ export default function DashboardPage() {
     width: '100%', padding: '14px 16px', border: '1px solid var(--color-border)',
     borderRadius: '8px', fontSize: '14px', color: 'var(--color-text-primary)',
     outline: 'none', backgroundColor: '#ffffff', boxSizing: 'border-box' as const,
-    fontFamily: "'Figtree', sans-serif",
+    fontFamily: "var(--font-sans)",
   }
   const labelStyle = {
     fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase' as const,
@@ -638,10 +638,10 @@ export default function DashboardPage() {
       )}
 
       {/* ── Header ── */}
-      <div style={{ background: 'linear-gradient(135deg, var(--color-deep) 0%, #1a1a1a 100%)', padding: '48px 24px' }}>
+      <div className="surface-deep" style={{ background: 'linear-gradient(135deg, var(--color-deep) 0%, #1a1a1a 100%)', padding: '48px 24px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <p style={{ color: 'var(--color-gold)', fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '8px', fontWeight: '700' }}>Welcome back</p>
+            <p style={{ color: 'var(--color-terra)', fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '8px', fontWeight: '700' }}>Welcome back</p>
             <h1 style={{ color: 'var(--color-text-primary)', fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: '900', letterSpacing: '-0.5px' }}>
               {user.full_name}
             </h1>
@@ -650,7 +650,7 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <PushSubscribeButton token={accessToken} showTestButton={true} label="Stay Notifications" />
             <Link href="/properties"
-              style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', padding: '14px 28px', fontSize: '13px', letterSpacing: '1.5px', fontWeight: '800', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', padding: '14px 28px', fontSize: '13px', letterSpacing: '1.5px', fontWeight: '800', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
               <Plus size={16} /> Book New Stay
             </Link>
           </div>
@@ -686,9 +686,9 @@ export default function DashboardPage() {
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               style={{
                 padding: '14px 24px', border: 'none', whiteSpace: 'nowrap',
-                borderBottom: activeTab === tab.id ? '2px solid var(--color-gold)' : '2px solid transparent',
+                borderBottom: activeTab === tab.id ? '2px solid var(--color-terra)' : '2px solid transparent',
                 backgroundColor: 'transparent',
-                color: activeTab === tab.id ? 'var(--color-gold)' : 'var(--color-text-muted)',
+                color: activeTab === tab.id ? 'var(--color-terra)' : 'var(--color-text-muted)',
                 fontSize: '14px', cursor: 'pointer',
                 fontWeight: activeTab === tab.id ? '700' : '500',
                 display: 'flex', alignItems: 'center', gap: '8px',
@@ -697,8 +697,8 @@ export default function DashboardPage() {
               {tab.label}
               {tab.count !== null && (
                 <span style={{
-                  backgroundColor: activeTab === tab.id ? 'var(--color-gold)' : 'var(--color-border)',
-                  color: activeTab === tab.id ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+                  backgroundColor: activeTab === tab.id ? 'var(--color-brand)' : 'var(--color-border)',
+                  color: activeTab === tab.id ? 'var(--color-on-accent)' : 'var(--color-text-muted)',
                   borderRadius: '50%', width: '22px', height: '22px', fontSize: '11px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700',
                 }}>
@@ -745,19 +745,19 @@ export default function DashboardPage() {
             {/* Profile card */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '14px', padding: '32px', marginBottom: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '28px' }}>
-                <div style={{ width: '72px', height: '72px', backgroundColor: 'var(--color-gold)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: '900', color: 'var(--color-text-primary)', flexShrink: 0 }}>
+                <div style={{ width: '72px', height: '72px', backgroundColor: 'var(--color-brand)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: '900', color: 'var(--color-on-accent)', flexShrink: 0 }}>
                   {user.full_name.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <p style={{ fontSize: '18px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '2px' }}>{user.full_name}</p>
                   <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {user.role === 'admin' ? <><Shield size={13} style={{ color: 'var(--color-gold)' }} /> Admin Account</> : 'Guest Account'}
+                    {user.role === 'admin' ? <><Shield size={13} style={{ color: 'var(--color-terra)' }} /> Admin Account</> : 'Guest Account'}
                   </p>
                 </div>
               </div>
 
               <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Personal Details</h2>
-              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '24px' }} />
+              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '24px' }} />
 
               {[
                 { label: 'Full Name',     field: 'full_name', type: 'text',  placeholder: 'Your name', readOnly: false },
@@ -784,7 +784,7 @@ export default function DashboardPage() {
               <button
                 onClick={handleSaveProfile}
                 disabled={profileSaving}
-                style={{ backgroundColor: profileSaving ? 'var(--color-border)' : 'var(--color-gold)', color: profileSaving ? '#aaa' : 'var(--color-text-primary)', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', fontWeight: '700', textTransform: 'uppercase', cursor: profileSaving ? 'not-allowed' : 'pointer', borderRadius: '8px', transition: 'background 0.2s' }}>
+                style={{ backgroundColor: profileSaving ? 'var(--color-border)' : 'var(--color-brand)', color: profileSaving ? '#aaa' : 'var(--color-on-accent)', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', fontWeight: '700', textTransform: 'uppercase', cursor: profileSaving ? 'not-allowed' : 'pointer', borderRadius: '8px', transition: 'background 0.2s' }}>
                 {profileSaving ? 'Saving…' : 'Save Changes'}
               </button>
             </div>
@@ -792,7 +792,7 @@ export default function DashboardPage() {
             {/* Change Password card */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '14px', padding: '32px', marginBottom: '16px' }}>
               <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Change Password</h3>
-              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '24px' }} />
+              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '24px' }} />
 
               {[
                 { label: 'Current Password', field: 'old_password' },

@@ -32,8 +32,8 @@ export const hostPrimaryButton: CSSProperties = {
   padding: '10px 20px',
   border: 'none',
   borderRadius: 'var(--btn-radius)',
-  backgroundColor: 'var(--color-gold)',
-  color: 'var(--color-text-primary)',
+  backgroundColor: 'var(--color-brand)',
+  color: 'var(--color-on-accent)',
   fontSize: '13px',
   fontWeight: 700,
   cursor: 'pointer',
@@ -43,6 +43,7 @@ export const hostGhostButton: CSSProperties = {
   ...hostPrimaryButton,
   border: '1px solid var(--color-border)',
   backgroundColor: '#ffffff',
+  color: 'var(--color-dark)',
 }
 
 export const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`
@@ -52,12 +53,12 @@ export default function HostShell({ title, children }: { title: string; children
   const pathname = usePathname()
   return (
     <div className="page-shell" style={{ backgroundColor: 'var(--color-bg-page)', minHeight: '70vh' }}>
-      <div style={{ backgroundColor: 'var(--color-deep)', padding: '36px var(--page-padding) 0' }}>
+      <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '36px var(--page-padding) 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>
+          <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>
             Host
           </p>
-          <h1 style={{ color: 'var(--color-navbar-text)', fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: 800, marginBottom: '20px' }}>{title}</h1>
+          <h1 style={{ color: 'var(--color-on-deep)', fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: 800, marginBottom: '20px' }}>{title}</h1>
           <nav style={{ display: 'flex', gap: '4px', overflowX: 'auto' }} aria-label="Host sections">
             {TABS.map(tab => {
               const active = tab.href === '/host' ? pathname === '/host' : pathname.startsWith(tab.href)
@@ -72,7 +73,7 @@ export default function HostShell({ title, children }: { title: string; children
                     textDecoration: 'none',
                     whiteSpace: 'nowrap',
                     borderRadius: '8px 8px 0 0',
-                    color: active ? 'var(--color-text-primary)' : 'var(--color-navbar-text)',
+                    color: active ? 'var(--color-dark)' : 'var(--color-on-deep)',
                     backgroundColor: active ? 'var(--color-bg-page)' : 'transparent',
                   }}
                 >

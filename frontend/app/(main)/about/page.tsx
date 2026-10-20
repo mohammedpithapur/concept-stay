@@ -92,7 +92,7 @@ export default function AboutPage() {
         <h1 style={{ fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '24px', lineHeight: '1.15', maxWidth: '800px', margin: '0 auto 24px' }}>
           About Concept Stay
         </h1>
-        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 24px' }} />
+        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto 24px' }} />
         <p style={{ fontSize: '16px', color: 'var(--color-text-secondary)', maxWidth: '620px', margin: '0 auto', lineHeight: '1.8' }}>
           Concept Stay offers warm, heritage-inspired homes designed for comfort, calm, and effortless city living. Perfect for corporate travellers, families, wedding guests, and anyone looking for a stay that feels personal, elegant, and memorable.
         </p>
@@ -129,7 +129,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section style={{ backgroundColor: 'var(--color-text-primary)', padding: 'clamp(48px, 6vw, 80px) 24px' }}>
+      <section className="surface-dark" style={{ backgroundColor: 'var(--color-text-primary)', padding: 'clamp(48px, 6vw, 80px) 24px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0' }}>
           {stats.map((stat, i) => (
             <div key={stat.label} style={{
@@ -156,7 +156,7 @@ export default function AboutPage() {
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
             Our Values
           </h2>
-          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto' }} />
+          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto' }} />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
@@ -166,7 +166,7 @@ export default function AboutPage() {
               borderRadius: '12px', padding: '32px 28px'
             }}>
               <value.icon size={28} style={{ color: 'var(--color-terra)', marginBottom: '16px' }} />
-              <div style={{ width: '32px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '16px' }} />
+              <div style={{ width: '32px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '12px' }}>{value.title}</h3>
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.8' }}>{value.description}</p>
             </div>
@@ -184,7 +184,7 @@ export default function AboutPage() {
             <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
               Meet the Team
             </h2>
-            <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto' }} />
+            <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', margin: '0 auto' }} />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
@@ -209,10 +209,10 @@ export default function AboutPage() {
                   </div>
                 ) : (
                   <div style={{
-                    width: '72px', height: '72px', backgroundColor: 'var(--color-terra)',
+                    width: '72px', height: '72px', backgroundColor: 'var(--color-brand)',
                     borderRadius: '50%', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', margin: '0 auto 20px',
-                    fontSize: '28px', fontWeight: '800', color: '#f6eddc'
+                    fontSize: '28px', fontWeight: '800', color: 'var(--color-on-accent)'
                   }}>
                     {member.initial}
                   </div>
@@ -250,8 +250,8 @@ export default function AboutPage() {
         <Link
           href="/properties"
           style={{
-            display: 'inline-block', backgroundColor: 'var(--color-terra)',
-            color: '#f6eddc', padding: '18px 48px', fontSize: '13px',
+            display: 'inline-block', backgroundColor: 'var(--color-brand)',
+            color: 'var(--color-on-accent)', padding: '18px 48px', fontSize: '13px',
             letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase',
             textDecoration: 'none', borderRadius: '8px'
           }}

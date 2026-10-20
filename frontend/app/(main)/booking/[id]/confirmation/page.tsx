@@ -34,11 +34,11 @@ function ConfirmationPageContent() {
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{
             width: '88px', height: '88px',
-            background: 'linear-gradient(135deg, #C9A84C 0%, #E8C96A 100%)',
+            background: 'linear-gradient(135deg, var(--color-brand) 0%, var(--color-terra-dark) 100%)',
             borderRadius: '50%',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 28px',
-            boxShadow: '0 8px 32px rgba(201, 168, 76, 0.4)',
+            boxShadow: '0 8px 32px rgba(162, 58, 31, 0.4)',
           }}>
             <Check size={44} style={{ color: '#ffffff' }} />
           </div>
@@ -54,7 +54,7 @@ function ConfirmationPageContent() {
         {/* Booking reference card */}
         <div style={{ backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '16px', padding: '32px', marginBottom: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
 
-          <div style={{
+          <div className="surface-deep" style={{
             textAlign: 'center',
             padding: '20px',
             backgroundColor: 'var(--color-deep)',
@@ -116,8 +116,8 @@ function ConfirmationPageContent() {
             id="btn-view-bookings"
             style={{
               flex: '1 1 180px',
-              background: 'linear-gradient(135deg, #C9A84C 0%, #E8C96A 100%)',
-              color: 'var(--color-text-primary)',
+              background: 'linear-gradient(135deg, var(--color-brand) 0%, var(--color-terra-dark) 100%)',
+              color: 'var(--color-on-accent)',
               padding: '18px',
               fontSize: '13px',
               letterSpacing: '1.5px',
