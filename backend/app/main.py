@@ -16,8 +16,8 @@ from starlette.responses import JSONResponse
 from app.config import settings
 from app.database import get_db, _IS_LAMBDA
 from app.rate_limit import limiter
-from app.routers import admin, auth, bookings, ical, payments, properties, reviews, users, events, push, contact, articles, host, payouts
-from app.models import push_subscription, price_override, payout  # noqa: F401 — ensures table is created
+from app.routers import admin, auth, bookings, ical, payments, properties, reviews, users, events, push, contact, articles, host, host_profile, payouts
+from app.models import push_subscription, price_override, payout, host_profile as host_profile_models  # noqa: F401 — ensures table is created
 
 
 logger = logging.getLogger("conceptstay.api")
@@ -77,6 +77,9 @@ async def housekeeping_worker():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Launch background iCal periodic sync if running on a persistent server
+    from app.services.crypto import check_configured
+
+    check_configured()  # fails the boot in production when FIELD_ENCRYPTION_KEY is missing
     tasks: list[asyncio.Task] = []
     if not _IS_LAMBDA:
         tasks = [asyncio.create_task(ical_background_worker()), asyncio.create_task(housekeeping_worker())]
@@ -182,6 +185,7 @@ app.include_router(push.router)
 app.include_router(contact.router)
 app.include_router(articles.router)
 app.include_router(host.router)
+app.include_router(host_profile.router)
 app.include_router(payouts.router)
 
 

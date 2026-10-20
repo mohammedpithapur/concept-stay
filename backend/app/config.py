@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     SUPABASE_URL: str = ""
     SUPABASE_SERVICE_KEY: str = ""
     SUPABASE_STORAGE_BUCKET: str = "property-images"
+    SUPABASE_PRIVATE_BUCKET: str = "private-docs"  # KYC and guest IDs; never public, served by signed URL only
+    FIELD_ENCRYPTION_KEY: str = ""  # Fernet key (python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
     IMAGE_MAX_BYTES: int = 5 * 1024 * 1024
 
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://172.28.104.24:3000"]

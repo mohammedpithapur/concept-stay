@@ -17,6 +17,7 @@ class PayoutOut(BaseModel):
     paid_at: datetime | None = None
     reference: str | None = None
     created_at: datetime
+    host_kyc_status: str | None = None  # incomplete | submitted | verified | rejected | exempt (admin-owned)
 
     model_config = {"from_attributes": True}
 

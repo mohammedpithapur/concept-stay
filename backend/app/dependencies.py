@@ -50,3 +50,10 @@ async def get_host(user: User = Depends(get_current_user)) -> User:
     if user.role != UserRole.host or user.host_status != HostStatus.approved:
         raise HTTPException(status_code=403, detail="Approved host access required")
     return user
+
+
+async def get_host_any_status(user: User = Depends(get_current_user)) -> User:
+    """Any host (pending or suspended included) or admin: used by the profile pages a host fills before approval."""
+    if user.role not in (UserRole.host, UserRole.admin):
+        raise HTTPException(status_code=403, detail="Host access required")
+    return user
