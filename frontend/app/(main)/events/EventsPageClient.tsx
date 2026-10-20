@@ -104,7 +104,7 @@ export default function EventsPageClient() {
         <h1 style={{ color: 'var(--color-on-deep)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', marginBottom: '8px' }}>
           Plan Your Event
         </h1>
-        <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '15px' }}>
+        <p style={{ color: 'var(--color-text-secondary)', fontSize: '15px' }}>
           Complete the form below to book your perfect event venue
         </p>
       </div>
@@ -311,8 +311,8 @@ export default function EventsPageClient() {
                 onClick={handleSubmit}
                 disabled={loading}
                 style={{
-                  backgroundColor: loading ? 'rgba(162, 58, 31, 0.6)' : 'var(--color-deep)',
-                  color: '#ffffff',
+                  backgroundColor: loading ? 'rgba(162, 58, 31, 0.6)' : 'var(--color-brand)',
+                  color: 'var(--color-on-accent)',
                   border: 'none',
                   padding: '14px 32px',
                   fontSize: '13px',
@@ -331,8 +331,8 @@ export default function EventsPageClient() {
                 onClick={() => window.location.href = '/properties'}
                 style={{
                   backgroundColor: 'transparent',
-                  color: 'var(--color-deep)',
-                  border: '2px solid var(--color-deep)',
+                  color: 'var(--color-brand)',
+                  border: '2px solid var(--color-brand)',
                   padding: '12px 32px',
                   fontSize: '13px',
                   letterSpacing: '1.5px',
@@ -363,8 +363,8 @@ export default function EventsPageClient() {
           <button className="surface-deep"
             onClick={() => window.location.href = '/'}
             style={{
-              backgroundColor: 'var(--color-deep)',
-              color: '#ffffff',
+              backgroundColor: 'var(--color-brand)',
+              color: 'var(--color-on-accent)',
               border: 'none',
               padding: '14px 32px',
               fontSize: '13px',

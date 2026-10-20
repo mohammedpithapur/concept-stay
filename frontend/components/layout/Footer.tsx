@@ -27,7 +27,7 @@ export default function Footer() {
           <h2 style={{ color: 'var(--color-on-deep)', fontSize: '22px', letterSpacing: '3px', marginBottom: '16px', fontWeight: '800' }}>
             CONCEPT STAY
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '18px', lineHeight: '1.8', marginBottom: '28px' }}>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: '18px', lineHeight: '1.8', marginBottom: '28px' }}>
             {Copy.footerDescription}
           </p>
 
@@ -68,7 +68,7 @@ export default function Footer() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'rgba(255,255,255,0.82)',
+                  color: 'var(--color-text-secondary)',
                   textDecoration: 'none',
                   transition: 'border-color 0.3s ease',
                 }}
@@ -101,7 +101,7 @@ export default function Footer() {
                 key={link.href}
                 href={link.href}
                 style={{
-                  color: 'rgba(255,255,255,0.82)',
+                  color: 'var(--color-text-secondary)',
                   fontSize: '13px',
                   textDecoration: 'none',
                   display: 'flex',
@@ -110,7 +110,7 @@ export default function Footer() {
                   transition: 'color 0.2s ease',
                 }}
                 onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'var(--color-on-deep)' }}
-                onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'rgba(255,255,255,0.82)' }}
+                onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'var(--color-text-secondary)' }}
               >
                 <ChevronRight size={12} aria-hidden="true" style={{ color: 'var(--color-on-deep)', flexShrink: 0 }} />
                 {link.label}
@@ -135,8 +135,8 @@ export default function Footer() {
               { icon: <MapPinIcon size={14} />, text: 'Kolkata, India', href: '#' },
             ].map(item => (
               <a key={item.text} href={item.href} target={item.href.startsWith('http') ? '_blank' : '_self'} rel="noopener noreferrer" style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', textDecoration: 'none' }}>
-                <span style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '2px' }}>{item.icon}</span>
-                <span style={{ color: 'rgba(255,255,255,0.82)', fontSize: '13px', lineHeight: '1.4' }}>{item.text}</span>
+                <span style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '2px' }}>{item.icon}</span>
+                <span style={{ color: 'var(--color-text-secondary)', fontSize: '13px', lineHeight: '1.4' }}>{item.text}</span>
               </a>
             ))}
           </div>
@@ -154,9 +154,9 @@ export default function Footer() {
               <a
                 key={link.href}
                 href={link.href}
-                style={{ color: 'rgba(255,255,255,0.82)', fontSize: '13px', textDecoration: 'none', transition: 'color 0.2s ease' }}
+                style={{ color: 'var(--color-text-secondary)', fontSize: '13px', textDecoration: 'none', transition: 'color 0.2s ease' }}
                 onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'var(--color-on-deep)' }}
-                onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'rgba(255,255,255,0.82)' }}
+                onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = 'var(--color-text-secondary)' }}
               >
                 {link.label}
               </a>
@@ -177,10 +177,10 @@ export default function Footer() {
         flexWrap: 'wrap',
         gap: '12px',
       }}>
-        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px' }}>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
           &copy; {year} Concept Stay. All rights reserved.
         </p>
-        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px' }}>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
           Payments secured by <span style={{ color: 'var(--color-on-deep)' }}>Razorpay</span>
         </p>
       </div>

@@ -15,7 +15,7 @@ export default function CTASection() {
         textAlign: 'center',
       }}>
         <p style={{
-          color: 'var(--color-gold)',
+          color: 'var(--color-terra)',
           letterSpacing: '3px',
           textTransform: 'uppercase',
           marginBottom: '12px',
@@ -34,7 +34,7 @@ export default function CTASection() {
         </h2>
 
         <p style={{
-          color: 'rgba(255,255,255,0.85)',
+          color: 'var(--color-text-secondary)',
           fontSize: '16px',
           marginBottom: '28px',
           lineHeight: '1.6',

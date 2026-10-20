@@ -190,7 +190,7 @@ export default function PropertiesClient() {
         <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '64px 24px', textAlign: 'center' }}>
           <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>Explore</p>
           <h1 style={{ color: 'var(--color-on-deep)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', marginBottom: '8px' }}>Our Properties</h1>
-          <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '15px' }}>Escape to thoughtfully curated stays inspired by nature, comfort, and local experiences.</p>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: '15px' }}>Escape to thoughtfully curated stays inspired by nature, comfort, and local experiences.</p>
         </div>
         <div className="content-shell-lg" style={{ padding: '48px 24px 72px' }}>
           <div className="responsive-card-grid">
@@ -230,7 +230,7 @@ export default function PropertiesClient() {
         <h1 style={{ color: 'var(--color-on-deep)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', marginBottom: '8px' }}>
           Our Properties
         </h1>
-        <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '15px' }}>
+        <p style={{ color: 'var(--color-text-secondary)', fontSize: '15px' }}>
           Escape to thoughtfully curated stays inspired by nature, comfort, and local experiences.
         </p>
       </div>
