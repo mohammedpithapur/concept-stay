@@ -59,7 +59,7 @@ const sections = [
     content: [
       {
         subtitle: 'Cancellations and Refunds',
-        text: 'Each listing shows its cancellation policy (Flexible, Moderate or Non-refundable). Refunds, if any, follow that policy as calculated on the booking date and are returned to the original payment method. Taxes and service fees follow the same refund percentage.',
+        text: 'A booking cancelled within 10 days of the booking date, and before check-in, is refunded in full, including taxes and service fees. After 10 days no refund is given, unless our team approves a refund after reviewing a reported problem. Refunds are returned to the original payment method.',
       },
       {
         subtitle: 'No Modifications',
@@ -188,7 +188,7 @@ export default function TermsPage() {
       <div style={{ backgroundColor: 'var(--color-bg-card)', borderBottom: '1px solid var(--color-terra)' }}>
         <div className="content-shell" style={{ padding: '20px 24px' }}>
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.7', textAlign: 'center' }}>
-            <strong>Important:</strong> Each stay has its own <strong>cancellation policy</strong>. Please review it in Section 4 before making a reservation.
+            <strong>Important:</strong> Every stay follows the <strong>10-day refund rule</strong>. Please review it in Section 4 before making a reservation.
           </p>
         </div>
       </div>

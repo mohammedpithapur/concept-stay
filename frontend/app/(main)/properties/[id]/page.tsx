@@ -7,7 +7,7 @@ import MapWrapper from '@/components/shared/MapWrapper'
 import { buildApiUrl, fetchPropertyReviews, type PriceOverride } from '@/lib/api'
 import type { Property, Review } from '@/lib/types'
 import VerifiedBadge from '@/components/property/VerifiedBadge'
-import { CANCELLATION_POLICIES, PROPERTY_TYPES, getPriceQuote, getReviewSummary, labelFor, type PriceQuote, type ReviewSummary } from '@/lib/marketplace'
+import { REFUND_POLICY, PROPERTY_TYPES, getPriceQuote, getReviewSummary, labelFor, type PriceQuote, type ReviewSummary } from '@/lib/marketplace'
 import type { DateRange } from 'react-day-picker'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { Star, MapPin, Users, User, Bed, Bath, Calendar, Moon, Dog, Check, Phone, Mail, Clock, ShieldAlert, Sparkles, ChevronLeft, ChevronRight, Armchair, Sofa, Utensils, UtensilsCrossed, DoorOpen, LayoutDashboard, TreePalm, Camera, X, Folder, Share2, Compass, ArrowRight } from 'lucide-react'
@@ -376,7 +376,7 @@ export default function PropertyDetailPage() {
   const taxes = quote?.taxes ?? 0
   const serviceFee = quote?.service_fee ?? 0
   const totalPrice = quote ? quote.total : basePrice + extraGuestCharge + property.cleaning_fee + petCharge
-  const policy = CANCELLATION_POLICIES[property.cancellation_policy ?? 'flexible']
+  const policy = REFUND_POLICY
 
   const handleBook = () => {
     if (!checkIn || !checkOut) { alert('Please select check-in and check-out dates'); return }

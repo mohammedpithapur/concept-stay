@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { uploadPropertyImage } from '@/lib/supabase/storage'
 import {
-  CANCELLATION_POLICIES, CATEGORIES, EXPERIENCE_TAGS, FILTER_AMENITIES, PROPERTY_TYPES,
-  createHostProperty, updateHostProperty, type CancellationPolicy, type HostProperty,
+  CATEGORIES, EXPERIENCE_TAGS, FILTER_AMENITIES, PROPERTY_TYPES,
+  createHostProperty, updateHostProperty, type HostProperty,
 } from '@/lib/marketplace'
 import { hostGhostButton, hostInput, hostPrimaryButton } from '@/components/host/HostShell'
 
@@ -22,7 +22,6 @@ type Draft = {
   pets_allowed: boolean; pet_charge_per_night: number; max_pets: number
   check_in_time: string; check_out_time: string
   house_rules: string[]; amenities: string[]; categories: string[]; experience_tags: string[]
-  cancellation_policy: CancellationPolicy
   images: DraftImage[]
 }
 
@@ -36,7 +35,6 @@ const EMPTY: Draft = {
   pets_allowed: false, pet_charge_per_night: 0, max_pets: 0,
   check_in_time: '2:00 PM', check_out_time: '11:00 AM',
   house_rules: [], amenities: [], categories: [], experience_tags: [],
-  cancellation_policy: 'flexible',
   images: [],
 }
 
@@ -231,19 +229,6 @@ export default function ListingForm({ property, onSaved, onCancel }: Props) {
           <label style={label}>House rules (one per line)</label>
           <textarea rows={4} value={d.house_rules.join('\n')} style={hostInput}
             onChange={e => set('house_rules', e.target.value.split('\n').filter(l => l.trim()))} />
-        </div>
-      </div>
-
-      <div style={section}>
-        <label style={label}>Cancellation policy</label>
-        <div style={{ display: 'grid', gap: '10px' }}>
-          {(Object.keys(CANCELLATION_POLICIES) as CancellationPolicy[]).map(key => (
-            <label key={key} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer' }}>
-              <input type="radio" name="policy" checked={d.cancellation_policy === key} onChange={() => set('cancellation_policy', key)} />
-              <span><strong>{CANCELLATION_POLICIES[key].label}</strong><br />
-                <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>{CANCELLATION_POLICIES[key].summary}</span></span>
-            </label>
-          ))}
         </div>
       </div>
 

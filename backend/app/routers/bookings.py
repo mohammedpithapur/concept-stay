@@ -17,7 +17,7 @@ from app.models.payment import Payment, RazorpayPaymentStatus
 from app.models.payout import Payout
 from app.models.price_override import PropertyPriceOverride
 from app.schemas.booking import BookingCreate, BookingOut, BookingStatusUpdate, BookingListOut
-from app.services.cancellation import compute_refund, rescale_payout
+from app.services.cancellation import compute_refund, refund_deadline, rescale_payout
 from app.services.property import public_listing_clauses
 from app.services.refunds import RefundError, issue_refund
 from app.services.booking import calculate_pricing, apply_group_blocking, remove_shadow_blocks, auto_cleanup_expired_bookings
@@ -309,12 +309,15 @@ async def refund_preview(
     booking_id: str, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
 ):
     booking = await _load_cancellable(db, booking_id, user, lock=False)
-    prop = await db.get(Property, booking.property_id)
-    policy = prop.cancellation_policy if prop else "non_refundable"
     paid = booking.payment_status == PaymentStatus.paid
     can_cancel = _cancel_blocker(booking, today_ist()) is None
-    refund = compute_refund(policy, booking.total, booking.check_in, today_ist()) if (paid and can_cancel) else 0
-    return {"can_cancel": can_cancel, "policy": policy, "refund_amount": refund, "total_paid": booking.total if paid else 0}
+    refund = compute_refund(booking.total, booking.created_at, utc_now(), booking.check_in) if (paid and can_cancel) else 0
+    return {
+        "can_cancel": can_cancel,
+        "refund_amount": refund,
+        "total_paid": booking.total if paid else 0,
+        "refund_deadline": refund_deadline(booking.created_at).isoformat(),
+    }
 
 
 @router.post("/{booking_id}/cancel", response_model=BookingOut)
@@ -334,8 +337,7 @@ async def cancel_my_booking(
     refund_amount = 0
     if booking.payment_status == PaymentStatus.paid:
         payment = await db.scalar(select(Payment).where(Payment.booking_id == booking.id))
-        policy = prop.cancellation_policy if prop else "non_refundable"
-        refund_amount = compute_refund(policy, booking.total, booking.check_in, today)
+        refund_amount = compute_refund(booking.total, booking.created_at, utc_now(), booking.check_in)
         if refund_amount > 0:
             try:
                 await asyncio.to_thread(issue_refund, payment.razorpay_payment_id if payment else "", refund_amount)

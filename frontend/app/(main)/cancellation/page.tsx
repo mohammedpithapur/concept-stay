@@ -5,7 +5,7 @@ import { AlertTriangle, X, Check } from 'lucide-react'
 const faqs = [
   {
     q: 'Can I get a refund if I cancel my booking?',
-    a: 'It depends on the cancellation policy shown on the property page: Flexible (full refund until 5 days before check-in), Moderate (full refund until 14 days, 50% until 5 days before check-in) or Non-refundable. You can cancel from your dashboard, which shows the exact refund before you confirm.',
+    a: 'Every stay follows the same rule: cancel within 10 days of booking, and before check-in, for a full refund. After the 10 days there is no refund. Your dashboard shows the exact refund and the deadline before you confirm.',
   },
   {
     q: 'What if I need to change my dates?',
@@ -80,7 +80,7 @@ export default function CancellationPage() {
             Cancellation Policies
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '16px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.7' }}>
-            Every stay shows one of three policies: <strong>Flexible</strong> (free cancellation until 5 days before check-in), <strong>Moderate</strong> (full refund until 14 days, 50% until 5 days) or <strong>Non-refundable</strong>. Refunds go back to your original payment method.
+            Every stay follows one rule: <strong>full refund if you cancel within 10 days of booking</strong> and before check-in. After that there is no refund. Refunds go back to your original payment method.
           </p>
         </div>
       </div>

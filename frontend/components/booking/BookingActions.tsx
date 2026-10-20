@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/auth/AuthContext'
 import type { MyBooking } from '@/lib/api'
 import type { Property } from '@/lib/types'
 import {
-  CANCELLATION_POLICIES, cancelMyBooking, getRefundPreview, submitReview,
+  REFUND_POLICY, cancelMyBooking, getRefundPreview, submitReview,
   type RefundPreview, type VerifiedReviewInput,
 } from '@/lib/marketplace'
 
@@ -46,7 +46,11 @@ export default function BookingActions({ booking, property, onChanged }: Props) 
     getRefundPreview(booking.id, fetchWithAuth).then(setPreview).catch(() => setPreview(null))
   }, [booking.id, cancellable, fetchWithAuth])
 
-  const policy = CANCELLATION_POLICIES[preview?.policy ?? property?.cancellation_policy ?? 'flexible']
+  const policy = REFUND_POLICY
+  const deadline = preview?.refund_deadline ? new Date(preview.refund_deadline.endsWith('Z') ? preview.refund_deadline : preview.refund_deadline + 'Z') : null
+  const deadlineText = deadline && preview && preview.refund_amount > 0
+    ? ` Your full refund is available until ${deadline.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}.`
+    : ''
   const money = (n: number) => `₹${n.toLocaleString('en-IN')}`
 
   const doCancel = async () => {
@@ -80,7 +84,7 @@ export default function BookingActions({ booking, property, onChanged }: Props) 
   return (
     <div style={{ marginTop: '16px', backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-terra)', borderRadius: '8px', padding: '14px 16px' }}>
       <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
-        <strong>Cancellation policy: {policy.label}.</strong> {policy.summary}
+        <strong>Cancellation policy: {policy.label}.</strong> {policy.summary}{deadlineText}
       </p>
 
       {message && <p role="status" style={{ marginTop: '10px', fontSize: '13px', fontWeight: 600, color: '#2E7D32' }}>{message}</p>}

@@ -42,9 +42,10 @@ def test_pricing_breakdown_three_nights():
     assert p["base_price"] == 15000
     assert p["extra_guest_charge"] == 0
     assert p["cleaning_fee"] == 800
-    assert p["taxes"] == 1800  # 12% of stay value (nightly rates + extra guests)
     assert p["service_fee"] == 750  # 5% of stay value
-    assert p["total"] == 15000 + 800 + 1800 + 750
+    assert p["subtotal"] == 16550  # stay + cleaning + service fee
+    assert p["taxes"] == 1986  # 12% of everything the guest is charged
+    assert p["total"] == 18536
 
 
 def test_pricing_extra_guests_and_pets_taxed_correctly():
@@ -55,9 +56,9 @@ def test_pricing_extra_guests_and_pets_taxed_correctly():
     assert p["extra_guest_charge"] == 2 * 2 * 500  # 2 extra guests x 2 nights x 500
     assert p["pet_charge"] == 400
     stay_value = p["base_price"] + p["extra_guest_charge"]
-    assert p["taxes"] == round(stay_value * 0.12)
     assert p["service_fee"] == round(stay_value * 0.05)
-    assert p["total"] == stay_value + 800 + 400 + p["taxes"] + p["service_fee"]
+    assert p["taxes"] == 1656 == round((stay_value + 400 + 800 + p["service_fee"]) * 0.12)
+    assert p["total"] == 15456
 
 
 async def _listing(client, admin_headers, **kw) -> str:
@@ -92,8 +93,8 @@ async def test_booking_stores_breakdown_and_matches_quote(client, admin_headers,
     assert quote.status_code == 200, quote.text
     booking = await _book(client, user_token, pid)
     q = quote.json()
-    assert booking["total"] == q["total"] == 18350
-    assert booking["taxes"] == q["taxes"] == 1800
+    assert booking["total"] == q["total"] == 18536
+    assert booking["taxes"] == q["taxes"] == 1986
     assert booking["service_fee"] == q["service_fee"] == 750
     assert booking["extra_guest_charge"] == 0
     assert len(q["nightly_rates"]) == 3
@@ -108,7 +109,7 @@ async def test_verify_creates_single_payout(client, admin_headers, admin_token, 
     rows = (await db_session.execute(select(Payout))).scalars().all()
     assert len(rows) == 1
     p = rows[0]
-    assert (p.gross_amount, p.commission, p.fees, p.taxes, p.host_amount) == (18350, 2250, 750, 1800, 13550)
+    assert (p.gross_amount, p.commission, p.fees, p.taxes, p.host_amount) == (18536, 2250, 750, 1986, 13550)
     assert p.gross_amount == p.host_amount + p.commission + p.fees + p.taxes
     assert p.status == "owed"
 

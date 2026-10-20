@@ -1,7 +1,7 @@
 import hashlib
 import hmac
 import json
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from types import SimpleNamespace
 
 import pytest
@@ -11,38 +11,31 @@ from app.models.booking import Booking
 from app.models.payment import Payment, RazorpayPaymentStatus
 from app.models.payout import Payout
 from app.services import refunds
-from app.services.cancellation import compute_refund
+from app.services.cancellation import compute_refund, refund_deadline
 from tests.test_host_listings import _h
 from tests.test_payouts import _book, _listing, _pay, _razorpay_secret  # noqa: F401  (autouse fixture)
 
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.mark.parametrize(
-    "policy,days,expected",
-    [
-        ("flexible", 30, 1000),
-        ("flexible", 5, 1000),
-        ("flexible", 4, 0),
-        ("flexible", 0, 0),
-        ("moderate", 30, 1000),
-        ("moderate", 14, 1000),
-        ("moderate", 13, 500),
-        ("moderate", 5, 500),
-        ("moderate", 4, 0),
-        ("moderate", 0, 0),
-        ("non_refundable", 90, 0),
-    ],
-)
-def test_compute_refund_boundaries(policy, days, expected):
-    today = date(2031, 1, 1)
-    assert compute_refund(policy, 1000, today + timedelta(days=days), today) == expected
+def test_refund_boundary():
+    booked = datetime(2031, 1, 1, 12, 0, 0)
+    future = date(2031, 3, 1)
+    assert compute_refund(1000, booked, booked + timedelta(days=10), future) == 1000
+    assert compute_refund(1000, booked, booked + timedelta(days=10, seconds=1), future) == 0
+    assert compute_refund(1000, booked, booked, future) == 1000
 
 
-def test_compute_refund_unknown_policy_is_non_refundable_and_past_checkin_is_zero():
-    today = date(2031, 1, 10)
-    assert compute_refund("mystery", 1000, today + timedelta(days=60), today) == 0
-    assert compute_refund("flexible", 1000, today - timedelta(days=1), today) == 0
+def test_no_refund_once_stay_started_even_inside_window():
+    booked = datetime(2031, 1, 1, 12, 0, 0)
+    now = booked + timedelta(days=2)
+    assert compute_refund(1000, booked, now, date(2031, 1, 3)) == 0  # check-in is today (IST)
+    assert compute_refund(1000, booked, now, date(2031, 1, 2)) == 0
+
+
+def test_refund_deadline_is_ten_days_after_booking():
+    booked = datetime(2031, 1, 1, 12, 0, 0)
+    assert refund_deadline(booked) == datetime(2031, 1, 11, 12, 0, 0)
 
 
 @pytest.fixture
@@ -92,31 +85,19 @@ async def test_flexible_full_refund_voids_payout(client, admin_headers, user_tok
     assert len(fake_razorpay) == 1  # never refunded twice
 
 
-async def test_moderate_partial_refund_rescales_payout(client, admin_headers, user_token, db_session, fake_razorpay):
-    booking = await _paid_booking(
-        client, admin_headers, user_token, db_session, days_ahead=10, cancellation_policy="moderate"
-    )
+async def test_cancel_after_window_gets_no_refund_and_keeps_payout(
+    client, admin_headers, user_token, db_session, fake_razorpay
+):
+    booking = await _paid_booking(client, admin_headers, user_token, db_session)
+    row = await db_session.get(Booking, booking["id"])
+    row.created_at = row.created_at - timedelta(days=11)
+    await db_session.commit()
     res = await client.post(f"/bookings/{booking['id']}/cancel", headers=_h(user_token))
     assert res.status_code == 200, res.text
-    refund = res.json()["refund_amount"]
-    assert refund == booking["total"] // 2
-    assert fake_razorpay[0][1]["amount"] == refund * 100
-
-    retained = booking["total"] - refund
-    payout = (await db_session.execute(select(Payout))).scalar_one()
-    assert payout.status == "owed"
-    assert payout.gross_amount == retained
-    assert 0 < payout.host_amount < 13550
-    assert payout.gross_amount == payout.host_amount + payout.commission + payout.fees + payout.taxes
-
-
-async def test_non_refundable_cancels_without_refund(client, admin_headers, user_token, db_session, fake_razorpay):
-    booking = await _paid_booking(client, admin_headers, user_token, db_session, cancellation_policy="non_refundable")
-    res = await client.post(f"/bookings/{booking['id']}/cancel", headers=_h(user_token))
-    assert res.status_code == 200
-    assert res.json()["status"] == "cancelled"
-    assert res.json()["refund_amount"] == 0
-    assert res.json()["payment_status"] == "paid"
+    body = res.json()
+    assert body["status"] == "cancelled"
+    assert body["refund_amount"] == 0
+    assert body["payment_status"] == "paid"
     assert fake_razorpay == []
     payout = (await db_session.execute(select(Payout))).scalar_one()
     assert payout.status == "owed" and payout.gross_amount == booking["total"]
@@ -168,18 +149,20 @@ async def test_gateway_failure_keeps_booking_confirmed(client, admin_headers, us
 
 
 async def test_refund_preview_matches_cancel(client, admin_headers, user_token, db_session, fake_razorpay):
-    booking = await _paid_booking(
-        client, admin_headers, user_token, db_session, days_ahead=10, cancellation_policy="moderate"
-    )
+    booking = await _paid_booking(client, admin_headers, user_token, db_session, days_ahead=10)
     prev = await client.get(f"/bookings/{booking['id']}/refund-preview", headers=_h(user_token))
     assert prev.status_code == 200
-    assert prev.json() == {
-        "can_cancel": True,
-        "policy": "moderate",
-        "refund_amount": booking["total"] // 2,
-        "total_paid": booking["total"],
-    }
+    body = prev.json()
+    assert "policy" not in body
+    assert (body["can_cancel"], body["refund_amount"], body["total_paid"]) == (True, booking["total"], booking["total"])
+    row = await db_session.get(Booking, booking["id"])
+    assert datetime.fromisoformat(body["refund_deadline"]) == row.created_at + timedelta(days=10)
     assert fake_razorpay == []  # preview never refunds
+
+    row.created_at = row.created_at - timedelta(days=11)
+    await db_session.commit()
+    late = await client.get(f"/bookings/{booking['id']}/refund-preview", headers=_h(user_token))
+    assert late.json()["refund_amount"] == 0
 
 
 async def test_admin_full_refund_voids_owed_payout(

@@ -52,13 +52,15 @@ def calculate_pricing(
     extra_guest_charge = extra_guests * nights * extra_guest_rate
     pet_charge = pets * nights * property.pet_charge_per_night
     stay_value = base_price + extra_guest_charge
-    taxes = percent_of(stay_value, settings.TAX_PERCENT)
     service_fee = percent_of(stay_value, settings.GUEST_SERVICE_FEE_PERCENT)
-    total = stay_value + property.cleaning_fee + pet_charge + taxes + service_fee
+    subtotal = stay_value + property.cleaning_fee + pet_charge + service_fee
+    taxes = percent_of(subtotal, settings.TAX_PERCENT)  # tax applies to everything the guest is charged
+    total = subtotal + taxes
     return {
         "nights": nights,
         "base_price": base_price,
         "extra_guest_charge": extra_guest_charge,
+        "subtotal": subtotal,
         "taxes": taxes,
         "service_fee": service_fee,
         "cleaning_fee": property.cleaning_fee,

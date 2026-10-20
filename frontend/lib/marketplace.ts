@@ -41,22 +41,9 @@ export const FILTER_AMENITIES = [
   "Breakfast", "Mountain view", "Lake view", "Garden", "Workspace",
 ] as const
 
-export const CANCELLATION_POLICIES = {
-  flexible: {
-    label: "Flexible",
-    summary: "Free cancellation until 5 days before check-in. After that, no refund.",
-  },
-  moderate: {
-    label: "Moderate",
-    summary: "Full refund until 14 days before check-in, 50% until 5 days before, then no refund.",
-  },
-  non_refundable: {
-    label: "Non-refundable",
-    summary: "This stay is non-refundable once booked.",
-  },
-} as const
+export const REFUND_COPY = "Full refund if you cancel within 10 days of booking. After that, no refund."
 
-export type CancellationPolicy = keyof typeof CANCELLATION_POLICIES
+export const REFUND_POLICY = { label: "10-day refund", summary: REFUND_COPY } as const
 
 export const VERIFICATION_STATUSES = ["unverified", "pending", "verified", "rejected", "suspended"] as const
 export type VerificationStatus = (typeof VERIFICATION_STATUSES)[number]
@@ -128,9 +115,9 @@ export type CategoryReview = Review & {
 
 export type RefundPreview = {
   can_cancel: boolean
-  policy: CancellationPolicy
   refund_amount: number
   total_paid: number
+  refund_deadline: string
 }
 
 export type Payout = {

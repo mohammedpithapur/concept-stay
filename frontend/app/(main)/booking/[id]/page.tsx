@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { buildApiUrl, createBooking, createPaymentOrder, verifyPayment } from '@/lib/api'
 import { useAuth } from '@/lib/auth/AuthContext'
 import type { Property } from '@/lib/types'
-import { CANCELLATION_POLICIES, getPriceQuote, type PriceQuote } from '@/lib/marketplace'
+import { REFUND_POLICY, getPriceQuote, type PriceQuote } from '@/lib/marketplace'
 import { AlertTriangle } from 'lucide-react'
 
 // ── Razorpay type declarations ────────────────────────────────────────────────
@@ -317,7 +317,7 @@ function BookingPageContent() {
   const isProcessing = paymentStep !== 'form' && paymentStep !== 'error'
   const buttonLabel = STEP_LABELS[paymentStep].replace('{{amount}}', total.toLocaleString('en-IN'))
 
-  const policy = CANCELLATION_POLICIES[property.cancellation_policy ?? 'flexible']
+  const policy = REFUND_POLICY
   const petCharge = quote?.pet_charge ?? pets * nights * property.pet_charge_per_night
   const extraGuestCharge = quote?.extra_guest_charge ?? 0
   const taxes = quote?.taxes ?? 0

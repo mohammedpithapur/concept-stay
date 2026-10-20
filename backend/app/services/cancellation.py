@@ -1,25 +1,25 @@
-"""Cancellation policies: how much of a paid booking is refunded, and what that does to the host payout."""
-from datetime import date
+"""Cancellation: one refund rule for every listing, and what a refund does to the host payout."""
+from datetime import date, datetime, timedelta
 
 from app.models.payout import Payout
 
-# policy -> [(minimum days before check-in, refund percent), ...] checked top to bottom
-POLICY_TIERS: dict[str, list[tuple[int, int]]] = {
-    "flexible": [(5, 100)],
-    "moderate": [(14, 100), (5, 50)],
-    "non_refundable": [],
-}
+REFUND_WINDOW_DAYS = 10
 
 
-def compute_refund(policy: str, total_paid: int, check_in: date, today: date) -> int:
-    """Refund in whole rupees. Unknown policies are treated as non-refundable; on/after check-in nothing is refunded."""
-    days_before = (check_in - today).days
-    if days_before <= 0:
+def refund_deadline(booked_at: datetime) -> datetime:
+    """Last moment (same clock as `booked_at`) at which a cancellation is still refunded in full."""
+    return booked_at + timedelta(days=REFUND_WINDOW_DAYS)
+
+
+def compute_refund(total_paid: int, booked_at: datetime, now: datetime, check_in: date) -> int:
+    """Full refund while inside the window and before check-in (India date); nothing otherwise.
+
+    `booked_at` and `now` are naive UTC, like every datetime column in this app.
+    """
+    today_in_india = (now.replace(tzinfo=None) + timedelta(hours=5, minutes=30)).date()
+    if check_in <= today_in_india or now > refund_deadline(booked_at):
         return 0
-    for min_days, percent in POLICY_TIERS.get(policy, []):
-        if days_before >= min_days:
-            return (total_paid * percent) // 100
-    return 0
+    return total_paid
 
 
 def rescale_payout(payout: Payout, total_paid: int, refund_amount: int) -> None:
