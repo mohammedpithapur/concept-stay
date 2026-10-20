@@ -10,6 +10,7 @@ from app.database import get_db, today_ist, utc_now
 from app.dependencies import get_admin, get_current_user
 from app.models.booking import Booking, BookingStatus, PaymentStatus
 from app.models.user import User
+from app.services.booking import complete_finished_bookings
 from app.models.property import Property
 from app.models.review import Review
 from app.schemas.review import ReviewCreate, ReviewOut, VerifiedReviewIn
@@ -143,12 +144,10 @@ async def create_verified_review(
         raise HTTPException(status_code=404, detail="Booking not found")
     if booking.guest_id != user.id:
         raise HTTPException(status_code=403, detail="Only the guest of this booking can review it")
-    stay_over = booking.status == BookingStatus.completed or (
-        booking.status == BookingStatus.confirmed
-        and booking.payment_status == PaymentStatus.paid
-        and booking.check_out <= today_ist()
-    )
-    if not stay_over:
+    if booking.status == BookingStatus.confirmed:
+        await complete_finished_bookings(db, force=True)  # may have just ended; the sweep commits
+        await db.refresh(booking)
+    if booking.status != BookingStatus.completed:
         raise HTTPException(status_code=409, detail="You can review a stay after it has been completed")
     if await db.scalar(select(Review.id).where(Review.booking_id == booking.id)):
         raise HTTPException(status_code=409, detail="This booking has already been reviewed")

@@ -20,7 +20,7 @@ from app.schemas.booking import BookingCreate, BookingOut, BookingStatusUpdate, 
 from app.services.cancellation import compute_refund, refund_deadline, rescale_payout
 from app.services.property import public_listing_clauses
 from app.services.refunds import RefundError, issue_refund
-from app.services.booking import calculate_pricing, apply_group_blocking, remove_shadow_blocks, auto_cleanup_expired_bookings
+from app.services.booking import calculate_pricing, apply_group_blocking, remove_shadow_blocks, auto_cleanup_expired_bookings, complete_finished_bookings
 from app.services.email import send_booking_cancellation_email
 from app.services.push import send_push_to_user, send_push_to_admins
 
@@ -172,6 +172,7 @@ async def my_bookings(
     db: AsyncSession = Depends(get_db),
 ):
     await auto_cleanup_expired_bookings(db)
+    await complete_finished_bookings(db)
     base_query = select(Booking).where(
         Booking.guest_id == user.id,
         Booking.is_shadow_block == False,

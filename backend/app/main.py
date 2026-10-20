@@ -51,14 +51,37 @@ async def ical_background_worker():
             break
 
 
+async def housekeeping_worker():
+    """Hourly: complete finished stays so they show as completed (and become reviewable) without any request."""
+    await asyncio.sleep(30)
+    while True:
+        try:
+            from app.database import async_session
+            from app.services.booking import complete_finished_bookings
+
+            async with async_session() as session:
+                done = await complete_finished_bookings(session, force=True)
+            if done:
+                logger.info("Marked %d finished stays as completed", done)
+        except asyncio.CancelledError:
+            break
+        except Exception as e:
+            logger.exception("Error in housekeeping loop: %s", e)
+
+        try:
+            await asyncio.sleep(3600)
+        except asyncio.CancelledError:
+            break
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Launch background iCal periodic sync if running on a persistent server
-    task = None
+    tasks: list[asyncio.Task] = []
     if not _IS_LAMBDA:
-        task = asyncio.create_task(ical_background_worker())
+        tasks = [asyncio.create_task(ical_background_worker()), asyncio.create_task(housekeeping_worker())]
     yield
-    if task:
+    for task in tasks:
         task.cancel()
         try:
             await task

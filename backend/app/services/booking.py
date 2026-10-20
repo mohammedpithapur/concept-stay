@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 from typing import Any
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.booking import Booking, BookingStatus
@@ -167,3 +167,34 @@ async def auto_cleanup_expired_bookings(db: AsyncSession) -> None:
     )
     if result.rowcount > 0:
         await db.commit()
+
+_last_complete_time = 0.0
+
+
+async def complete_finished_bookings(db: AsyncSession, *, force: bool = False) -> int:
+    """Mark paid, confirmed stays whose check-out date (India time) has arrived as completed.
+
+    Throttled to once a minute like the expired-booking cleanup unless `force`. Returns rows changed.
+    """
+    global _last_complete_time
+    now = time.time()
+    if not force and now - _last_complete_time < CLEANUP_INTERVAL:
+        return 0
+    _last_complete_time = now
+
+    from app.database import today_ist
+    from app.models.booking import PaymentStatus
+
+    result = await db.execute(
+        update(Booking)
+        .where(
+            Booking.status == BookingStatus.confirmed,
+            Booking.payment_status == PaymentStatus.paid,
+            Booking.is_admin_block == False,  # noqa: E712
+            Booking.is_shadow_block == False,  # noqa: E712
+            Booking.check_out <= today_ist(),
+        )
+        .values(status=BookingStatus.completed)
+    )
+    await db.commit()
+    return result.rowcount or 0
