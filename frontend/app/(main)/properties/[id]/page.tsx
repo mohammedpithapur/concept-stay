@@ -301,7 +301,7 @@ export default function PropertyDetailPage() {
     return (
       <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
         {/* Gallery skeleton */}
-        <div style={{ backgroundColor: 'var(--color-navbar)', padding: '6px' }}>
+        <div style={{ backgroundColor: 'var(--color-deep)', padding: '6px' }}>
           <div style={{
             height: 'clamp(280px, 55vw, 520px)',
             background: 'linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%)',
@@ -346,7 +346,7 @@ export default function PropertyDetailPage() {
         <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>{loadError}</h2>
         <button
           onClick={() => router.push('/properties')}
-          style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}
+          style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}
         >
           Back to Properties
         </button>
@@ -360,7 +360,7 @@ export default function PropertyDetailPage() {
         <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px' }}>Property not found</h2>
         <button
           onClick={() => router.push('/properties')}
-          style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}
+          style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '14px 32px', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', borderRadius: '8px' }}
         >
           Back to Properties
         </button>
@@ -414,7 +414,7 @@ export default function PropertyDetailPage() {
     <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
 
       {/* Photo Gallery */}
-      <div style={{ backgroundColor: 'var(--color-navbar)', padding: '6px' }}>
+      <div style={{ backgroundColor: 'var(--color-deep)', padding: '6px' }}>
         <div style={{ position: 'relative', minHeight: 'clamp(300px, 60vw, 540px)', overflow: 'hidden', marginBottom: '8px', borderRadius: '4px' }}>
           {(() => {
             const mainSrc = property.images[activeImage]?.image_url || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200'
@@ -462,7 +462,7 @@ export default function PropertyDetailPage() {
             <div
               key={img.id || i}
               onClick={() => setActiveImage(i)}
-              style={{ position: 'relative', width: 84, height: 56, flexShrink: 0, cursor: 'pointer', borderRadius: 6, overflow: 'hidden', border: activeImage === i ? '2px solid var(--color-gold)' : '2px solid rgba(255,255,255,0.2)', transition: 'border-color 0.15s ease, transform 0.15s ease', transform: activeImage === i ? 'scale(1.05)' : 'scale(1)' }}
+              style={{ position: 'relative', width: 84, height: 56, flexShrink: 0, cursor: 'pointer', borderRadius: 6, overflow: 'hidden', border: activeImage === i ? '2px solid var(--color-terra)' : '2px solid rgba(255,255,255,0.2)', transition: 'border-color 0.15s ease, transform 0.15s ease', transform: activeImage === i ? 'scale(1.05)' : 'scale(1)' }}
             >
               <Image
                 src={img.image_url || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400'}
@@ -492,7 +492,7 @@ export default function PropertyDetailPage() {
               <span style={{ backgroundColor: 'var(--color-bg-soft)', color: 'var(--color-text-primary)', padding: '5px 12px', fontSize: '12px', letterSpacing: '0.5px', borderRadius: '6px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <MapPin size={13} /> {property.city}, {property.state}
               </span>
-              <span style={{ backgroundColor: 'var(--color-text-primary)', color: 'var(--color-gold)', padding: '5px 12px', fontSize: '12px', borderRadius: '6px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span style={{ backgroundColor: 'var(--color-text-primary)', color: 'var(--color-terra)', padding: '5px 12px', fontSize: '12px', borderRadius: '6px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <Star size={13} fill="currentColor" /> {property.avg_rating} ({property.review_count} reviews)
               </span>
               {property.pets_allowed && (
@@ -521,7 +521,7 @@ export default function PropertyDetailPage() {
             >
               {shareCopied ? (
                 <>
-                  <Check size={14} color="var(--color-gold)" />
+                  <Check size={14} color="var(--color-terra)" />
                   <span>Link Copied!</span>
                 </>
               ) : (
@@ -659,11 +659,11 @@ export default function PropertyDetailPage() {
                   style={{
                     padding: '16px 20px',
                     border: 'none',
-                    borderLeft: activeTab === tab ? '3px solid var(--color-gold)' : '3px solid transparent',
+                    borderLeft: activeTab === tab ? '3px solid var(--color-terra)' : '3px solid transparent',
                     borderRight: 'none',
                     borderBottom: '1px solid var(--color-border)',
                     backgroundColor: activeTab === tab ? '#f9f6f0' : 'transparent',
-                    color: activeTab === tab ? 'var(--color-gold)' : 'var(--color-text-muted)',
+                    color: activeTab === tab ? 'var(--color-terra)' : 'var(--color-text-muted)',
                     fontSize: '13px',
                     letterSpacing: '1px',
                     textTransform: 'uppercase',
@@ -688,9 +688,9 @@ export default function PropertyDetailPage() {
                   style={{
                     padding: '14px 20px',
                     border: 'none',
-                    borderBottom: activeTab === tab ? '2px solid var(--color-gold)' : '2px solid transparent',
+                    borderBottom: activeTab === tab ? '2px solid var(--color-terra)' : '2px solid transparent',
                     backgroundColor: 'transparent',
-                    color: activeTab === tab ? 'var(--color-gold)' : 'var(--color-text-muted)',
+                    color: activeTab === tab ? 'var(--color-terra)' : 'var(--color-text-muted)',
                     fontSize: '13px',
                     letterSpacing: '1px',
                     textTransform: 'uppercase',
@@ -762,7 +762,7 @@ export default function PropertyDetailPage() {
                         onMouseEnter={e => {
                           (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'
                           ;(e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'
-                          ;(e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-gold)'
+                          ;(e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-terra)'
                         }}
                         onMouseLeave={e => {
                           (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'
@@ -822,8 +822,8 @@ export default function PropertyDetailPage() {
                       onMouseEnter={() => setHoveredTags(prev => ({ ...prev, [item]: true }))}
                       onMouseLeave={() => setHoveredTags(prev => ({ ...prev, [item]: false }))}
                       style={{
-                      border: hoveredTags[item] ? '1px solid var(--color-navbar)' : '1px solid var(--color-border)',
-                      backgroundColor: hoveredTags[item] ? 'var(--color-navbar)' : '#ffffff',
+                      border: hoveredTags[item] ? '1px solid var(--color-deep)' : '1px solid var(--color-border)',
+                      backgroundColor: hoveredTags[item] ? 'var(--color-deep)' : '#ffffff',
                       color: hoveredTags[item] ? '#ffffff' : 'var(--color-text-primary)',
                       padding: '6px 10px',
                       fontSize: '12px',
@@ -842,7 +842,7 @@ export default function PropertyDetailPage() {
                 {(property.local_recommendations ?? []).length > 0 && (
                   <div style={{ ...cardStyle, marginBottom: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                      <Compass size={22} style={{ color: 'var(--color-gold)' }} />
+                      <Compass size={22} style={{ color: 'var(--color-terra)' }} />
                       <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--color-text-primary)', margin: 0 }}>
                         Local Recommendations & Host Tips
                       </h3>
@@ -850,7 +850,7 @@ export default function PropertyDetailPage() {
                     <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', marginBottom: '16px' }}>
                       Curated recommendations from your host for nearby spots, food, and attractions
                     </p>
-                    <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '20px' }} />
+                    <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '20px' }} />
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))', gap: '12px' }}>
                       {property.local_recommendations!.map((rec, i) => (
                         <div
@@ -865,7 +865,7 @@ export default function PropertyDetailPage() {
                             borderRadius: '10px',
                           }}
                         >
-                          <span style={{ fontSize: '15px', flexShrink: 0, marginTop: '1px' }}>📍</span>
+                          <MapPin size={16} style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '2px' }} aria-hidden="true" />
                           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.6', margin: 0 }}>
                             {rec}
                           </p>
@@ -875,8 +875,8 @@ export default function PropertyDetailPage() {
                   </div>
                 )}
 
-                <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-gold)', borderRadius: '12px', padding: '20px 24px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                  <ShieldAlert size={22} style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '2px' }} />
+                <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-terra)', borderRadius: '12px', padding: '20px 24px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                  <ShieldAlert size={22} style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '2px' }} />
                   <div>
                     <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Cancellation policy: {policy.label}</h4>
                     <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>{policy.summary}</p>
@@ -909,7 +909,7 @@ export default function PropertyDetailPage() {
                 <div key={album.name} style={{ marginBottom: '32px', backgroundColor: 'var(--color-bg-soft)', borderRadius: '12px', padding: '20px', border: '1px solid var(--color-border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Folder size={18} style={{ color: 'var(--color-gold)' }} />
+                      <Folder size={18} style={{ color: 'var(--color-terra)' }} />
                       <h4 style={{ fontSize: '16px', fontWeight: '800', color: 'var(--color-text-primary)', margin: 0 }}>{album.name}</h4>
                       <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', backgroundColor: '#ffffff', padding: '2px 8px', borderRadius: '10px', fontWeight: '600', border: '1px solid var(--color-border)' }}>
                         {album.count} {album.count === 1 ? 'photo' : 'photos'}
@@ -917,7 +917,7 @@ export default function PropertyDetailPage() {
                     </div>
                     <button
                       onClick={() => openTourForAlbum(album.name)}
-                      style={{ fontSize: '12px', color: 'var(--color-gold)', fontWeight: '700', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}
+                      style={{ fontSize: '12px', color: 'var(--color-terra)', fontWeight: '700', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}
                     >
                       View Space →
                     </button>
@@ -954,13 +954,13 @@ export default function PropertyDetailPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '12px' }}>
                 {(property.amenities ?? []).filter(a => typeof a === 'string' && !a.startsWith('__space__:') && !a.trim().startsWith('{') && !a.includes('"type":')).map(amenity => (
                   <div key={amenity} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '10px' }}>
-                    <Check size={16} style={{ color: 'var(--color-gold)', flexShrink: 0 }} />
+                    <Check size={16} style={{ color: 'var(--color-terra)', flexShrink: 0 }} />
                     <span style={{ fontSize: '14px', color: 'var(--color-text-primary)' }}>{amenity}</span>
                   </div>
                 ))}
                 {property.pets_allowed && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '10px' }}>
-                    <Dog size={16} style={{ color: 'var(--color-gold)', flexShrink: 0 }} />
+                    <Dog size={16} style={{ color: 'var(--color-terra)', flexShrink: 0 }} />
                     <span style={{ fontSize: '14px', color: 'var(--color-text-primary)' }}>Pets (+&#8377;{property.pet_charge_per_night}/pet/night)</span>
                   </div>
                 )}
@@ -972,7 +972,7 @@ export default function PropertyDetailPage() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '12px' }}>
                     {property.bathrooms_detail.map((b, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '10px' }}>
-                        <Bath size={16} style={{ color: 'var(--color-gold)', flexShrink: 0 }} />
+                        <Bath size={16} style={{ color: 'var(--color-terra)', flexShrink: 0 }} />
                         <span style={{ fontSize: '14px', color: 'var(--color-text-primary)' }}>{b.count}x {bathroomLabel[b.type]}</span>
                       </div>
                     ))}
@@ -1015,7 +1015,7 @@ export default function PropertyDetailPage() {
                         const cfg = spaceConfig[sp.type]
                         return (
                           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '10px' }}>
-                            <span style={{ color: 'var(--color-gold)', flexShrink: 0, display: 'flex' }}>{cfg?.icon ?? <LayoutDashboard size={16} />}</span>
+                            <span style={{ color: 'var(--color-terra)', flexShrink: 0, display: 'flex' }}>{cfg?.icon ?? <LayoutDashboard size={16} />}</span>
                             <span style={{ fontSize: '14px', color: 'var(--color-text-primary)', flex: 1 }}>{sp.count}x {cfg?.label ?? sp.type}</span>
                             <span style={{ fontSize: '11px', fontWeight: '600', color: sp.sharing === 'shared' ? '#B45309' : '#15803D', backgroundColor: sp.sharing === 'shared' ? '#FEF3C7' : '#DCFCE7', padding: '2px 7px', borderRadius: '100px', display: 'inline-flex', alignItems: 'center' }}>
                               {sp.sharing === 'shared' ? 'Shared' : 'Private'}
@@ -1030,7 +1030,7 @@ export default function PropertyDetailPage() {
 
               <div style={{ marginTop: '32px', ...cardStyle }}>
                 <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Clock size={20} style={{ color: 'var(--color-gold)' }} /> Check In &amp; Out
+                  <Clock size={20} style={{ color: 'var(--color-terra)' }} /> Check In &amp; Out
                 </h3>
                 <div style={{ display: 'flex', gap: '32px' }}>
                   <div>
@@ -1052,7 +1052,7 @@ export default function PropertyDetailPage() {
             <div>
               <div style={cardStyle}>
                 <h3 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>House Rules</h3>
-                <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '24px' }} />
+                <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '24px' }} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {(() => {
                     const existing = property.house_rules ?? []
@@ -1062,7 +1062,7 @@ export default function PropertyDetailPage() {
                     ]
                     return combined.map((rule, i) => (
                       <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', paddingBottom: '16px', borderBottom: i < combined.length - 1 ? '1px solid var(--color-border)' : 'none' }}>
-                        <Check size={16} style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '3px' }} />
+                        <Check size={16} style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '3px' }} />
                         <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>{rule}</p>
                       </div>
                     ))
@@ -1095,8 +1095,8 @@ export default function PropertyDetailPage() {
                   ))}
                 </div>
 
-                <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-gold)', borderRadius: '12px', padding: '20px 24px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                  <ShieldAlert size={22} style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '2px' }} />
+                <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-terra)', borderRadius: '12px', padding: '20px 24px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                  <ShieldAlert size={22} style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '2px' }} />
                   <div>
                     <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>Cancellation policy: {policy.label}</h4>
                     <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>{policy.summary}</p>
@@ -1111,7 +1111,7 @@ export default function PropertyDetailPage() {
               <div style={cardStyle}>
                 <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '16px' }}>Address</h3>
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <MapPin size={20} style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '2px' }} />
+                  <MapPin size={20} style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '2px' }} />
                   <div>
                     <p style={{ fontSize: '15px', color: 'var(--color-text-primary)', fontWeight: '700', marginBottom: '4px' }}>{property.name}</p>
                     <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>{property.address}</p>
@@ -1129,11 +1129,11 @@ export default function PropertyDetailPage() {
               <div style={{ ...cardStyle, marginTop: '16px' }}>
                 <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '16px' }}>Contact Property</h3>
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                  <a href={`tel:${property.contact_phone}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', border: '1px solid var(--color-gold)', borderRadius: '8px', color: 'var(--color-text-primary)', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
-                    <Phone size={15} style={{ color: 'var(--color-gold)' }} /> {property.contact_phone}
+                  <a href={`tel:${property.contact_phone}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', border: '1px solid var(--color-terra)', borderRadius: '8px', color: 'var(--color-text-primary)', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
+                    <Phone size={15} style={{ color: 'var(--color-terra)' }} /> {property.contact_phone}
                   </a>
-                  <a href={`mailto:${property.contact_email}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', border: '1px solid var(--color-gold)', borderRadius: '8px', color: 'var(--color-text-primary)', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
-                    <Mail size={15} style={{ color: 'var(--color-gold)' }} /> {property.contact_email}
+                  <a href={`mailto:${property.contact_email}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', border: '1px solid var(--color-terra)', borderRadius: '8px', color: 'var(--color-text-primary)', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
+                    <Mail size={15} style={{ color: 'var(--color-terra)' }} /> {property.contact_email}
                   </a>
                 </div>
               </div>
@@ -1158,7 +1158,7 @@ export default function PropertyDetailPage() {
                       <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <span style={{ width: '96px', fontSize: '13px', textTransform: 'capitalize', color: 'var(--color-text-secondary)' }}>{name}</span>
                         <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'var(--color-border)' }}>
-                          <div style={{ width: `${((value ?? 0) / 5) * 100}%`, height: '100%', borderRadius: '3px', backgroundColor: 'var(--color-gold)' }} />
+                          <div style={{ width: `${((value ?? 0) / 5) * 100}%`, height: '100%', borderRadius: '3px', backgroundColor: 'var(--color-terra)' }} />
                         </div>
                         <span style={{ fontSize: '13px', fontWeight: 700, width: '28px', textAlign: 'right' }}>{value?.toFixed(1)}</span>
                       </div>
@@ -1169,7 +1169,7 @@ export default function PropertyDetailPage() {
               <div style={{ ...cardStyle, display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <div style={{ textAlign: 'center' }}>
                   <p style={{ fontSize: '56px', color: 'var(--color-text-primary)', lineHeight: '1', fontWeight: '800' }}>{property.avg_rating}</p>
-                  <div style={{ color: 'var(--color-gold)', display: 'flex', gap: '2px', justifyContent: 'center', margin: '4px 0' }}>
+                  <div style={{ color: 'var(--color-terra)', display: 'flex', gap: '2px', justifyContent: 'center', margin: '4px 0' }}>
                     {Array.from({ length: Math.floor(property.avg_rating) }).map((_, idx) => (
                       <Star key={idx} size={18} fill="currentColor" />
                     ))}
@@ -1179,10 +1179,10 @@ export default function PropertyDetailPage() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   {starCounts.map(({ star, count }) => (
                     <div key={star} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', width: '24px', display: 'inline-flex', alignItems: 'center', gap: '2px' }}>{star}<Star size={10} fill="currentColor" color="var(--color-gold)" /></span>
+                      <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', width: '24px', display: 'inline-flex', alignItems: 'center', gap: '2px' }}>{star}<Star size={10} fill="currentColor" color="var(--color-terra)" /></span>
                       <div style={{ flex: 1, height: '6px', backgroundColor: 'var(--color-border)', borderRadius: '3px' }}>
                         <div style={{
-                          height: '100%', backgroundColor: 'var(--color-gold)', borderRadius: '3px',
+                          height: '100%', backgroundColor: 'var(--color-terra)', borderRadius: '3px',
                           width: reviews.length > 0 ? `${Math.round((count / reviews.length) * 100)}%` : '0%',
                           transition: 'width 0.4s ease',
                         }} />
@@ -1197,7 +1197,7 @@ export default function PropertyDetailPage() {
                 <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-muted)' }}>Loading reviews…</div>
               ) : reviews.length === 0 ? (
                 <div style={{ backgroundColor: '#ffffff', padding: '40px', border: '1px solid var(--color-border)', borderRadius: '12px', textAlign: 'center', color: 'var(--color-text-muted)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><Sparkles size={32} color="var(--color-gold)" /></div>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><Sparkles size={32} color="var(--color-terra)" /></div>
                   <p style={{ fontWeight: '700', marginBottom: '4px' }}>No reviews yet</p>
                   <p style={{ fontSize: '13px' }}>Be the first to stay here</p>
                 </div>
@@ -1207,7 +1207,7 @@ export default function PropertyDetailPage() {
                     <div key={review.id} style={{ backgroundColor: '#ffffff', padding: '24px', border: '1px solid var(--color-border)', borderRadius: '12px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--color-gold)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-primary)', fontWeight: '700', fontSize: '16px', flexShrink: 0 }}>
+                          <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--color-terra)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f6eddc', fontWeight: '700', fontSize: '16px', flexShrink: 0 }}>
                             {review.guest_name[0]?.toUpperCase()}
                           </div>
                           <div>
@@ -1219,7 +1219,7 @@ export default function PropertyDetailPage() {
                           </div>
                         </div>
                         <div style={{ display: 'inline-flex', gap: '1px' }}>
-                          {Array.from({ length: review.rating }).map((_, i) => <Star key={i} size={13} fill="currentColor" color="var(--color-gold)" />)}
+                          {Array.from({ length: review.rating }).map((_, i) => <Star key={i} size={13} fill="currentColor" color="var(--color-terra)" />)}
                         </div>
                       </div>
                       {review.comment && <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.7' }}>{review.comment}</p>}
@@ -1378,7 +1378,7 @@ export default function PropertyDetailPage() {
 
           <button
             onClick={handleBook}
-            style={{ width: '100%', backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', border: 'none', padding: '18px', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', cursor: 'pointer', marginBottom: '12px', borderRadius: '8px', transition: 'all 0.2s ease' }}
+            style={{ width: '100%', backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '18px', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', cursor: 'pointer', marginBottom: '12px', borderRadius: '8px', transition: 'all 0.2s ease' }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(0,0,0,0.15)' }}
             onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
           >
@@ -1411,8 +1411,8 @@ export default function PropertyDetailPage() {
                 onClick={() => { setTourActiveAlbum('All'); setTourActiveIndex(0) }}
                 style={{
                   padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '700',
-                  border: tourActiveAlbum === 'All' ? '1.5px solid var(--color-gold)' : '1px solid rgba(255,255,255,0.2)',
-                  backgroundColor: tourActiveAlbum === 'All' ? 'var(--color-gold)' : 'transparent',
+                  border: tourActiveAlbum === 'All' ? '1.5px solid var(--color-terra)' : '1px solid rgba(255,255,255,0.2)',
+                  backgroundColor: tourActiveAlbum === 'All' ? 'var(--color-terra)' : 'transparent',
                   color: tourActiveAlbum === 'All' ? 'var(--color-text-primary)' : '#ffffff',
                   cursor: 'pointer', whiteSpace: 'nowrap',
                 }}
@@ -1427,8 +1427,8 @@ export default function PropertyDetailPage() {
                   onClick={() => { setTourActiveAlbum(album.name); setTourActiveIndex(0) }}
                   style={{
                     padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '700',
-                    border: tourActiveAlbum === album.name ? '1.5px solid var(--color-gold)' : '1px solid rgba(255,255,255,0.2)',
-                    backgroundColor: tourActiveAlbum === album.name ? 'var(--color-gold)' : 'transparent',
+                    border: tourActiveAlbum === album.name ? '1.5px solid var(--color-terra)' : '1px solid rgba(255,255,255,0.2)',
+                    backgroundColor: tourActiveAlbum === album.name ? 'var(--color-terra)' : 'transparent',
                     color: tourActiveAlbum === album.name ? 'var(--color-text-primary)' : '#ffffff',
                     cursor: 'pointer', whiteSpace: 'nowrap',
                   }}
@@ -1527,7 +1527,7 @@ export default function PropertyDetailPage() {
                 style={{
                   position: 'relative', width: '70px', height: '48px', flexShrink: 0,
                   borderRadius: '6px', overflow: 'hidden', cursor: 'pointer',
-                  border: tourActiveIndex === i ? '2px solid var(--color-gold)' : '2px solid transparent',
+                  border: tourActiveIndex === i ? '2px solid var(--color-terra)' : '2px solid transparent',
                   opacity: tourActiveIndex === i ? 1 : 0.5, transition: 'all 0.15s ease',
                   transform: tourActiveIndex === i ? 'scale(1.08)' : 'scale(1)',
                 }}

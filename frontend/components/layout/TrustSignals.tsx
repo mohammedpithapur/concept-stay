@@ -5,22 +5,22 @@ import { Star, CheckCircle2, Home, ShieldCheck } from 'lucide-react'
 export default function TrustSignals() {
   const signals = [
     {
-      icon: <Star size={32} style={{ color: 'var(--color-gold)' }} />,
+      icon: <Star size={32} style={{ color: 'var(--color-terra)' }} />,
       metric: '4.9/5',
       label: 'Average Rating',
     },
     {
-      icon: <CheckCircle2 size={32} style={{ color: 'var(--color-gold)' }} />,
+      icon: <CheckCircle2 size={32} style={{ color: 'var(--color-terra)' }} />,
       metric: '2,500+',
       label: 'Happy Guests',
     },
     {
-      icon: <Home size={32} style={{ color: 'var(--color-gold)' }} />,
+      icon: <Home size={32} style={{ color: 'var(--color-terra)' }} />,
       metric: '50+',
       label: 'Verified Properties',
     },
     {
-      icon: <ShieldCheck size={32} style={{ color: 'var(--color-gold)' }} />,
+      icon: <ShieldCheck size={32} style={{ color: 'var(--color-terra)' }} />,
       metric: '100%',
       label: 'Secure Payments',
     },

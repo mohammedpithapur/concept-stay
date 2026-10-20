@@ -67,13 +67,13 @@ export default function ContactPage() {
 
       {/* Header */}
       <div style={{ backgroundColor: 'var(--color-bg-soft)', padding: 'clamp(48px, 8vw, 80px) 24px', textAlign: 'center' }}>
-        <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>
+        <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>
           Get In Touch
         </p>
         <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
           Contact Us
         </h1>
-        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto 16px' }} />
+        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 16px' }} />
         <p style={{ fontSize: '15px', color: 'var(--color-text-secondary)', maxWidth: '480px', margin: '0 auto', lineHeight: '1.7' }}>
           Have a question about a property or your booking? We&apos;re here to help.
         </p>
@@ -84,7 +84,7 @@ export default function ContactPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '64px' }}>
           {[
             { 
-              icon: <Mail size={24} color="var(--color-gold)" />,
+              icon: <Mail size={24} color="var(--color-terra)" />,
               title: 'Email Us', 
               detail: 'staysearthy@gmail.com', 
               sub: 'We reply within 24 hours', 
@@ -92,7 +92,7 @@ export default function ContactPage() {
             },
             { 
               icon: (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-gold)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-terra)">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
                 </svg>
               ),
@@ -102,7 +102,7 @@ export default function ContactPage() {
               href: 'https://wa.me/919874827631' 
             },
             { 
-              icon: <MapPin size={24} color="var(--color-gold)" />,
+              icon: <MapPin size={24} color="var(--color-terra)" />,
               title: 'Location', 
               detail: 'Kolkata, India', 
               sub: 'Based in Kolkata', 
@@ -129,7 +129,7 @@ export default function ContactPage() {
               >
                 <span style={{ display: 'block', marginBottom: '12px' }}>{item.icon}</span>
                 <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '6px' }}>{item.title}</h3>
-                <p style={{ fontSize: '14px', color: 'var(--color-gold)', fontWeight: '600', marginBottom: '4px' }}>{item.detail}</p>
+                <p style={{ fontSize: '14px', color: 'var(--color-terra)', fontWeight: '600', marginBottom: '4px' }}>{item.detail}</p>
                 <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{item.sub}</p>
               </div>
             </a>
@@ -144,7 +144,7 @@ export default function ContactPage() {
             <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               Send a Message
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '28px' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '28px' }} />
 
             {!submitted ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -200,8 +200,8 @@ export default function ContactPage() {
                   onClick={handleSubmit}
                   disabled={loading}
                   style={{
-                    backgroundColor: loading ? 'var(--color-gold)' : 'var(--color-gold)',
-                    color: 'var(--color-text-primary)', border: 'none', padding: '16px 32px',
+                    backgroundColor: loading ? 'var(--color-terra)' : 'var(--color-terra)',
+                    color: '#f6eddc', border: 'none', padding: '16px 32px',
                     fontSize: '13px', letterSpacing: '2px', fontWeight: '700',
                     textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer',
                     borderRadius: '8px', width: '100%'
@@ -213,10 +213,10 @@ export default function ContactPage() {
             ) : (
               <div style={{ backgroundColor: 'var(--color-bg-soft)', borderRadius: '12px', padding: '40px 32px', textAlign: 'center' }}>
                 <div style={{
-                  width: '64px', height: '64px', backgroundColor: 'var(--color-gold)',
+                  width: '64px', height: '64px', backgroundColor: 'var(--color-terra)',
                   borderRadius: '50%', display: 'flex', alignItems: 'center',
                   justifyContent: 'center', margin: '0 auto 20px',
-                  fontSize: '28px', fontWeight: '700', color: 'var(--color-text-primary)'
+                  fontSize: '28px', fontWeight: '700', color: '#f6eddc'
                 }}>
                   &#10003;
                 </div>
@@ -233,7 +233,7 @@ export default function ContactPage() {
             <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               Our Reach
             </h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '28px' }} />
+            <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '28px' }} />
             <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.7' }}>
               We operate across Kolkata with handpicked properties in the city — with more properties added regularly.
             </p>

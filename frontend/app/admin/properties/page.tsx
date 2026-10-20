@@ -1290,7 +1290,7 @@ function PhotosSection({
             }} />
           </div>
           <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', margin: 0 }}>
-            ⚡ High-speed direct S3 upload (8 parallel streams • 0 server load)
+            High-speed direct S3 upload (8 parallel streams • 0 server load)
           </p>
         </div>
       )}
@@ -1947,7 +1947,7 @@ function HouseRulesSection({ form, setForm }: { form: typeof EMPTY_FORM; setForm
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 0 }}>
-                  <span style={{ color: 'var(--color-gold)', fontSize: '14px', flexShrink: 0 }}>📍</span>
+                  <MapPin size={14} style={{ color: 'var(--color-terra)', flexShrink: 0 }} aria-hidden="true" />
                   <span style={{ fontSize: '14px', color: 'var(--color-text-primary)' }}>{rec}</span>
                 </div>
                 <button
@@ -1955,7 +1955,7 @@ function HouseRulesSection({ form, setForm }: { form: typeof EMPTY_FORM; setForm
                   onClick={() => removeRec(i)}
                   style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '18px', flexShrink: 0, padding: '0 4px' }}
                 >
-                  ✕
+                  <X size={14} aria-hidden="true" />
                 </button>
               </div>
             ))}

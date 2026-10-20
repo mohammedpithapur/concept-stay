@@ -958,7 +958,7 @@ export default function AdminPage() {
     <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
 
       {/* Header */}
-      <div style={{ backgroundColor: 'var(--color-navbar)', padding: '32px 24px' }}>
+      <div style={{ backgroundColor: 'var(--color-deep)', padding: '32px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '8px', fontWeight: '600' }}>Admin Panel</p>
@@ -1673,7 +1673,7 @@ export default function AdminPage() {
                         </div>
                       </div>
                     ) : vProp ? (
-                      <div style={{ padding: '24px 28px 0', backgroundColor: 'var(--color-navbar)' }}>
+                      <div style={{ padding: '24px 28px 0', backgroundColor: 'var(--color-deep)' }}>
                         <p style={{ fontSize: '18px', fontWeight: '800', color: 'var(--color-text-primary)' }}>{vProp.name}</p>
                         <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{vProp.city}, {vProp.state}</p>
                       </div>
@@ -1757,7 +1757,7 @@ export default function AdminPage() {
                   <div className="hidden md:block" style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                       <thead>
-                        <tr style={{ backgroundColor: 'var(--color-navbar)' }}>
+                        <tr style={{ backgroundColor: 'var(--color-deep)' }}>
                           {['Ref', 'Guest', 'Property', 'Check In', 'Check Out', 'Guests', 'Amount', 'Status', 'Actions'].map(h => (
                             <th key={h} style={{ padding: '14px 16px', textAlign: 'left', fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
                           ))}
@@ -2523,7 +2523,7 @@ export default function AdminPage() {
                           <Image src={art.cover_image_url} alt={art.title} fill style={{ objectFit: 'cover' }} unoptimized />
                         </div>
                       ) : (
-                        <div style={{ width: '80px', height: '60px', borderRadius: '8px', backgroundColor: 'var(--color-navbar)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold)', flexShrink: 0 }}>
+                        <div style={{ width: '80px', height: '60px', borderRadius: '8px', backgroundColor: 'var(--color-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold)', flexShrink: 0 }}>
                           <FileText size={24} />
                         </div>
                       )}
@@ -2750,7 +2750,7 @@ export default function AdminPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                backgroundColor: 'var(--color-navbar)',
+                backgroundColor: 'var(--color-deep)',
               }}
             >
               <div>
@@ -2944,7 +2944,7 @@ export default function AdminPage() {
                       alignItems: 'center',
                       gap: '6px',
                       padding: '10px 16px',
-                      backgroundColor: 'var(--color-navbar)',
+                      backgroundColor: 'var(--color-deep)',
                       border: '1px solid var(--color-gold)',
                       borderRadius: '8px',
                       color: 'var(--color-text-primary)',
@@ -3066,7 +3066,7 @@ export default function AdminPage() {
                         boxShadow: articleEditorTab === 'write' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
                       }}
                     >
-                      ✍️ Write
+                      Write
                     </button>
                     <button
                       type="button"
@@ -3083,7 +3083,7 @@ export default function AdminPage() {
                         boxShadow: articleEditorTab === 'preview' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
                       }}
                     >
-                      👁️ Preview
+                      Preview
                     </button>
                   </div>
 
@@ -3097,8 +3097,8 @@ export default function AdminPage() {
                         { label: '“ ”', tip: 'Quote', action: () => insertMarkdown('\n> ') },
                         { label: '• List', tip: 'Bullet List', action: () => insertMarkdown('\n- ') },
                         { label: '1. List', tip: 'Numbered List', action: () => insertMarkdown('\n1. ') },
-                        { label: '🔗 Link', tip: 'Link', action: () => insertMarkdown('[Title](', ')') },
-                        { label: '🖼️ Image', tip: 'Image', action: () => insertMarkdown('![Alt](', ')') },
+                        { label: 'Link', tip: 'Link', action: () => insertMarkdown('[Title](', ')') },
+                        { label: 'Image', tip: 'Image', action: () => insertMarkdown('![Alt](', ')') },
                         { label: '< >', tip: 'Code block', action: () => insertMarkdown('\n```\n', '\n```\n') },
                       ].map(tool => (
                         <button
@@ -3166,7 +3166,7 @@ export default function AdminPage() {
                 alignItems: 'center',
                 justifyContent: 'flex-end',
                 gap: '12px',
-                backgroundColor: 'var(--color-navbar)',
+                backgroundColor: 'var(--color-deep)',
               }}
             >
               <button
@@ -3241,7 +3241,7 @@ export default function AdminPage() {
             }}
           >
             {/* Header */}
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--color-navbar)' }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--color-deep)' }}>
               <div>
                 <p style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: '700', marginBottom: '2px' }}>
                   Property Reviews
@@ -3298,7 +3298,7 @@ export default function AdminPage() {
                       style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '13px', outline: 'none', backgroundColor: '#fff', cursor: 'pointer', boxSizing: 'border-box' }}
                     >
                       {[5, 4, 3, 2, 1].map(n => (
-                        <option key={n} value={n}>{'★'.repeat(n)} ({n}/5)</option>
+                        <option key={n} value={n}>{n} {n === 1 ? 'star' : 'stars'} ({n}/5)</option>
                       ))}
                     </select>
                   </div>
@@ -3355,7 +3355,7 @@ export default function AdminPage() {
                               <input value={editReviewForm.platform} onChange={e => setEditReviewForm(f => ({ ...f, platform: e.target.value }))} placeholder="Platform" style={{ padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: '6px', fontSize: '13px', outline: 'none' }} />
                             </div>
                             <select value={editReviewForm.rating} onChange={e => setEditReviewForm(f => ({ ...f, rating: parseInt(e.target.value) }))} style={{ padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: '6px', fontSize: '13px', outline: 'none', backgroundColor: '#fff', cursor: 'pointer' }}>
-                              {[5,4,3,2,1].map(n => <option key={n} value={n}>{'★'.repeat(n)} ({n}/5)</option>)}
+                              {[5,4,3,2,1].map(n => <option key={n} value={n}>{n} {n === 1 ? 'star' : 'stars'} ({n}/5)</option>)}
                             </select>
                             <textarea value={editReviewForm.comment} onChange={e => setEditReviewForm(f => ({ ...f, comment: e.target.value }))} rows={3} placeholder="Comment" style={{ padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: '6px', fontSize: '13px', resize: 'vertical', outline: 'none', fontFamily: 'inherit' }} />
                             <div style={{ display: 'flex', gap: '8px' }}>

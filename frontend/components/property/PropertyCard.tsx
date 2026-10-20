@@ -106,7 +106,7 @@ export default function PropertyCard({ property }: Props) {
               top: '14px',
               left: '14px',
               backgroundColor: 'rgba(43,32,23,0.85)',
-              color: copied ? 'var(--color-gold)' : '#ffffff',
+              color: copied ? 'var(--color-terra)' : '#ffffff',
               border: 'none',
               borderRadius: '6px',
               padding: '6px 10px',
@@ -129,7 +129,7 @@ export default function PropertyCard({ property }: Props) {
           >
             {copied ? (
               <>
-                <Check style={{ width: '13px', height: '13px', color: 'var(--color-gold)' }} />
+                <Check style={{ width: '13px', height: '13px', color: 'var(--color-terra)' }} />
                 <span>Copied!</span>
               </>
             ) : (
@@ -144,7 +144,7 @@ export default function PropertyCard({ property }: Props) {
           <div style={{
             position: 'absolute', top: '14px', right: '14px',
             backgroundColor: 'var(--color-text-primary)',
-            color: 'var(--color-gold)',
+            color: 'var(--color-terra)',
             padding: '6px 10px',
             fontSize: '12px',
             fontWeight: '700',
@@ -153,7 +153,7 @@ export default function PropertyCard({ property }: Props) {
             alignItems: 'center',
             gap: '4px',
           }}>
-            <Star style={{ width: '13px', height: '13px', fill: 'var(--color-gold)', strokeWidth: 0 }} />
+            <Star style={{ width: '13px', height: '13px', fill: 'var(--color-terra)', strokeWidth: 0 }} />
             {typeof property.avg_rating === 'number' && !isNaN(property.avg_rating)
               ? property.avg_rating > 0 ? property.avg_rating.toFixed(1) : 'New'
               : 'New'}
@@ -173,7 +173,7 @@ export default function PropertyCard({ property }: Props) {
             alignItems: 'center',
             gap: '5px',
           }}>
-            <MapPin style={{ width: '12px', height: '12px', color: 'var(--color-gold)' }} />
+            <MapPin style={{ width: '12px', height: '12px', color: 'var(--color-terra)' }} />
             {property.city}, {property.state}
           </div>
         </div>
@@ -312,7 +312,7 @@ export default function PropertyCard({ property }: Props) {
                 {displayAmenities.length > 3 && (
                   <span style={{
                     backgroundColor: 'var(--color-bg-soft)',
-                    color: 'var(--color-gold)',
+                    color: 'var(--color-terra)',
                     padding: '3px 8px',
                     fontSize: '10px',
                     borderRadius: '4px',

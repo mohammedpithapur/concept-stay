@@ -187,8 +187,8 @@ export default function PropertiesClient() {
     return (
       <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
         {/* Hero shimmer */}
-        <div style={{ backgroundColor: 'var(--color-navbar)', padding: '64px 24px', textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>Explore</p>
+        <div style={{ backgroundColor: 'var(--color-deep)', padding: '64px 24px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>Explore</p>
           <h1 style={{ color: 'var(--color-navbar-text)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', marginBottom: '8px' }}>Our Properties</h1>
           <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '15px' }}>Escape to thoughtfully curated stays inspired by nature, comfort, and local experiences.</p>
         </div>
@@ -223,7 +223,7 @@ export default function PropertiesClient() {
 
   return (
     <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
-      <div style={{ backgroundColor: 'var(--color-navbar)', padding: '64px 24px', textAlign: 'center' }}>
+      <div style={{ backgroundColor: 'var(--color-deep)', padding: '64px 24px', textAlign: 'center' }}>
         <p style={{ color: 'var(--color-navbar-text)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>
           Explore
         </p>
@@ -241,19 +241,19 @@ export default function PropertiesClient() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
             {urlCheckIn && (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '999px', backgroundColor: 'var(--color-bg-soft)', border: '1px solid var(--color-border)', fontSize: '13px', color: 'var(--color-text-primary)', fontWeight: '500' }}>
-                <Calendar size={13} style={{ color: 'var(--color-gold)' }} />
+                <Calendar size={13} style={{ color: 'var(--color-terra)' }} />
                 Check-in: {new Date(urlCheckIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
               </span>
             )}
             {urlCheckOut && (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '999px', backgroundColor: 'var(--color-bg-soft)', border: '1px solid var(--color-border)', fontSize: '13px', color: 'var(--color-text-primary)', fontWeight: '500' }}>
-                <Calendar size={13} style={{ color: 'var(--color-gold)' }} />
+                <Calendar size={13} style={{ color: 'var(--color-terra)' }} />
                 Check-out: {new Date(urlCheckOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
               </span>
             )}
             {urlGuests && (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '999px', backgroundColor: 'var(--color-bg-soft)', border: '1px solid var(--color-border)', fontSize: '13px', color: 'var(--color-text-primary)', fontWeight: '500' }}>
-                <Users size={13} style={{ color: 'var(--color-gold)' }} />
+                <Users size={13} style={{ color: 'var(--color-terra)' }} />
                 {urlGuests} Guest{Number(urlGuests) !== 1 ? 's' : ''}
               </span>
             )}
@@ -325,7 +325,7 @@ export default function PropertiesClient() {
                 boxSizing: 'border-box',
                 transition: 'border-color 0.2s ease',
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = 'var(--color-gold)' }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'var(--color-terra)' }}
               onBlur={e => { e.currentTarget.style.borderColor = 'var(--color-border)' }}
             />
             {searchQuery && (
@@ -360,7 +360,7 @@ export default function PropertiesClient() {
               style={{
                 display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px',
                 border: '1px solid var(--color-border)', borderRadius: '8px', cursor: 'pointer',
-                backgroundColor: showMap ? 'var(--color-gold)' : '#ffffff',
+                backgroundColor: showMap ? 'var(--color-terra)' : '#ffffff',
                 color: showMap ? '#ffffff' : 'var(--color-text-primary)', fontSize: '14px',
               }}
             >
@@ -409,15 +409,15 @@ export default function PropertiesClient() {
               borderRadius: '12px',
             }}>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-                <Building2 style={{ width: '48px', height: '48px', color: 'var(--color-gold)', strokeWidth: 1.5 }} />
+                <Building2 style={{ width: '48px', height: '48px', color: 'var(--color-terra)', strokeWidth: 1.5 }} />
               </div>
               <h3 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '12px' }}>No properties found</h3>
               <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', marginBottom: '24px' }}>Try adjusting your filters to find your perfect stay</p>
               <button
                 onClick={resetFilters}
                 style={{
-                  backgroundColor: 'var(--color-gold)',
-                  color: 'var(--color-text-primary)',
+                  backgroundColor: 'var(--color-terra)',
+                  color: '#f6eddc',
                   border: 'none',
                   padding: '14px 32px',
                   fontSize: '13px',
@@ -532,13 +532,13 @@ export default function PropertiesClient() {
                     <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', minWidth: '24px' }}>Min</span>
                     <input type="range" min={0} max={PRICE_CAP} step={PRICE_STEP} value={minPrice}
                       onChange={e => { const v = Number(e.target.value); setMinPrice(Math.min(v, maxPrice - PRICE_STEP)) }}
-                      style={{ flex: 1, accentColor: 'var(--color-gold)' }} />
+                      style={{ flex: 1, accentColor: 'var(--color-terra)' }} />
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', minWidth: '24px' }}>Max</span>
                     <input type="range" min={0} max={PRICE_CAP} step={PRICE_STEP} value={maxPrice}
                       onChange={e => { const v = Number(e.target.value); setMaxPrice(Math.max(v, minPrice + PRICE_STEP)) }}
-                      style={{ flex: 1, accentColor: 'var(--color-gold)' }} />
+                      style={{ flex: 1, accentColor: 'var(--color-terra)' }} />
                   </div>
                 </div>
               </div>
@@ -625,9 +625,9 @@ export default function PropertiesClient() {
                       onClick={() => setRoomType(option.value)}
                       style={{
                         padding: '10px 14px',
-                        border: `1px solid ${roomType === option.value ? 'var(--color-gold)' : 'var(--color-border)'}`,
+                        border: `1px solid ${roomType === option.value ? 'var(--color-terra)' : 'var(--color-border)'}`,
                         borderRadius: '8px',
-                        backgroundColor: roomType === option.value ? 'var(--color-gold)' : 'transparent',
+                        backgroundColor: roomType === option.value ? 'var(--color-terra)' : 'transparent',
                         color: roomType === option.value ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                         fontSize: '13px',
                         cursor: 'pointer',
@@ -653,9 +653,9 @@ export default function PropertiesClient() {
                       onClick={() => setPropertyType(option.value)}
                       style={{
                         padding: '10px 14px',
-                        border: `1px solid ${propertyType === option.value ? 'var(--color-gold)' : 'var(--color-border)'}`,
+                        border: `1px solid ${propertyType === option.value ? 'var(--color-terra)' : 'var(--color-border)'}`,
                         borderRadius: '8px',
-                        backgroundColor: propertyType === option.value ? 'var(--color-gold)' : 'transparent',
+                        backgroundColor: propertyType === option.value ? 'var(--color-terra)' : 'transparent',
                         color: propertyType === option.value ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                         fontSize: '13px',
                         cursor: 'pointer',
@@ -681,9 +681,9 @@ export default function PropertiesClient() {
                       onClick={() => setBathroomType(option.value)}
                       style={{
                         padding: '10px 14px',
-                        border: `1px solid ${bathroomType === option.value ? 'var(--color-gold)' : 'var(--color-border)'}`,
+                        border: `1px solid ${bathroomType === option.value ? 'var(--color-terra)' : 'var(--color-border)'}`,
                         borderRadius: '8px',
-                        backgroundColor: bathroomType === option.value ? 'var(--color-gold)' : 'transparent',
+                        backgroundColor: bathroomType === option.value ? 'var(--color-terra)' : 'transparent',
                         color: bathroomType === option.value ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                         fontSize: '13px',
                         cursor: 'pointer',
@@ -706,7 +706,7 @@ export default function PropertiesClient() {
                   onClick={() => setPetsOnly(!petsOnly)}
                   style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                 >
-                  <div style={{ width: '44px', height: '24px', backgroundColor: petsOnly ? 'var(--color-gold)' : 'var(--color-border)', borderRadius: '12px', position: 'relative', transition: 'background-color 0.3s ease' }}>
+                  <div style={{ width: '44px', height: '24px', backgroundColor: petsOnly ? 'var(--color-terra)' : 'var(--color-border)', borderRadius: '12px', position: 'relative', transition: 'background-color 0.3s ease' }}>
                     <div style={{ position: 'absolute', top: '3px', left: petsOnly ? '23px' : '3px', width: '18px', height: '18px', backgroundColor: '#ffffff', borderRadius: '50%', transition: 'left 0.3s ease' }} />
                   </div>
                   <span style={{ fontSize: '14px', color: 'var(--color-text-primary)', fontWeight: '500' }}>Pets Allowed</span>
@@ -745,8 +745,8 @@ export default function PropertiesClient() {
                   padding: '14px 20px',
                   border: 'none',
                   borderRadius: '8px',
-                  backgroundColor: 'var(--color-gold)',
-                  color: 'var(--color-text-primary)',
+                  backgroundColor: 'var(--color-terra)',
+                  color: '#f6eddc',
                   fontSize: '14px',
                   fontWeight: '700',
                   cursor: 'pointer',

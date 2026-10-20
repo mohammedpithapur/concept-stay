@@ -86,13 +86,13 @@ export default function AboutPage() {
         padding: 'clamp(64px, 10vw, 120px) 24px',
         textAlign: 'center'
       }}>
-        <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
+        <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
           Our Story
         </p>
         <h1 style={{ fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '24px', lineHeight: '1.15', maxWidth: '800px', margin: '0 auto 24px' }}>
           About Concept Stay
         </h1>
-        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto 24px' }} />
+        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 24px' }} />
         <p style={{ fontSize: '16px', color: 'var(--color-text-secondary)', maxWidth: '620px', margin: '0 auto', lineHeight: '1.8' }}>
           Concept Stay offers warm, heritage-inspired homes designed for comfort, calm, and effortless city living. Perfect for corporate travellers, families, wedding guests, and anyone looking for a stay that feels personal, elegant, and memorable.
         </p>
@@ -102,7 +102,7 @@ export default function AboutPage() {
       <section style={{ padding: 'clamp(64px, 8vw, 100px) 24px', maxWidth: '1100px', margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '48px', alignItems: 'center' }}>
           <div>
-            <p style={{ fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: '600', marginBottom: '16px' }}>
+            <p style={{ fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-terra)', fontWeight: '600', marginBottom: '16px' }}>
               About Concept Stay
             </p>
             <h2 style={{ fontSize: 'clamp(26px, 3vw, 38px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '24px', lineHeight: '1.2' }}>
@@ -122,7 +122,7 @@ export default function AboutPage() {
             height: '380px', display: 'flex', alignItems: 'center',
             justifyContent: 'center', flexDirection: 'column', gap: '12px'
           }}>
-            <div style={{ fontSize: '64px', color: 'var(--color-gold)', fontWeight: '800', letterSpacing: '-2px' }}>ES</div>
+            <div style={{ fontSize: '64px', color: 'var(--color-terra)', fontWeight: '800', letterSpacing: '-2px' }}>ES</div>
             <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', letterSpacing: '3px', textTransform: 'uppercase' }}>Est. 2022</p>
           </div>
         </div>
@@ -136,7 +136,7 @@ export default function AboutPage() {
               textAlign: 'center', padding: '32px 24px',
               borderRight: i < stats.length - 1 ? '1px solid #333' : 'none'
             }}>
-              <p style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: '800', color: 'var(--color-gold)', marginBottom: '8px', lineHeight: '1' }}>
+              <p style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: '800', color: 'var(--color-terra)', marginBottom: '8px', lineHeight: '1' }}>
                 {stat.number}
               </p>
               <p style={{ fontSize: '12px', color: 'rgba(250,248,245,0.6)', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '600' }}>
@@ -150,13 +150,13 @@ export default function AboutPage() {
       {/* Values */}
       <section style={{ padding: 'clamp(64px, 8vw, 100px) 24px', maxWidth: '1100px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
+          <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
             What We Stand For
           </p>
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
             Our Values
           </h2>
-          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto' }} />
+          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto' }} />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
@@ -165,8 +165,8 @@ export default function AboutPage() {
               backgroundColor: '#ffffff', border: '1px solid var(--color-border)',
               borderRadius: '12px', padding: '32px 28px'
             }}>
-              <value.icon size={28} style={{ color: 'var(--color-gold)', marginBottom: '16px' }} />
-              <div style={{ width: '32px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '16px' }} />
+              <value.icon size={28} style={{ color: 'var(--color-terra)', marginBottom: '16px' }} />
+              <div style={{ width: '32px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '12px' }}>{value.title}</h3>
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.8' }}>{value.description}</p>
             </div>
@@ -178,13 +178,13 @@ export default function AboutPage() {
       <section style={{ backgroundColor: 'var(--color-bg-soft)', padding: 'clamp(64px, 8vw, 100px) 24px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
+            <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
               About the Team
             </p>
             <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
               Meet the Team
             </h2>
-            <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto' }} />
+            <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto' }} />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
@@ -197,7 +197,7 @@ export default function AboutPage() {
                   <div style={{
                     width: '84px', height: '84px', margin: '0 auto 20px',
                     position: 'relative', borderRadius: '50%', overflow: 'hidden',
-                    border: '2px solid var(--color-gold)', boxShadow: '0 4px 12px rgba(0,0,0,0.06)'
+                    border: '2px solid var(--color-terra)', boxShadow: '0 4px 12px rgba(0,0,0,0.06)'
                   }}>
                     <Image
                       src={member.image}
@@ -209,16 +209,16 @@ export default function AboutPage() {
                   </div>
                 ) : (
                   <div style={{
-                    width: '72px', height: '72px', backgroundColor: 'var(--color-gold)',
+                    width: '72px', height: '72px', backgroundColor: 'var(--color-terra)',
                     borderRadius: '50%', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', margin: '0 auto 20px',
-                    fontSize: '28px', fontWeight: '800', color: 'var(--color-text-primary)'
+                    fontSize: '28px', fontWeight: '800', color: '#f6eddc'
                   }}>
                     {member.initial}
                   </div>
                 )}
                 <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '6px' }}>{member.name}</h3>
-                <p style={{ fontSize: '12px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: '600', marginBottom: '16px' }}>{member.role}</p>
+                <p style={{ fontSize: '12px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--color-terra)', fontWeight: '600', marginBottom: '16px' }}>{member.role}</p>
                 <div style={{ width: '32px', height: '2px', backgroundColor: 'var(--color-border)', margin: '0 auto 16px' }} />
                 <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.7' }}>{member.description}</p>
               </div>
@@ -226,7 +226,7 @@ export default function AboutPage() {
           </div>
 
           <div style={{ marginTop: '48px', backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '28px 24px', textAlign: 'center' }}>
-            <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', marginBottom: '12px' }}>
+            <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', marginBottom: '12px' }}>
               Special Mention
             </p>
             <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '12px' }}>
@@ -250,8 +250,8 @@ export default function AboutPage() {
         <Link
           href="/properties"
           style={{
-            display: 'inline-block', backgroundColor: 'var(--color-gold)',
-            color: 'var(--color-text-primary)', padding: '18px 48px', fontSize: '13px',
+            display: 'inline-block', backgroundColor: 'var(--color-terra)',
+            color: '#f6eddc', padding: '18px 48px', fontSize: '13px',
             letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase',
             textDecoration: 'none', borderRadius: '8px'
           }}

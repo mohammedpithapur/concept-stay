@@ -91,7 +91,7 @@ export default function PushSubscribeButton({ token, showTestButton = false, lab
           gap: "6px",
           padding: "7px 12px",
           borderRadius: "8px",
-          border: subscribed ? "1px solid #b7895f" : "1px solid #d4cdc4",
+          border: subscribed ? "1px solid #a23a1f" : "1px solid #d4cdc4",
           background: subscribed ? "#fffdf5" : "#ffffff",
           color: subscribed ? "#8a5d35" : "#5f574d",
           fontSize: "13px",
@@ -135,7 +135,7 @@ export default function PushSubscribeButton({ token, showTestButton = false, lab
             whiteSpace: "nowrap",
           }}
         >
-          {testing ? "Sending..." : testSuccess ? "Sent! ✓" : testError ? "Failed — Re-subscribe?" : "Test Push"}
+          {testing ? "Sending..." : testSuccess ? "Sent" : testError ? "Failed — Re-subscribe?" : "Test Push"}
         </button>
       )}
     </div>

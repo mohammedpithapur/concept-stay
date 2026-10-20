@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&display=swap');
 @import "tailwindcss";
 @import 'leaflet/dist/leaflet.css';
 @import 'react-day-picker/dist/style.css';
@@ -6,23 +6,27 @@
 :root {
   /* Brand Colors */
   --color-white: #ffffff;
-  --color-beige: #b7895f;
-  --color-gold: #ead0af;
-  --color-dark: #2b2017;
-  --color-navbar: #b7895f;
-  --color-navbar-text: #ffffff;
+  --color-beige: #a23a1f;
+  --color-gold: #e9d9b8;
+  --color-dark: #2a1810;
+  --color-accent: #a23a1f;
+  --color-terra: #a23a1f;
+  --color-terra-dark: #7f2c16;
+  --color-deep: #4d1212;
+  --color-navbar: #efe3cc;
+  --color-navbar-text: #f1e6d0;
   --color-navbar-border: rgba(255, 255, 255, 0.26);
 
   /* Text */
-  --color-text-primary: #000000;
-  --color-text-secondary: #000000;
-  --color-text-muted: #000000;
+  --color-text-primary: #2a1810;
+  --color-text-secondary: #4a2e1e;
+  --color-text-muted: #6b5442;
 
   /* Borders & Backgrounds */
-  --color-border: #d9c2a8;
-  --color-bg-page: #f7efe6;
-  --color-bg-card: #fffaf4;
-  --color-bg-soft: #ead1b3;
+  --color-border: #d3bf9a;
+  --color-bg-page: #efe3cc;
+  --color-bg-card: #f6eddc;
+  --color-bg-soft: #e3d3b3;
 
   /* Status */
   --color-error: #E53E3E;
@@ -34,6 +38,18 @@
   --input-radius: 8px;
   --btn-radius: 8px;
   --page-padding: clamp(24px, 4vw, 48px);
+
+
+  /* Clay plaster ground: soft venetian-plaster mottling + trowel streaks + faint grain, generated in CSS (no image files) */
+  --clay-texture:
+    url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27260%27 height=%27260%27%3E%3Cfilter id=%27g%27 x=%270%27 y=%270%27 width=%27100%25%27 height=%27100%25%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.9%27 numOctaves=%272%27 seed=%272%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 0.45  0 0 0 0 0.36  0 0 0 0 0.27  0 0 0 0.6 -0.24%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23g)%27/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271000%27 height=%271000%27%3E%3Cfilter id=%27s%27 x=%270%27 y=%270%27 width=%27100%25%27 height=%27100%25%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.003 0.018%27 numOctaves=%273%27 seed=%279%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 0.45  0 0 0 0 0.36  0 0 0 0 0.27  0 0 0 0.24 -0.08%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23s)%27/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27900%27 height=%27900%27%3E%3Cfilter id=%27l%27 x=%270%27 y=%270%27 width=%27100%25%27 height=%27100%25%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.008 0.011%27 numOctaves=%275%27 seed=%275%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 1  0 0 0 0 0.97  0 0 0 0 0.92  0 0 0 0.6 -0.2%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23l)%27/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27900%27 height=%27900%27%3E%3Cfilter id=%27d%27 x=%270%27 y=%270%27 width=%27100%25%27 height=%27100%25%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.007 0.010%27 numOctaves=%275%27 seed=%2712%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 0.5  0 0 0 0 0.4  0 0 0 0 0.3  0 0 0 0.26 -0.09%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23d)%27/%3E%3C/svg%3E");
+  --clay-texture-dark:
+    url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27260%27 height=%27260%27%3E%3Cfilter id=%27g%27 x=%270%27 y=%270%27 width=%27100%25%27 height=%27100%25%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.9%27 numOctaves=%272%27 seed=%272%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 0.05  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 -0.24%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23g)%27/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27900%27 height=%27900%27%3E%3Cfilter id=%27l%27 x=%270%27 y=%270%27 width=%27100%25%27 height=%27100%25%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.008 0.011%27 numOctaves=%275%27 seed=%275%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 0.72  0 0 0 0 0.3  0 0 0 0 0.22  0 0 0 0.22 -0.07%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23l)%27/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27900%27 height=%27900%27%3E%3Cfilter id=%27d%27 x=%270%27 y=%270%27 width=%27100%25%27 height=%27100%25%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.007 0.010%27 numOctaves=%275%27 seed=%2712%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 0.05  0 0 0 0 0  0 0 0 0 0  0 0 0 0.26 -0.09%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23d)%27/%3E%3C/svg%3E");
 
   --background: var(--color-bg-page);
   --foreground: var(--color-text-primary);
@@ -56,7 +72,8 @@ html {
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: var(--clay-texture);
   color: var(--foreground);
   font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 400;
@@ -93,7 +110,7 @@ select {
 select:focus {
   outline: none;
   border-color: var(--color-beige);
-  box-shadow: 0 0 0 3px rgba(183, 137, 95, 0.18);
+  box-shadow: 0 0 0 3px rgba(154, 124, 105, 0.22);
 }
 
 select:disabled {
@@ -229,7 +246,7 @@ select:disabled {
 .earthy-day-picker .rdp {
   --rdp-accent-color: var(--color-beige);
   --rdp-background-color: var(--color-bg-soft);
-  --rdp-outline: 2px solid rgba(183, 137, 95, 0.35);
+  --rdp-outline: 2px solid rgba(154, 124, 105, 0.4);
   --rdp-cell-size: 36px;
   --rdp-caption-font-size: 14px;
   --rdp-nav_button-height: 30px;
@@ -463,4 +480,35 @@ select:disabled {
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* Display serif for page headings (Surya-Kutir-style editorial look) */
+h1, h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500 !important;
+}
+
+/* Dark surfaces: anything with an oxblood background flips the text tokens to cream so
+   inherited/inline var(--color-text-*) and accent text stay readable (banners, badges, admin headers). */
+[style*="background-color: var(--color-deep)"],
+[style*="background-color:var(--color-deep)"],
+[style*="linear-gradient(135deg, var(--color-deep)"] {
+  --color-text-primary: #f6eddc;
+  --color-text-secondary: rgba(246, 237, 220, 0.88);
+  --color-text-muted: rgba(246, 237, 220, 0.72);
+  --color-terra: #e9c9a0;
+  --color-border: rgba(246, 237, 220, 0.28);
+}
+
+/* Dark badges/chips (dark-brown background): lighten accent text only (the background itself uses --color-text-primary) */
+[style*="background-color: var(--color-text-primary)"],
+[style*="background-color:var(--color-text-primary)"],
+[style*="background-color: var(--color-dark)"],
+[style*="background-color:var(--color-dark)"] {
+  --color-terra: #e9d9b8;
 }

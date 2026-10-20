@@ -48,7 +48,7 @@ export default function SecurityPayment() {
             flexDirection: 'column',
             alignItems: 'center',
           }}>
-            <Lock size={28} style={{ color: 'var(--color-gold)', marginBottom: '12px' }} />
+            <Lock size={28} style={{ color: 'var(--color-terra)', marginBottom: '12px' }} />
             <h4 style={{
               fontSize: '16px',
               fontWeight: '700',
@@ -76,7 +76,7 @@ export default function SecurityPayment() {
             flexDirection: 'column',
             alignItems: 'center',
           }}>
-            <CheckCircle2 size={28} style={{ color: 'var(--color-gold)', marginBottom: '12px' }} />
+            <CheckCircle2 size={28} style={{ color: 'var(--color-terra)', marginBottom: '12px' }} />
             <h4 style={{
               fontSize: '16px',
               fontWeight: '700',
@@ -104,7 +104,7 @@ export default function SecurityPayment() {
             flexDirection: 'column',
             alignItems: 'center',
           }}>
-            <MessageSquare size={28} style={{ color: 'var(--color-gold)', marginBottom: '12px' }} />
+            <MessageSquare size={28} style={{ color: 'var(--color-terra)', marginBottom: '12px' }} />
             <h4 style={{
               fontSize: '16px',
               fontWeight: '700',

@@ -14,14 +14,14 @@ export const PROPERTY_TYPES = [
 ] as const
 
 export const CATEGORIES = [
-  { value: "offbeat", label: "Offbeat Stays", icon: "🌿" },
-  { value: "mountain", label: "Mountain Stays", icon: "🏔" },
-  { value: "lakeside", label: "Lakeside", icon: "🌊" },
-  { value: "farm", label: "Farm Stays", icon: "🌾" },
-  { value: "homestay", label: "Homestays", icon: "🏡" },
-  { value: "boutique", label: "Boutique", icon: "✨" },
-  { value: "nature", label: "Nature Stays", icon: "🏕" },
-  { value: "budget", label: "Budget Gems", icon: "💰" },
+  { value: "offbeat", label: "Offbeat Stays" },
+  { value: "mountain", label: "Mountain Stays" },
+  { value: "lakeside", label: "Lakeside" },
+  { value: "farm", label: "Farm Stays" },
+  { value: "homestay", label: "Homestays" },
+  { value: "boutique", label: "Boutique" },
+  { value: "nature", label: "Nature Stays" },
+  { value: "budget", label: "Budget Gems" },
 ] as const
 
 export const EXPERIENCE_TAGS = [

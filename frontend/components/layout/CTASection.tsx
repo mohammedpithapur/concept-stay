@@ -6,7 +6,7 @@ import Copy from '@/lib/copy'
 export default function CTASection() {
   return (
     <section style={{
-      backgroundColor: 'var(--color-navbar)',
+      backgroundColor: 'var(--color-deep)', backgroundImage: 'var(--clay-texture-dark)',
       padding: '52px 24px',
     }}>
       <div style={{
@@ -46,7 +46,7 @@ export default function CTASection() {
           href="/properties"
           style={{
             backgroundColor: 'var(--color-gold)',
-            color: 'var(--color-text-primary)',
+            color: '#2a1810',
             border: 'none',
             padding: '14px 42px',
             fontSize: '12px',

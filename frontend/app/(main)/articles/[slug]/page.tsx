@@ -71,7 +71,7 @@ export default function ArticleDetailPage() {
             width: '44px',
             height: '44px',
             border: '3px solid var(--color-border)',
-            borderTopColor: 'var(--color-gold)',
+            borderTopColor: 'var(--color-terra)',
             borderRadius: '50%',
             animation: 'spin 0.8s linear infinite',
             marginBottom: '16px',
@@ -86,7 +86,7 @@ export default function ArticleDetailPage() {
   if (error || !article) {
     return (
       <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', textAlign: 'center' }}>
-        <BookOpen size={48} style={{ color: 'var(--color-gold)', marginBottom: '16px', opacity: 0.8 }} />
+        <BookOpen size={48} style={{ color: 'var(--color-terra)', marginBottom: '16px', opacity: 0.8 }} />
         <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '10px' }}>
           Story Not Found
         </h2>
@@ -97,7 +97,7 @@ export default function ArticleDetailPage() {
           href="/articles"
           style={{
             padding: '12px 24px',
-            backgroundColor: 'var(--color-gold)',
+            backgroundColor: 'var(--color-terra)',
             color: '#fff',
             borderRadius: '8px',
             textDecoration: 'none',
@@ -123,7 +123,7 @@ export default function ArticleDetailPage() {
       <div
         style={{
           borderBottom: '1px solid var(--color-border)',
-          backgroundColor: 'var(--color-navbar)',
+          backgroundColor: 'var(--color-deep)',
           padding: '16px 24px',
         }}
       >
@@ -184,9 +184,9 @@ export default function ArticleDetailPage() {
                 key={tag}
                 style={{
                   fontSize: '11px',
-                  backgroundColor: 'var(--color-navbar)',
+                  backgroundColor: 'var(--color-deep)',
                   border: '1px solid var(--color-border)',
-                  color: 'var(--color-gold)',
+                  color: 'var(--color-terra)',
                   padding: '4px 12px',
                   borderRadius: '999px',
                   fontWeight: 700,
@@ -246,12 +246,12 @@ export default function ArticleDetailPage() {
                 width: '38px',
                 height: '38px',
                 borderRadius: '50%',
-                backgroundColor: 'var(--color-navbar)',
-                border: '1.5px solid var(--color-gold)',
+                backgroundColor: 'var(--color-deep)',
+                border: '1.5px solid var(--color-terra)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--color-gold)',
+                color: 'var(--color-terra)',
                 fontWeight: 700,
                 fontSize: '14px',
               }}
@@ -270,11 +270,11 @@ export default function ArticleDetailPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '12px', color: 'var(--color-text-muted)' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Calendar size={14} style={{ color: 'var(--color-gold)' }} />
+              <Calendar size={14} style={{ color: 'var(--color-terra)' }} />
               {formattedDate}
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Clock size={14} style={{ color: 'var(--color-gold)' }} />
+              <Clock size={14} style={{ color: 'var(--color-terra)' }} />
               {article.read_time_minutes} min read
             </span>
           </div>
@@ -334,7 +334,7 @@ export default function ArticleDetailPage() {
                 alignItems: 'center',
                 gap: '6px',
                 padding: '8px 16px',
-                backgroundColor: 'var(--color-gold)',
+                backgroundColor: 'var(--color-terra)',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
@@ -353,7 +353,7 @@ export default function ArticleDetailPage() {
             style={{
               fontSize: '13px',
               fontWeight: 700,
-              color: 'var(--color-gold)',
+              color: 'var(--color-terra)',
               textDecoration: 'none',
             }}
           >
@@ -365,14 +365,14 @@ export default function ArticleDetailPage() {
         <div
           style={{
             marginTop: '64px',
-            backgroundColor: 'var(--color-navbar)',
+            backgroundColor: 'var(--color-deep)',
             border: '1px solid var(--color-border)',
             borderRadius: '16px',
             padding: '40px 32px',
             textAlign: 'center',
           }}
         >
-          <Sparkles size={28} style={{ color: 'var(--color-gold)', margin: '0 auto 12px' }} />
+          <Sparkles size={28} style={{ color: 'var(--color-terra)', margin: '0 auto 12px' }} />
           <h3 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '8px' }}>
             Experience Concept Stay Yourself
           </h3>
@@ -384,8 +384,8 @@ export default function ArticleDetailPage() {
             style={{
               display: 'inline-block',
               padding: '14px 28px',
-              backgroundColor: 'var(--color-gold)',
-              color: 'var(--color-text-primary)',
+              backgroundColor: 'var(--color-terra)',
+              color: '#f6eddc',
               borderRadius: '8px',
               fontSize: '13px',
               fontWeight: 700,

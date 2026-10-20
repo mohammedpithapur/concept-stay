@@ -97,7 +97,7 @@ export default function EventsPageClient() {
   return (
     <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
       {/* Header */}
-      <div style={{ backgroundColor: 'var(--color-navbar)', padding: '64px 24px', textAlign: 'center' }}>
+      <div style={{ backgroundColor: 'var(--color-deep)', padding: '64px 24px', textAlign: 'center' }}>
         <p style={{ color: 'var(--color-navbar-text)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>
           EVENT BOOKING
         </p>
@@ -302,7 +302,7 @@ export default function EventsPageClient() {
                 style={{ marginTop: '4px', cursor: 'pointer', width: '18px', height: '18px', minWidth: '18px' }}
               />
               <label htmlFor="consent" style={{ cursor: 'pointer', fontSize: '13px', color: 'var(--color-text-primary)', lineHeight: '1.6' }}>
-                By submitting this request, I acknowledge and accept the website&apos;s <span style={{ color: 'var(--color-gold)', textDecoration: 'underline', cursor: 'pointer' }}>Privacy Policy</span> and <span style={{ color: 'var(--color-gold)', textDecoration: 'underline', cursor: 'pointer' }}>T&C</span>, and consent to my information being used for product and promotional offers.
+                By submitting this request, I acknowledge and accept the website&apos;s <span style={{ color: 'var(--color-terra)', textDecoration: 'underline', cursor: 'pointer' }}>Privacy Policy</span> and <span style={{ color: 'var(--color-terra)', textDecoration: 'underline', cursor: 'pointer' }}>T&C</span>, and consent to my information being used for product and promotional offers.
               </label>
             </div>
             {errors.submit && <p style={{ color: '#E53E3E', fontSize: '14px', marginBottom: '16px', fontWeight: '600' }}>{errors.submit}</p>}
@@ -311,7 +311,7 @@ export default function EventsPageClient() {
                 onClick={handleSubmit}
                 disabled={loading}
                 style={{
-                  backgroundColor: loading ? '#b7895f99' : 'var(--color-navbar)',
+                  backgroundColor: loading ? '#a23a1f99' : 'var(--color-deep)',
                   color: '#ffffff',
                   border: 'none',
                   padding: '14px 32px',
@@ -331,8 +331,8 @@ export default function EventsPageClient() {
                 onClick={() => window.location.href = '/properties'}
                 style={{
                   backgroundColor: 'transparent',
-                  color: 'var(--color-navbar)',
-                  border: '2px solid var(--color-navbar)',
+                  color: 'var(--color-deep)',
+                  border: '2px solid var(--color-deep)',
                   padding: '12px 32px',
                   fontSize: '13px',
                   letterSpacing: '1.5px',
@@ -352,7 +352,7 @@ export default function EventsPageClient() {
         /* Success Message */
         <div style={{ padding: 'clamp(48px, 6vw, 120px) 24px', maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-            <CheckCircle2 size={64} style={{ color: 'var(--color-gold)' }} />
+            <CheckCircle2 size={64} style={{ color: 'var(--color-terra)' }} />
           </div>
           <h2 style={{ fontSize: '32px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '12px' }}>
             Request Submitted!
@@ -363,7 +363,7 @@ export default function EventsPageClient() {
           <button
             onClick={() => window.location.href = '/'}
             style={{
-              backgroundColor: 'var(--color-navbar)',
+              backgroundColor: 'var(--color-deep)',
               color: '#ffffff',
               border: 'none',
               padding: '14px 32px',

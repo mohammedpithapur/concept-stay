@@ -156,7 +156,7 @@ export default function Hero() {
       {/* Background Image */}
       <div style={{
         position: 'absolute', inset: 0,
-        backgroundImage: 'url(/prop-heritage-bedroom.jpg)',
+        backgroundImage: 'url(/clay/hero-dome.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }} />

@@ -42,10 +42,10 @@ function Chips({ options, selected, onToggle }: {
             aria-pressed={on}
             style={{
               padding: '8px 12px',
-              border: `1px solid ${on ? 'var(--color-gold)' : 'var(--color-border)'}`,
+              border: `1px solid ${on ? 'var(--color-terra)' : 'var(--color-border)'}`,
               borderRadius: '999px',
-              backgroundColor: on ? 'var(--color-gold)' : 'transparent',
-              color: 'var(--color-text-primary)',
+              backgroundColor: on ? 'var(--color-terra)' : 'transparent',
+              color: '#f6eddc',
               fontSize: '13px',
               fontWeight: on ? 700 : 400,
               cursor: 'pointer',

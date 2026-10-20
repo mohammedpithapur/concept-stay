@@ -57,10 +57,10 @@ function ConfirmationPageContent() {
           <div style={{
             textAlign: 'center',
             padding: '20px',
-            backgroundColor: 'var(--color-navbar)',
+            backgroundColor: 'var(--color-deep)',
             borderRadius: '12px',
             marginBottom: '28px',
-            border: '2px dashed var(--color-gold)',
+            border: '2px dashed var(--color-terra)',
           }}>
             <p style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '10px', fontWeight: '600' }}>
               Booking Reference
@@ -95,7 +95,7 @@ function ConfirmationPageContent() {
         {/* Non-refundable reminder */}
         <div style={{
           backgroundColor: '#FFFBEB',
-          border: '1px solid var(--color-gold)',
+          border: '1px solid var(--color-terra)',
           borderRadius: '12px',
           padding: '16px 20px',
           marginBottom: '32px',
@@ -103,7 +103,7 @@ function ConfirmationPageContent() {
           gap: '12px',
           alignItems: 'flex-start',
         }}>
-          <Info size={18} style={{ color: 'var(--color-gold)', flexShrink: 0, marginTop: '2px' }} />
+          <Info size={18} style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '2px' }} />
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6', margin: 0 }}>
             <strong>Reminder:</strong> This booking is <strong>non-refundable</strong>. Please save your booking reference number <strong>{ref}</strong> for your records.
           </p>
@@ -137,7 +137,7 @@ function ConfirmationPageContent() {
             id="btn-explore-more"
             style={{
               flex: '1 1 180px',
-              border: '2px solid var(--color-gold)',
+              border: '2px solid var(--color-terra)',
               color: 'var(--color-text-primary)',
               padding: '18px',
               fontSize: '13px',

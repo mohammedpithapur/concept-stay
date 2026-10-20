@@ -165,15 +165,15 @@ export default function TermsPage() {
     <div className="page-shell" style={{ backgroundColor: '#ffffff' }}>
 
       {/* Hero */}
-      <div style={{ backgroundColor: 'var(--color-navbar)', padding: '72px 24px 64px' }}>
+      <div style={{ backgroundColor: 'var(--color-deep)', padding: '72px 24px 64px' }}>
         <div className="content-shell" style={{ textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
+          <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
             Legal
           </p>
           <h1 style={{ color: 'var(--color-text-primary)', fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: '800', marginBottom: '16px', lineHeight: '1.2' }}>
             Terms & Conditions
           </h1>
-          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto 24px' }} />
+          <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 24px' }} />
           <p style={{ color: 'var(--color-text-primary)', fontSize: '15px', maxWidth: '560px', margin: '0 auto', lineHeight: '1.7' }}>
             Please read these terms carefully before using our platform. By booking with Concept Stay, you agree to be bound by the following terms and conditions.
           </p>
@@ -184,7 +184,7 @@ export default function TermsPage() {
       </div>
 
       {/* Important Notice */}
-      <div style={{ backgroundColor: 'var(--color-bg-card)', borderBottom: '1px solid var(--color-gold)' }}>
+      <div style={{ backgroundColor: 'var(--color-bg-card)', borderBottom: '1px solid var(--color-terra)' }}>
         <div className="content-shell" style={{ padding: '20px 24px' }}>
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.7', textAlign: 'center' }}>
             <strong>Important:</strong> Each stay has its own <strong>cancellation policy</strong>. Please review it in Section 4 before making a reservation.
@@ -206,10 +206,10 @@ export default function TermsPage() {
                 key={section.id}
                 href={`#${section.id}`}
                 style={{ color: 'var(--color-text-secondary)', fontSize: '14px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', transition: 'color 0.2s ease' }}
-                onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-gold)'}
+                onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-terra)'}
                 onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-secondary)'}
               >
-                <span style={{ color: 'var(--color-gold)', fontSize: '10px' }}>→</span>
+                <span style={{ color: 'var(--color-terra)', fontSize: '10px' }}>→</span>
                 {section.title}
               </a>
             ))}
@@ -231,7 +231,7 @@ export default function TermsPage() {
                 {section.content.map((item, i) => (
                   <div
                     key={i}
-                    style={{ paddingLeft: '20px', borderLeft: `3px solid ${section.id === 'cancellation' ? '#E53E3E' : 'var(--color-gold)'}` }}
+                    style={{ paddingLeft: '20px', borderLeft: `3px solid ${section.id === 'cancellation' ? '#E53E3E' : 'var(--color-terra)'}` }}
                   >
                     <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
                       {item.subtitle}
@@ -247,7 +247,7 @@ export default function TermsPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div style={{ marginTop: '64px', backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-gold)', borderRadius: '12px', padding: '32px', display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <div style={{ marginTop: '64px', backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-terra)', borderRadius: '12px', padding: '32px', display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: '220px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '8px' }}>Need Clarification?</h3>
             <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.7' }}>
@@ -257,7 +257,7 @@ export default function TermsPage() {
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
             <a
               href="mailto:staysearthy@gmail.com"
-              style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', padding: '12px 24px', fontSize: '13px', letterSpacing: '1px', fontWeight: '700', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '8px', display: 'inline-block' }}
+              style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', padding: '12px 24px', fontSize: '13px', letterSpacing: '1px', fontWeight: '700', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '8px', display: 'inline-block' }}
             >
               Email Legal Team
             </a>
@@ -282,7 +282,7 @@ export default function TermsPage() {
               href={link.href}
               style={{ fontSize: '13px', color: 'var(--color-text-muted)', textDecoration: 'none', padding: '8px 16px', border: '1px solid var(--color-border)', borderRadius: '6px', transition: 'all 0.2s ease' }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--color-gold)'
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--color-terra)'
                 ;(e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-primary)'
               }}
               onMouseLeave={e => {

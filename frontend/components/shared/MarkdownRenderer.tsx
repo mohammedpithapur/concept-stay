@@ -27,7 +27,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
             key={i}
             style={{
               backgroundColor: 'var(--color-bg-soft)',
-              color: 'var(--color-gold)',
+              color: 'var(--color-terra)',
               padding: '2px 6px',
               borderRadius: '4px',
               fontSize: '0.88em',
@@ -47,7 +47,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
             href={linkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'var(--color-gold)', textDecoration: 'underline', fontWeight: 600 }}
+            style={{ color: 'var(--color-terra)', textDecoration: 'underline', fontWeight: 600 }}
           >
             {linkText}
           </a>
@@ -199,7 +199,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
         <blockquote
           key={`quote-${elements.length}`}
           style={{
-            borderLeft: '3px solid var(--color-gold)',
+            borderLeft: '3px solid var(--color-terra)',
             padding: '12px 18px',
             backgroundColor: 'var(--color-bg-card)',
             margin: '20px 0',

@@ -34,7 +34,7 @@ export default function Navbar() {
   }
 
   const navLinkStyle = {
-    color: 'var(--color-navbar-text)',
+    color: 'var(--color-text-primary)',
     fontSize: '13px',
     letterSpacing: '1px',
     textDecoration: 'none',
@@ -46,7 +46,7 @@ export default function Navbar() {
   const userInitial = user?.full_name?.charAt(0)?.toUpperCase() || '?'
 
   return (
-    <nav style={{ backgroundColor: 'var(--color-navbar)', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, width: '100%' }}>
+    <nav style={{ backgroundColor: 'rgba(239,227,204,0.96)', backdropFilter: 'blur(6px)', borderBottom: '1px solid var(--color-border)', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, width: '100%' }}>
       <div className="px-5 py-4 md:px-6 md:py-5" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1400px', margin: '0 auto', width: '100%', minHeight: '74px', paddingInline: '16px' }}>
 
         {/* Logo */}
@@ -69,13 +69,13 @@ export default function Navbar() {
                   alt="Concept Stay Logo"
                   width="42"
                   height="42"
-                  style={{ objectFit: 'contain' }}
+                  style={{ objectFit: 'contain', filter: 'brightness(0) opacity(0.8)' }}
                 />
               ) : (
                 <div style={{ width: '42px', height: '42px' }} />
               )}
             </div>
-            <span style={{ color: 'var(--color-navbar-text)', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', fontFamily: "'Figtree', sans-serif" }}>
+            <span style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '2px', fontWeight: '700', fontFamily: "'Figtree', sans-serif" }}>
               CONCEPT STAY
             </span>
           </div>
@@ -91,8 +91,8 @@ export default function Navbar() {
             { label: 'Contact Us', href: '/contact' },
           ].map(link => (
             <Link key={link.href} href={link.href} style={navLinkStyle}
-              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-gold)'}
-              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-navbar-text)'}>
+              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-terra)'}
+              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-primary)'}>
               {link.label}
             </Link>
           ))}
@@ -101,16 +101,16 @@ export default function Navbar() {
         {/* Desktop right side */}
         <div className="hidden md:flex items-center gap-4">
           {loading ? (
-            <div style={{ width: '80px', height: '36px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '8px' }} />
+            <div style={{ width: '80px', height: '36px', backgroundColor: 'rgba(42,24,16,0.08)', borderRadius: '8px' }} />
           ) : user ? (
             <div ref={dropdownRef} style={{ position: 'relative' }}>
               <button
                 onClick={() => setDropdownOpen(o => !o)}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'transparent', border: '1px solid var(--color-navbar-border)', borderRadius: '999px', padding: '6px 14px 6px 6px', cursor: 'pointer', color: 'var(--color-navbar-text)', transition: 'border-color 0.2s ease' }}
-                onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-gold)'}
-                onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-navbar-border)'}
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'transparent', border: '1px solid var(--color-border)', borderRadius: '999px', padding: '6px 14px 6px 6px', cursor: 'pointer', color: 'var(--color-text-primary)', transition: 'border-color 0.2s ease' }}
+                onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-terra)'}
+                onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-border)'}
               >
-                <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--color-gold)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '800', color: 'var(--color-text-primary)' }}>
+                <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--color-terra)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '800', color: '#f6eddc' }}>
                   {userInitial}
                 </div>
                 <span style={{ fontSize: '13px', fontWeight: '600', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -151,15 +151,15 @@ export default function Navbar() {
             </div>
           ) : (
             <Link href="/login" style={navLinkStyle}
-              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-gold)'}
-              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-navbar-text)'}>
+              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-terra)'}
+              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-primary)'}>
               Login
             </Link>
           )}
 
           <Link
             href="/properties"
-            style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', border: 'none', padding: '10px 20px', fontSize: '12px', letterSpacing: '1px', fontWeight: '700', textDecoration: 'none', borderRadius: '8px', textTransform: 'uppercase' as const, transition: 'all 0.2s ease' }}
+            style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '10px 20px', fontSize: '12px', letterSpacing: '1px', fontWeight: '700', textDecoration: 'none', borderRadius: '8px', textTransform: 'uppercase' as const, transition: 'all 0.2s ease' }}
             onMouseEnter={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.opacity = '0.9'; el.style.transform = 'scale(1.03)' }}
             onMouseLeave={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.opacity = '1'; el.style.transform = 'scale(1)' }}
           >
@@ -173,14 +173,14 @@ export default function Navbar() {
             user ? (
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                style={{ width: '36px', height: '36px', backgroundColor: 'var(--color-gold)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '800', color: 'var(--color-text-primary)', border: 'none', cursor: 'pointer' }}
+                style={{ width: '36px', height: '36px', backgroundColor: 'var(--color-terra)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '800', color: '#f6eddc', border: 'none', cursor: 'pointer' }}
               >
                 {userInitial}
               </button>
             ) : (
               <button
                 onClick={() => router.push('/login')}
-                style={{ background: 'transparent', border: '1px solid var(--color-navbar-border)', color: 'var(--color-navbar-text)', fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: '700', padding: '8px 14px', borderRadius: '999px', cursor: 'pointer' }}
+                style={{ background: 'transparent', border: '1px solid var(--color-border)', color: 'var(--color-text-primary)', fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: '700', padding: '8px 14px', borderRadius: '999px', cursor: 'pointer' }}
               >
                 Login
               </button>
@@ -192,16 +192,16 @@ export default function Navbar() {
             aria-label="Toggle navigation menu"
             style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            <span style={{ backgroundColor: 'var(--color-navbar-text)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
-            <span style={{ backgroundColor: 'var(--color-navbar-text)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
-            <span style={{ backgroundColor: 'var(--color-navbar-text)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
+            <span style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
+            <span style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
+            <span style={{ backgroundColor: 'var(--color-text-primary)', height: '2px', width: '24px', display: 'block', borderRadius: '2px' }} />
           </button>
         </div>
       </div>
 
       {/* Mobile menu */}
       {mounted && menuOpen && (
-        <div className="md:hidden flex flex-col w-full" style={{ backgroundColor: 'var(--color-navbar)', borderTop: '1px solid var(--color-navbar-border)', padding: '16px 24px', gap: '16px', maxWidth: '1400px', margin: '0 auto' }}>
+        <div className="md:hidden flex flex-col w-full" style={{ backgroundColor: 'var(--color-bg-page)', borderTop: '1px solid var(--color-border)', padding: '16px 24px', gap: '16px', maxWidth: '1400px', margin: '0 auto' }}>
           {[
             { label: 'Our Properties', href: '/properties' },
             { label: 'Corporate', href: '/corporate' },
@@ -210,7 +210,7 @@ export default function Navbar() {
             { label: 'Contact Us', href: '/contact' },
           ].map(link => (
             <Link key={link.href} href={link.href}
-              style={{ color: 'var(--color-navbar-text)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}
+              style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}
               onClick={() => setMenuOpen(false)}>
               {link.label}
             </Link>
@@ -219,11 +219,11 @@ export default function Navbar() {
           {user && (
             <>
               <Link href="/dashboard" onClick={() => setMenuOpen(false)}
-                style={{ color: 'var(--color-navbar-text)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
+                style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
                 My Dashboard
               </Link>
               <Link href={user.role === 'host' || user.role === 'admin' ? '/host' : '/host/apply'} onClick={() => setMenuOpen(false)}
-                style={{ color: 'var(--color-navbar-text)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
+                style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
                 {user.role === 'host' || user.role === 'admin' ? 'Host Dashboard' : 'Become a host'}
               </Link>
               {user.role === 'admin' && (
@@ -240,7 +240,7 @@ export default function Navbar() {
           )}
 
           <Link href="/properties" onClick={() => setMenuOpen(false)}
-            style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', border: 'none', padding: '12px 24px', fontSize: '12px', letterSpacing: '1px', fontWeight: '700', textAlign: 'center', textDecoration: 'none', borderRadius: '8px', textTransform: 'uppercase' }}>
+            style={{ backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '12px 24px', fontSize: '12px', letterSpacing: '1px', fontWeight: '700', textAlign: 'center', textDecoration: 'none', borderRadius: '8px', textTransform: 'uppercase' }}>
             Book Now
           </Link>
         </div>

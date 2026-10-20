@@ -11,7 +11,7 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer style={{ backgroundColor: 'var(--color-navbar)', color: 'var(--color-navbar-text)' }}>
+    <footer style={{ backgroundColor: 'var(--color-deep)', backgroundImage: 'var(--clay-texture-dark)', color: 'var(--color-navbar-text)' }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',

@@ -75,7 +75,7 @@ function ResetPasswordForm() {
               <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
                 Reset Password
               </h2>
-              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '16px' }} />
+              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '16px' }} />
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '28px', lineHeight: '1.6' }}>
                 Choose a strong password that you haven&apos;t used before.
               </p>
@@ -129,8 +129,8 @@ function ResetPasswordForm() {
                 onClick={handleSubmit}
                 disabled={loading}
                 style={{
-                  width: '100%', backgroundColor: 'var(--color-gold)',
-                  color: 'var(--color-text-primary)', border: 'none', padding: '16px',
+                  width: '100%', backgroundColor: 'var(--color-terra)',
+                  color: '#f6eddc', border: 'none', padding: '16px',
                   fontSize: '13px', letterSpacing: '2px', fontWeight: '700',
                   textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer',
                   borderRadius: '8px', opacity: loading ? 0.7 : 1
@@ -142,17 +142,17 @@ function ResetPasswordForm() {
           ) : (
             <div style={{ textAlign: 'center', padding: '16px 0' }}>
               <div style={{
-                width: '64px', height: '64px', backgroundColor: 'var(--color-gold)',
+                width: '64px', height: '64px', backgroundColor: 'var(--color-terra)',
                 borderRadius: '50%', display: 'flex', alignItems: 'center',
                 justifyContent: 'center', margin: '0 auto 24px',
-                fontSize: '28px', fontWeight: '700', color: 'var(--color-text-primary)'
+                fontSize: '28px', fontWeight: '700', color: '#f6eddc'
               }}>
                 &#10003;
               </div>
               <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '12px' }}>
                 Password Updated
               </h2>
-              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto 16px' }} />
+              <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 16px' }} />
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.7' }}>
                 Your password has been updated. Redirecting you to sign in...
               </p>

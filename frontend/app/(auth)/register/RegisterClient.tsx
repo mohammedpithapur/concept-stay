@@ -160,7 +160,7 @@ export default function RegisterClient() {
 
         <div style={{ backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: 'clamp(24px, 4vw, 40px)' }}>
           <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '8px' }}>Create Account</h2>
-          <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-gold)', marginBottom: '28px' }} />
+          <div style={{ width: '40px', height: '2px', backgroundColor: 'var(--color-terra)', marginBottom: '28px' }} />
 
           {apiError && (
             <div style={{ backgroundColor: '#FFF5F5', border: '1px solid #FEB2B2', borderRadius: '8px', padding: '12px 16px', marginBottom: '20px', color: '#C53030', fontSize: '14px' }}>
@@ -200,7 +200,7 @@ export default function RegisterClient() {
                   onChange={e => setForm({ ...form, [item.field]: e.target.value })}
                   style={{ ...inputStyle(item.field), paddingRight: '88px' }}
                 />
-                <button type="button" onClick={item.toggle} style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', border: 'none', backgroundColor: 'transparent', color: 'var(--color-gold)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', cursor: 'pointer', padding: '8px 10px' }}>
+                <button type="button" onClick={item.toggle} style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', border: 'none', backgroundColor: 'transparent', color: 'var(--color-terra)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', cursor: 'pointer', padding: '8px 10px' }}>
                   {item.show ? 'Hide' : 'Show'}
                 </button>
               </div>
@@ -212,7 +212,7 @@ export default function RegisterClient() {
             id="register-submit"
             onClick={handleSubmit}
             disabled={submitting}
-            style={{ width: '100%', backgroundColor: 'var(--color-gold)', color: 'var(--color-text-primary)', border: 'none', padding: '16px', fontSize: '13px', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', cursor: submitting ? 'not-allowed' : 'pointer', marginBottom: '24px', borderRadius: '8px', opacity: submitting ? 0.7 : 1 }}
+            style={{ width: '100%', backgroundColor: 'var(--color-terra)', color: '#f6eddc', border: 'none', padding: '16px', fontSize: '13px', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', cursor: submitting ? 'not-allowed' : 'pointer', marginBottom: '24px', borderRadius: '8px', opacity: submitting ? 0.7 : 1 }}
           >
             {submitting ? 'Creating Account...' : 'Create Account'}
           </button>
@@ -227,7 +227,7 @@ export default function RegisterClient() {
             id="register-google"
             onClick={handleGoogleRegister}
             style={{ width: '100%', backgroundColor: 'transparent', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '14px', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '24px', fontWeight: '600' }}
-            onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-gold)'}
+            onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-terra)'}
             onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-border)'}
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -241,14 +241,14 @@ export default function RegisterClient() {
 
           <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--color-text-muted)', marginBottom: '16px', lineHeight: '1.6' }}>
             By creating an account you agree to our{' '}
-            <Link href="/terms" style={{ color: 'var(--color-gold)', textDecoration: 'none', fontWeight: '600' }}>Terms</Link>
+            <Link href="/terms" style={{ color: 'var(--color-terra)', textDecoration: 'none', fontWeight: '600' }}>Terms</Link>
             {' '}and{' '}
-            <Link href="/privacy" style={{ color: 'var(--color-gold)', textDecoration: 'none', fontWeight: '600' }}>Privacy Policy</Link>
+            <Link href="/privacy" style={{ color: 'var(--color-terra)', textDecoration: 'none', fontWeight: '600' }}>Privacy Policy</Link>
           </p>
 
           <p style={{ textAlign: 'center', fontSize: '14px', color: 'var(--color-text-muted)' }}>
             Already have an account?{' '}
-            <Link href={`/login?next=${encodeURIComponent(next)}`} style={{ color: 'var(--color-gold)', textDecoration: 'none', fontWeight: '700' }}>
+            <Link href={`/login?next=${encodeURIComponent(next)}`} style={{ color: 'var(--color-terra)', textDecoration: 'none', fontWeight: '700' }}>
               Sign In
             </Link>
           </p>

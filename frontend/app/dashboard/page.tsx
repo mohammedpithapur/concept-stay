@@ -638,7 +638,7 @@ export default function DashboardPage() {
       )}
 
       {/* ── Header ── */}
-      <div style={{ background: 'linear-gradient(135deg, var(--color-navbar) 0%, #1a1a1a 100%)', padding: '48px 24px' }}>
+      <div style={{ background: 'linear-gradient(135deg, var(--color-deep) 0%, #1a1a1a 100%)', padding: '48px 24px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <p style={{ color: 'var(--color-gold)', fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '8px', fontWeight: '700' }}>Welcome back</p>

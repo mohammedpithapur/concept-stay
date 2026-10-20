@@ -55,7 +55,7 @@ export default function ArticlesClient() {
       {/* Hero Header */}
       <section
         style={{
-          backgroundColor: 'var(--color-navbar)',
+          backgroundColor: 'var(--color-deep)',
           borderBottom: '1px solid var(--color-border)',
           padding: '64px 24px 56px',
           textAlign: 'center',
@@ -67,7 +67,7 @@ export default function ArticlesClient() {
               fontSize: '11px',
               letterSpacing: '3px',
               textTransform: 'uppercase',
-              color: 'var(--color-gold)',
+              color: 'var(--color-terra)',
               fontWeight: 700,
               display: 'inline-block',
               marginBottom: '12px',
@@ -176,8 +176,8 @@ export default function ArticlesClient() {
                   style={{
                     padding: '8px 18px',
                     borderRadius: '100px',
-                    border: `1.5px solid ${active ? 'var(--color-gold)' : 'var(--color-border)'}`,
-                    backgroundColor: active ? 'var(--color-gold)' : '#ffffff',
+                    border: `1.5px solid ${active ? 'var(--color-terra)' : 'var(--color-border)'}`,
+                    backgroundColor: active ? 'var(--color-terra)' : '#ffffff',
                     color: active ? '#ffffff' : 'var(--color-text-secondary)',
                     fontSize: '13px',
                     fontWeight: active ? 700 : 500,
@@ -200,7 +200,7 @@ export default function ArticlesClient() {
                 width: '40px',
                 height: '40px',
                 border: '3px solid var(--color-border)',
-                borderTopColor: 'var(--color-gold)',
+                borderTopColor: 'var(--color-terra)',
                 borderRadius: '50%',
                 animation: 'spin 0.8s linear infinite',
                 margin: '0 auto 16px',
@@ -229,7 +229,7 @@ export default function ArticlesClient() {
               onClick={() => window.location.reload()}
               style={{
                 padding: '10px 20px',
-                backgroundColor: 'var(--color-gold)',
+                backgroundColor: 'var(--color-terra)',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
@@ -256,7 +256,7 @@ export default function ArticlesClient() {
               margin: '0 auto',
             }}
           >
-            <BookOpen size={48} style={{ color: 'var(--color-gold)', margin: '0 auto 16px', opacity: 0.8 }} />
+            <BookOpen size={48} style={{ color: 'var(--color-terra)', margin: '0 auto 16px', opacity: 0.8 }} />
             <h3 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '8px' }}>
               No Articles Found
             </h3>
@@ -273,7 +273,7 @@ export default function ArticlesClient() {
                 }}
                 style={{
                   padding: '10px 22px',
-                  backgroundColor: 'var(--color-gold)',
+                  backgroundColor: 'var(--color-terra)',
                   color: '#ffffff',
                   border: 'none',
                   borderRadius: '100px',
@@ -355,8 +355,8 @@ export default function ArticlesClient() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          backgroundColor: 'var(--color-navbar)',
-                          color: 'var(--color-gold)',
+                          backgroundColor: 'var(--color-deep)',
+                          color: 'var(--color-terra)',
                         }}
                       >
                         <BookOpen size={44} opacity={0.6} />
@@ -378,12 +378,12 @@ export default function ArticlesClient() {
                       }}
                     >
                       <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Calendar size={13} style={{ color: 'var(--color-gold)' }} />
+                        <Calendar size={13} style={{ color: 'var(--color-terra)' }} />
                         {formattedDate}
                       </span>
                       <span>•</span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Clock size={13} style={{ color: 'var(--color-gold)' }} />
+                        <Clock size={13} style={{ color: 'var(--color-terra)' }} />
                         {article.read_time_minutes} min read
                       </span>
                     </div>
@@ -480,7 +480,7 @@ export default function ArticlesClient() {
                           gap: '4px',
                           fontSize: '13px',
                           fontWeight: 700,
-                          color: 'var(--color-gold)',
+                          color: 'var(--color-terra)',
                           textDecoration: 'none',
                         }}
                       >

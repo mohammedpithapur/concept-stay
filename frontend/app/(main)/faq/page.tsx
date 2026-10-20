@@ -14,13 +14,13 @@ export default function FaqPage() {
   return (
     <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
       <div style={{ backgroundColor: 'var(--color-bg-soft)', padding: '72px 24px 64px', textAlign: 'center' }}>
-        <p style={{ color: 'var(--color-gold)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>
+        <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '600' }}>
           Quick Answers
         </p>
         <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: '800', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
           Frequently Asked Questions
         </h1>
-        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-gold)', margin: '0 auto 16px' }} />
+        <div style={{ width: '60px', height: '2px', backgroundColor: 'var(--color-terra)', margin: '0 auto 16px' }} />
         <p style={{ fontSize: '15px', color: 'var(--color-text-secondary)', maxWidth: '560px', margin: '0 auto', lineHeight: '1.7' }}>
           Find quick answers about bookings, cancellations, and stays.
         </p>
@@ -43,7 +43,7 @@ export default function FaqPage() {
         </div>
 
         <div style={{ maxWidth: '760px', margin: '40px auto 0', textAlign: 'center' }}>
-          <Link href="/contact" style={{ color: 'var(--color-gold)', textDecoration: 'none', fontWeight: '700', fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase' }}>
+          <Link href="/contact" style={{ color: 'var(--color-terra)', textDecoration: 'none', fontWeight: '700', fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase' }}>
             Back to Contact
           </Link>
         </div>
