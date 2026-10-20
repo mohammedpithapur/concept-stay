@@ -78,7 +78,7 @@ function Chips({ options, selected, onToggle }: {
 
 type Props = { property: HostProperty | null; onSaved: (p: HostProperty) => void; onCancel: () => void }
 
-/** Create or edit a listing. Edits to live listings go to admin review before guests see them. */
+/** Create or edit a listing. Edits to live listings publish immediately; new listings go to admin review. */
 export default function ListingForm({ property, onSaved, onCancel }: Props) {
   const { fetchWithAuth } = useAuth()
   const [d, setD] = useState<Draft>(() => (property ? fromProperty(property) : EMPTY))
@@ -152,7 +152,7 @@ export default function ListingForm({ property, onSaved, onCancel }: Props) {
       <h2 style={{ fontSize: '22px', fontWeight: 800, marginBottom: '8px' }}>{property ? 'Edit listing' : 'New listing'}</h2>
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
         {property && property.approval_status === 'approved'
-          ? 'Your changes are reviewed by our team before guests see them. The current version stays live meanwhile.'
+          ? 'Changes to live listings are published immediately.'
           : 'Our team reviews every listing before it is published.'}
       </p>
 
@@ -257,7 +257,7 @@ export default function ListingForm({ property, onSaved, onCancel }: Props) {
       {error && <p role="alert" style={{ color: '#C62828', fontSize: '14px', marginBottom: '12px' }}>{error}</p>}
       <div style={{ display: 'flex', gap: '12px' }}>
         <button type="submit" disabled={saving || uploading} style={{ ...hostPrimaryButton, opacity: saving || uploading ? 0.6 : 1 }}>
-          {saving ? 'Saving…' : property ? 'Submit changes for review' : 'Submit for review'}
+          {saving ? 'Saving…' : property?.approval_status === 'approved' ? 'Save changes' : property ? 'Resubmit for review' : 'Submit for review'}
         </button>
         <button type="button" onClick={onCancel} disabled={saving} style={hostGhostButton}>Cancel</button>
       </div>

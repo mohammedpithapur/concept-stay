@@ -97,28 +97,19 @@ async def test_other_host_cannot_edit_or_see_property(client, host_a, host_b, ad
     assert block.status_code == 403
 
 
-async def test_edit_goes_to_pending_changes_until_approved(client, host_a, admin_token):
+async def test_live_edit_applies_immediately(client, host_a, admin_token):
     pid = await _create_live_listing(client, host_a, admin_token, name="Original")
     patch = await client.patch(
         f"/host/properties/{pid}", headers=_h(host_a), json={"name": "Renamed", "price_per_night": 9999}
     )
     assert patch.status_code == 200, patch.text
-    assert patch.json()["pending_changes"]["name"] == "Renamed"
-    assert patch.json()["name"] == "Original"
+    assert patch.json()["name"] == "Renamed"
+    assert patch.json()["pending_changes"] is None
 
-    public = (await client.get(f"/properties/{pid}")).json()
-    assert public["name"] == "Original"
-    assert public["price_per_night"] == 5000
-    assert public["approval_status"] == "approved"  # stays live while the edit is pending
-
-    queue = (await client.get("/admin/review-queue", headers=_h(admin_token))).json()
-    assert [p["id"] for p in queue] == [pid]
-
-    approve = await client.post(f"/admin/properties/{pid}/approve", headers=_h(admin_token))
-    assert approve.status_code == 200
     public = (await client.get(f"/properties/{pid}")).json()
     assert public["name"] == "Renamed"
     assert public["price_per_night"] == 9999
+    assert public["approval_status"] == "approved"
     assert (await client.get("/admin/review-queue", headers=_h(admin_token))).json() == []
 
 
@@ -144,21 +135,6 @@ async def test_reject_new_listing_stores_reason(client, host_a, admin_token):
     assert mine["approval_status"] == "rejected"
     assert mine["rejection_reason"] == "Photos too dark"
     assert (await client.get(f"/properties/{pid}")).status_code == 404
-
-
-async def test_reject_edit_on_live_listing_keeps_it_live(client, host_a, admin_token):
-    pid = await _create_live_listing(client, host_a, admin_token, name="Stable")
-    await client.patch(f"/host/properties/{pid}", headers=_h(host_a), json={"name": "Bad edit"})
-    rej = await client.post(
-        f"/admin/properties/{pid}/reject", headers=_h(admin_token), json={"reason": "Misleading title"}
-    )
-    assert rej.status_code == 200
-    public = await client.get(f"/properties/{pid}")
-    assert public.status_code == 200
-    assert public.json()["name"] == "Stable"
-    mine = (await client.get("/host/properties", headers=_h(host_a))).json()[0]
-    assert mine["pending_changes"] is None
-    assert mine["rejection_reason"] == "Misleading title"
 
 
 async def test_admin_sets_verification(client, host_a, admin_token):

@@ -48,22 +48,21 @@ test.describe('Host area', () => {
 })
 
 test.describe('Admin marketplace tabs', () => {
-  test('review queue lists a pending edit with a diff', async ({ page }) => {
+  test('review queue lists a new listing awaiting approval', async ({ page }) => {
     await page.route('**/admin/dashboard', json({ total_bookings: 0, total_properties: 1, total_revenue: 0, pending_bookings: 0 }))
     await page.route('**/bookings/admin/all**', json({ items: [], total: 0, page: 1, limit: 15 }))
     await page.route('**/admin/review-queue', json([
       {
         id: 'p1', owner_id: 'host-1', name: 'Hill Homestay', city: 'Manali', state: 'Himachal', price_per_night: 4000,
-        images: [], approval_status: 'approved', verification_status: 'unverified',
-        pending_changes: { price_per_night: 5000 }, rejection_reason: null,
+        images: [], approval_status: 'pending_review', verification_status: 'unverified',
+        pending_changes: null, rejection_reason: null,
       },
     ]))
     await page.goto('/admin')
     await page.waitForLoadState('networkidle') // let React hydrate before clicking a tab
     await page.getByRole('button', { name: 'Listing Review' }).click()
     await expect(page.getByText('Hill Homestay')).toBeVisible()
-    await expect(page.getByText('Edit to live listing')).toBeVisible()
-    await expect(page.getByRole('cell', { name: '5000' })).toBeVisible()
+    await expect(page.getByText('New listing', { exact: false }).first()).toBeVisible()
     await expect(page.getByRole('button', { name: /Approve/ })).toBeVisible()
   })
 })

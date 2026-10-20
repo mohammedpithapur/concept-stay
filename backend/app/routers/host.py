@@ -19,7 +19,8 @@ from app.routers.admin import PresignedBatchRequest
 from app.schemas.user import UserOut
 from app.routers import admin as admin_router
 from app.services.cache import invalidate_properties_cache
-from app.services.listing_review import HOST_FORBIDDEN_FIELDS
+from app.services.booking import complete_finished_bookings
+from app.services.listing_review import HOST_FORBIDDEN_FIELDS, apply_pending_changes
 from app.services.property_images import normalize_property_images, sync_property_images
 
 router = APIRouter(prefix="/host", tags=["host"])
@@ -110,8 +111,9 @@ async def edit_my_property(
         prop.approval_status = "pending_review"
         prop.rejection_reason = None
     else:
-        # Live listing: guests keep seeing the approved version until an admin approves.
+        # Live listing: edits publish immediately (the client dropped re-approval for live listings).
         prop.pending_changes = {**(prop.pending_changes or {}), **changes}
+        await apply_pending_changes(db, prop)
         prop.rejection_reason = None
     await db.commit()
     await invalidate_properties_cache()
@@ -178,6 +180,7 @@ async def my_bookings(
     host: User = Depends(get_host),
     db: AsyncSession = Depends(get_db),
 ):
+    await complete_finished_bookings(db)
     result = await db.execute(
         _host_bookings_query(host).order_by(Booking.check_in.desc()).offset((page - 1) * limit).limit(limit)
     )
@@ -188,6 +191,7 @@ async def my_bookings(
 
 @router.get("/dashboard")
 async def my_dashboard(host: User = Depends(get_host), db: AsyncSession = Depends(get_db)):
+    await complete_finished_bookings(db)
     today = today_ist()
     month_start = today.replace(day=1)
     days_in_month = monthrange(today.year, today.month)[1]
