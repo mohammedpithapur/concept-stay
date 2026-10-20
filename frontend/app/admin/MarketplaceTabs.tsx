@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import {
-  VERIFICATION_STATUSES, approveListing, listAdminPayouts, listHosts, listReviewQueue, markPayoutPaid,
-  rejectListing, setHostStatus, setListingVerification,
-  type HostProperty, type HostUser, type Payout, type VerificationStatus,
+  VERIFICATION_STATUSES, approveListing, getKyc, listAdminPayouts, listHosts, listKyc, listReviewQueue, markPayoutPaid,
+  rejectKyc, rejectListing, setHostStatus, setListingVerification, verifyKyc,
+  type HostProperty, type HostUser, type KycDetail, type KycListItem, type KycStatus, type Payout, type VerificationStatus,
 } from '@/lib/marketplace'
 
 const card: CSSProperties = { backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '20px 24px' }
@@ -197,16 +197,107 @@ export function PayoutsTab() {
               <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
                 Guest paid {inr(p.gross_amount)} · commission {inr(p.commission)} · fee {inr(p.fees)} · taxes {inr(p.taxes)}
               </p>
+              {p.status === 'owed' && !['verified', 'exempt'].includes(p.host_kyc_status ?? '') && (
+                <p style={{ fontSize: '12px', color: '#C62828', fontWeight: 600 }}>Host KYC {p.host_kyc_status ?? 'incomplete'}: verify it in the Host KYC tab before paying.</p>
+              )}
               <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Host {p.host_id} · booking {p.booking_id}</p>
             </div>
             {p.status === 'owed' ? (
               <div style={{ display: 'flex', gap: '8px' }}>
                 <input placeholder="UTR / reference" style={input} value={refs[p.id] ?? ''} onChange={e => setRefs({ ...refs, [p.id]: e.target.value })} />
-                <button style={primary} disabled={!(refs[p.id] ?? '').trim()} onClick={() => pay(p)}>Mark paid</button>
+                <button style={primary} disabled={!(refs[p.id] ?? '').trim() || !['verified', 'exempt'].includes(p.host_kyc_status ?? '')} onClick={() => pay(p)}>Mark paid</button>
               </div>
             ) : (
               <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase' }}>{p.status}{p.reference ? ` · ${p.reference}` : ''}</span>
             )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── Host KYC ──────────────────────────────────────────────────────────────────
+
+function KycDetailCard({ userId, onChanged, onError }: { userId: string; onChanged: () => void; onError: (m: string) => void }) {
+  const { fetchWithAuth } = useAuth()
+  const { data, error, reload } = useLoader(() => getKyc(userId, fetchWithAuth))
+  const [reason, setReason] = useState('')
+  const [rejecting, setRejecting] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  const run = async (fn: () => Promise<unknown>) => {
+    setBusy(true)
+    try { await fn(); reload(); onChanged() } catch (e) { onError((e as Error).message) } finally { setBusy(false) }
+  }
+  const row = (k: string, v: string | null) => (
+    <tr key={k}><td style={{ padding: '4px 12px 4px 0', color: 'var(--color-text-muted)' }}>{k}</td><td style={{ fontWeight: 600 }}>{v || '-'}</td></tr>
+  )
+  if (error) return <p role="alert" style={{ color: '#C62828' }}>{error}</p>
+  if (!data) return <p>Loading…</p>
+  const d: KycDetail = data
+
+  return (
+    <div style={{ marginTop: '14px', borderTop: '1px solid var(--color-border)', paddingTop: '14px' }}>
+      <table style={{ fontSize: '13px', borderCollapse: 'collapse' }}><tbody>
+        {row('Email', d.email)}{row('Legal name', d.legal_name)}{row('Phone', d.phone)}{row('PAN', d.pan_number)}
+        {row('Aadhaar (last 4)', d.aadhaar_last4)}{row('GST', d.gst_number)}{row('Bank holder', d.bank_holder)}
+        {row('Account number', d.bank_account_number)}{row('IFSC', d.bank_ifsc)}
+      </tbody></table>
+      <p style={{ fontSize: '12px', margin: '12px 0 6px', color: 'var(--color-text-muted)' }}>Documents (links expire in 5 minutes)</p>
+      <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: '4px', fontSize: '13px' }}>
+        {d.documents.map(doc => (
+          <li key={doc.id}><a href={doc.signed_url} target="_blank" rel="noreferrer noopener">{doc.doc_type}: {doc.filename}</a></li>
+        ))}
+      </ul>
+      <div style={{ display: 'flex', gap: '10px', marginTop: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <button style={primary} disabled={busy || d.kyc_status === 'verified'} onClick={() => run(() => verifyKyc(userId, fetchWithAuth))}>Verify</button>
+        {!rejecting && <button style={ghost} disabled={busy} onClick={() => setRejecting(true)}>Reject…</button>}
+        {rejecting && (
+          <>
+            <input placeholder="Reason shown to the host" value={reason} onChange={e => setReason(e.target.value)} style={{ ...input, flex: 1, minWidth: '220px' }} />
+            <button style={danger} disabled={busy || !reason.trim()} onClick={() => run(async () => { await rejectKyc(userId, reason.trim(), fetchWithAuth); setRejecting(false); setReason('') })}>Send rejection</button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export function KycTab() {
+  const { fetchWithAuth } = useAuth()
+  const [status, setStatus] = useState<KycStatus | ''>('submitted')
+  const { data, error, reload, setError } = useLoader(() => listKyc(status || undefined, fetchWithAuth))
+  const [open, setOpen] = useState<string | null>(null)
+
+  useEffect(reload, [status, reload])
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+        <h2 style={{ fontSize: '22px', fontWeight: 800 }}>Host KYC</h2>
+        <select value={status} onChange={e => setStatus(e.target.value as KycStatus | '')} style={input} aria-label="Filter KYC">
+          <option value="submitted">Submitted</option><option value="verified">Verified</option>
+          <option value="rejected">Rejected</option><option value="incomplete">Incomplete</option><option value="">All</option>
+        </select>
+      </div>
+      {error && <p role="alert" style={{ color: '#C62828' }}>{error}</p>}
+      {!data && !error && <p>Loading…</p>}
+      {data?.length === 0 && <div style={card}>No host profiles in this view.</div>}
+      <div style={{ display: 'grid', gap: '12px' }}>
+        {data?.map((k: KycListItem) => (
+          <div key={k.user_id} style={card}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <div>
+                <p style={{ fontWeight: 700 }}>{k.legal_name || k.full_name}</p>
+                <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>{k.email}</p>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase' }}>{k.kyc_status}</span>
+                <button style={ghost} onClick={() => setOpen(open === k.user_id ? null : k.user_id)}>{open === k.user_id ? 'Hide' : 'Review'}</button>
+              </div>
+            </div>
+            {open === k.user_id && <KycDetailCard userId={k.user_id} onChanged={reload} onError={setError} />}
           </div>
         ))}
       </div>

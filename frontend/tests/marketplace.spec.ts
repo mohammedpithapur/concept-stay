@@ -47,6 +47,43 @@ test.describe('Host area', () => {
   })
 })
 
+test.describe('Host profile', () => {
+  const dash = { bookings_this_month: 0, revenue: 0, occupancy_percent: 0, upcoming: [] }
+
+  test('modal shows when profile incomplete', async ({ page }) => {
+    await page.route('**/host/dashboard', json(dash))
+    await page.route('**/host/profile/completeness', json({ complete: false, missing: ['pan_number'], kyc_status: 'incomplete' }))
+    await page.goto('/host')
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.getByText('Your profile is not completed yet.')).toBeVisible()
+    await page.getByRole('button', { name: 'Later' }).click()
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+  })
+
+  test('modal hidden when complete', async ({ page }) => {
+    await page.route('**/host/dashboard', json(dash))
+    await page.route('**/host/profile/completeness', json({ complete: true, missing: [], kyc_status: 'submitted' }))
+    await page.goto('/host')
+    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+  })
+
+  test('profile page shows masked PAN and lists documents', async ({ page }) => {
+    await page.route('**/host/profile', json({
+      legal_name: 'Asha Verma', phone: null, pan_masked: '******234F', aadhaar_last4: '4321', gst_number: null,
+      bank_holder: 'Asha Verma', bank_account_masked: '********9012', bank_ifsc: 'HDFC0001234',
+      kyc_status: 'submitted', rejection_reason: null, submitted_at: '2031-01-01T00:00:00', verified_at: null,
+      documents: [{ id: 'd1', doc_type: 'pan', filename: 'pan.png', mime: 'image/png', size: 100, uploaded_at: '2031-01-01T00:00:00' }],
+    }))
+    await page.goto('/host/profile')
+    await expect(page.getByText('On file: ******234F')).toBeVisible()
+    await expect(page.getByText('On file: ********9012')).toBeVisible()
+    await expect(page.getByText('pan.png')).toBeVisible()
+    await expect(page.getByText('Submitted, awaiting verification')).toBeVisible()
+    await expect(page.getByRole('dialog')).toHaveCount(0) // the pop-up never covers the profile page itself
+  })
+})
+
 test.describe('Admin marketplace tabs', () => {
   test('review queue lists a new listing awaiting approval', async ({ page }) => {
     await page.route('**/admin/dashboard', json({ total_bookings: 0, total_properties: 1, total_revenue: 0, pending_bookings: 0 }))

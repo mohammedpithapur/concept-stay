@@ -133,6 +133,43 @@ export type Payout = {
   paid_at: string | null
   reference: string | null
   created_at: string
+  host_kyc_status?: "incomplete" | "submitted" | "verified" | "rejected" | "exempt" | null
+}
+
+export type KycStatus = "incomplete" | "submitted" | "verified" | "rejected"
+export type HostDocType = "aadhaar" | "passport" | "pan" | "gst_certificate" | "bank_proof"
+
+export type HostDocument = { id: string; doc_type: HostDocType; filename: string; mime: string; size: number; uploaded_at: string }
+
+export type HostProfile = {
+  legal_name: string | null
+  phone: string | null
+  pan_masked: string | null
+  aadhaar_last4: string | null
+  gst_number: string | null
+  bank_holder: string | null
+  bank_account_masked: string | null
+  bank_ifsc: string | null
+  kyc_status: KycStatus
+  rejection_reason: string | null
+  submitted_at: string | null
+  verified_at: string | null
+  documents: HostDocument[]
+}
+
+export type ProfileCompleteness = { complete: boolean; missing: string[]; kyc_status: KycStatus }
+
+export type KycListItem = {
+  user_id: string; email: string; full_name: string; legal_name: string | null
+  kyc_status: KycStatus; submitted_at: string | null
+}
+
+export type KycDetail = Omit<HostProfile, "documents"> & {
+  user_id: string
+  email: string
+  pan_number: string | null
+  bank_account_number: string | null
+  documents: (HostDocument & { signed_url: string })[]
 }
 
 export type HostBooking = {
@@ -291,3 +328,38 @@ export const listAdminPayouts = async (status: string | undefined, fetcher: ApiF
 
 export const markPayoutPaid = async (id: string, reference: string, fetcher: ApiFetcher): Promise<Payout> =>
   json(await post(fetcher, `/admin/payouts/${id}/mark-paid`, { reference }), "Marking payout paid")
+
+// ─── Host profile (KYC) ───────────────────────────────────────────────────────
+
+export const getHostProfile = async (fetcher: ApiFetcher): Promise<HostProfile> =>
+  json(await fetcher(buildApiUrl("/host/profile")), "Loading profile")
+
+export const saveHostProfile = async (data: Record<string, string>, fetcher: ApiFetcher): Promise<HostProfile> =>
+  json(await fetcher(buildApiUrl("/host/profile"), { method: "PUT", body: JSON.stringify(data) }), "Saving profile")
+
+export const uploadHostDocument = async (docType: HostDocType, file: File, fetcher: ApiFetcher): Promise<HostDocument> => {
+  const body = new FormData()
+  body.append("doc_type", docType)
+  body.append("file", file)
+  return json(await fetcher(buildApiUrl("/host/profile/documents"), { method: "POST", body }), "Uploading document")
+}
+
+export const deleteHostDocument = async (id: string, fetcher: ApiFetcher): Promise<void> => {
+  const res = await fetcher(buildApiUrl(`/host/profile/documents/${id}`), { method: "DELETE" })
+  if (!res.ok) await json(res, "Deleting document")
+}
+
+export const getProfileCompleteness = async (fetcher: ApiFetcher): Promise<ProfileCompleteness> =>
+  json(await fetcher(buildApiUrl("/host/profile/completeness")), "Checking profile")
+
+export const listKyc = async (status: KycStatus | undefined, fetcher: ApiFetcher): Promise<KycListItem[]> =>
+  json(await fetcher(buildApiUrl(`/admin/kyc${status ? `?status=${status}` : ""}`)), "Loading KYC")
+
+export const getKyc = async (userId: string, fetcher: ApiFetcher): Promise<KycDetail> =>
+  json(await fetcher(buildApiUrl(`/admin/kyc/${userId}`)), "Loading KYC detail")
+
+export const verifyKyc = async (userId: string, fetcher: ApiFetcher): Promise<HostProfile> =>
+  json(await post(fetcher, `/admin/kyc/${userId}/verify`), "Verifying host")
+
+export const rejectKyc = async (userId: string, reason: string, fetcher: ApiFetcher): Promise<HostProfile> =>
+  json(await post(fetcher, `/admin/kyc/${userId}/reject`, { reason }), "Rejecting host")

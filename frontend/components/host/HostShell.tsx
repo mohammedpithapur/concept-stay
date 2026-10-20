@@ -3,12 +3,14 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { CSSProperties, ReactNode } from 'react'
+import ProfileIncompleteModal from '@/components/host/ProfileIncompleteModal'
 
 const TABS = [
   { href: '/host', label: 'Dashboard' },
   { href: '/host/properties', label: 'Listings' },
   { href: '/host/calendar', label: 'Calendar' },
   { href: '/host/payouts', label: 'Payouts' },
+  { href: '/host/profile', label: 'Profile' },
 ]
 
 export const hostCard: CSSProperties = {
@@ -85,6 +87,7 @@ export default function HostShell({ title, children }: { title: string; children
         </div>
       </div>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px var(--page-padding) 64px' }}>{children}</div>
+      <ProfileIncompleteModal />
     </div>
   )
 }
