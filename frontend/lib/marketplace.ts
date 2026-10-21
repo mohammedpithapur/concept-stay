@@ -186,6 +186,34 @@ export type HostBooking = {
   guest_name: string
   guest_email: string
   guest_phone: string | null
+  guest_id_status?: GuestIdStatus
+}
+
+export type GuestIdStatus = "missing" | "pending" | "approved" | "rejected"
+export type GuestIdDocType = "aadhaar" | "passport" | "driving_licence" | "voter_id"
+export type GuestIdInfo = {
+  status: GuestIdStatus
+  doc_type: GuestIdDocType | null
+  rejection_reason: string | null
+  uploaded_at: string | null
+  signed_url: string | null
+}
+
+export type Dispute = {
+  id: string
+  booking_id: string
+  booking_ref: string
+  property_name: string
+  guest_name: string
+  guest_email: string
+  host_name: string
+  total: number
+  reason: string
+  status: "open" | "refunded" | "dismissed"
+  admin_note: string | null
+  created_at: string
+  decided_at: string | null
+  guest_id_url: string | null
 }
 
 export type HostDashboard = {
@@ -363,3 +391,30 @@ export const verifyKyc = async (userId: string, fetcher: ApiFetcher): Promise<Ho
 
 export const rejectKyc = async (userId: string, reason: string, fetcher: ApiFetcher): Promise<HostProfile> =>
   json(await post(fetcher, `/admin/kyc/${userId}/reject`, { reason }), "Rejecting host")
+
+// ─── Guest ID and disputes ────────────────────────────────────────────────────
+
+export const getGuestId = async (bookingId: string, fetcher: ApiFetcher): Promise<GuestIdInfo> =>
+  json(await fetcher(buildApiUrl(`/bookings/${bookingId}/guest-id`)), "Loading ID")
+
+export const uploadGuestId = async (bookingId: string, docType: GuestIdDocType, file: File, fetcher: ApiFetcher): Promise<GuestIdInfo> => {
+  const body = new FormData()
+  body.append("doc_type", docType)
+  body.append("file", file)
+  return json(await fetcher(buildApiUrl(`/bookings/${bookingId}/guest-id`), { method: "POST", body }), "Uploading ID")
+}
+
+export const getHostGuestId = async (bookingId: string, fetcher: ApiFetcher): Promise<GuestIdInfo> =>
+  json(await fetcher(buildApiUrl(`/host/bookings/${bookingId}/guest-id`)), "Loading ID")
+
+export const approveGuestId = async (bookingId: string, fetcher: ApiFetcher): Promise<GuestIdInfo> =>
+  json(await post(fetcher, `/host/bookings/${bookingId}/guest-id/approve`), "Approving ID")
+
+export const rejectGuestId = async (bookingId: string, reason: string, fetcher: ApiFetcher): Promise<GuestIdInfo> =>
+  json(await post(fetcher, `/host/bookings/${bookingId}/guest-id/reject`, { reason }), "Reporting booking")
+
+export const listDisputes = async (status: Dispute["status"] | undefined, fetcher: ApiFetcher): Promise<Dispute[]> =>
+  json(await fetcher(buildApiUrl(`/admin/disputes${status ? `?status=${status}` : ""}`)), "Loading disputes")
+
+export const decideDispute = async (id: string, decision: "refund" | "dismiss", note: string, fetcher: ApiFetcher): Promise<Dispute> =>
+  json(await post(fetcher, `/admin/disputes/${id}/decide`, { decision, note }), "Deciding dispute")

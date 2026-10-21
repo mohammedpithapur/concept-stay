@@ -294,6 +294,7 @@ export type MyBooking = {
   taxes?: number
   service_fee?: number
   refund_amount?: number
+  guest_id_status?: "missing" | "pending" | "approved" | "rejected"
   total: number
   status: string
   payment_status: string

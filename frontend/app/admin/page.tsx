@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { HostsTab, KycTab, PayoutsTab, ReviewQueueTab } from './MarketplaceTabs'
+import { DisputesTab, HostsTab, KycTab, PayoutsTab, ReviewQueueTab } from './MarketplaceTabs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -924,6 +924,7 @@ export default function AdminPage() {
     { id: 'review', label: 'Listing Review' },
     { id: 'hosts', label: 'Hosts' },
     { id: 'kyc', label: 'Host KYC' },
+    { id: 'disputes', label: 'Disputes' },
     { id: 'payouts', label: 'Payouts' },
   ]
 
@@ -2417,6 +2418,7 @@ export default function AdminPage() {
         {activeTab === 'review' && <ReviewQueueTab />}
         {activeTab === 'hosts' && <HostsTab />}
         {activeTab === 'kyc' && <KycTab />}
+        {activeTab === 'disputes' && <DisputesTab />}
         {activeTab === 'payouts' && <PayoutsTab />}
 
         {/* Articles / Blog Tab */}

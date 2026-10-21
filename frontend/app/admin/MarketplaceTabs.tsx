@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import {
-  VERIFICATION_STATUSES, approveListing, getKyc, listAdminPayouts, listHosts, listKyc, listReviewQueue, markPayoutPaid,
+  VERIFICATION_STATUSES, approveListing, decideDispute, getKyc, listDisputes, listAdminPayouts, listHosts, listKyc, listReviewQueue, markPayoutPaid,
   rejectKyc, rejectListing, setHostStatus, setListingVerification, verifyKyc,
-  type HostProperty, type HostUser, type KycDetail, type KycListItem, type KycStatus, type Payout, type VerificationStatus,
+  type Dispute, type HostProperty, type HostUser, type KycDetail, type KycListItem, type KycStatus, type Payout, type VerificationStatus,
 } from '@/lib/marketplace'
 
 const card: CSSProperties = { backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '20px 24px' }
@@ -300,6 +300,70 @@ export function KycTab() {
             {open === k.user_id && <KycDetailCard userId={k.user_id} onChanged={reload} onError={setError} />}
           </div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+// ── Refund disputes ───────────────────────────────────────────────────────────
+
+function DisputeCard({ d, onChanged, onError }: { d: Dispute; onChanged: () => void; onError: (m: string) => void }) {
+  const { fetchWithAuth } = useAuth()
+  const [note, setNote] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  const decide = async (decision: 'refund' | 'dismiss') => {
+    setBusy(true)
+    try { await decideDispute(d.id, decision, note.trim(), fetchWithAuth); onChanged() }
+    catch (e) { onError((e as Error).message) } finally { setBusy(false) }
+  }
+
+  return (
+    <div style={card}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+        <div>
+          <p style={{ fontWeight: 700 }}>{d.property_name} <span style={{ fontWeight: 400, color: 'var(--color-text-muted)' }}>· {d.booking_ref}</span></p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Guest {d.guest_name} ({d.guest_email}) · host {d.host_name} · {inr(d.total)}</p>
+        </div>
+        <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase' }}>{d.status}</span>
+      </div>
+      <p style={{ marginTop: '10px', fontSize: '14px' }}><strong>Host report:</strong> {d.reason}</p>
+      {d.guest_id_url && <p style={{ fontSize: '13px', marginTop: '6px' }}><a href={d.guest_id_url} target="_blank" rel="noreferrer noopener">View guest ID</a> (link expires in 5 minutes)</p>}
+      {d.admin_note && <p style={{ fontSize: '13px', marginTop: '6px', color: 'var(--color-text-secondary)' }}>Decision note: {d.admin_note}</p>}
+      {d.status === 'open' && (
+        <div style={{ display: 'flex', gap: '10px', marginTop: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <input aria-label="Note" placeholder="Note (optional)" value={note} onChange={e => setNote(e.target.value)} style={{ ...input, flex: 1, minWidth: '220px' }} />
+          <button style={primary} disabled={busy} onClick={() => decide('refund')}>Refund {inr(d.total)}</button>
+          <button style={ghost} disabled={busy} onClick={() => decide('dismiss')}>Dismiss</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function DisputesTab() {
+  const { fetchWithAuth } = useAuth()
+  const [status, setStatus] = useState<Dispute['status'] | ''>('open')
+  const { data, error, reload, setError } = useLoader(() => listDisputes(status || undefined, fetchWithAuth))
+
+  useEffect(reload, [status, reload])
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+        <h2 style={{ fontSize: '22px', fontWeight: 800 }}>Reported bookings</h2>
+        <select value={status} onChange={e => setStatus(e.target.value as Dispute['status'] | '')} style={input} aria-label="Filter disputes">
+          <option value="open">Open</option><option value="refunded">Refunded</option><option value="dismissed">Dismissed</option><option value="">All</option>
+        </select>
+      </div>
+      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
+        A refund here is always the full amount, even after the 10-day window, and goes back through Razorpay.
+      </p>
+      {error && <p role="alert" style={{ color: '#C62828' }}>{error}</p>}
+      {!data && !error && <p>Loading…</p>}
+      {data?.length === 0 && <div style={card}>Nothing reported.</div>}
+      <div style={{ display: 'grid', gap: '12px' }}>
+        {data?.map(d => <DisputeCard key={d.id} d={d} onChanged={reload} onError={setError} />)}
       </div>
     </div>
   )

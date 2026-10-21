@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/auth/AuthContext'
+import GuestIdUpload from '@/components/booking/GuestIdUpload'
 import type { MyBooking } from '@/lib/api'
 import type { Property } from '@/lib/types'
 import {
@@ -86,6 +87,10 @@ export default function BookingActions({ booking, property, onChanged }: Props) 
       <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
         <strong>Cancellation policy: {policy.label}.</strong> {policy.summary}{deadlineText}
       </p>
+
+      {booking.payment_status === 'paid' && ['confirmed', 'completed'].includes(booking.status) && (
+        <GuestIdUpload bookingId={booking.id} onChanged={onChanged} />
+      )}
 
       {message && <p role="status" style={{ marginTop: '10px', fontSize: '13px', fontWeight: 600, color: '#2E7D32' }}>{message}</p>}
       {error && <p role="alert" style={{ marginTop: '10px', fontSize: '13px', color: '#C62828' }}>{error}</p>}

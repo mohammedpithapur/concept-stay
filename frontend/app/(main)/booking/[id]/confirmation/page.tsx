@@ -105,7 +105,7 @@ function ConfirmationPageContent() {
         }}>
           <Info size={18} style={{ color: 'var(--color-terra)', flexShrink: 0, marginTop: '2px' }} />
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6', margin: 0 }}>
-            <strong>Reminder:</strong> This booking is <strong>non-refundable</strong>. Please save your booking reference number <strong>{ref}</strong> for your records.
+            <strong>Reminder:</strong> You can cancel for a full refund within <strong>10 days of booking</strong>. Please add your ID from your dashboard so your host can approve your stay, and save your booking reference <strong>{ref}</strong>.
           </p>
         </div>
 

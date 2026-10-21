@@ -7,6 +7,11 @@ const json = (body: unknown) => (route: Route) =>
     ? route.continue()
     : route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
 
+// Anything a test does not mock must never reach a real backend: a live API answers 401 to the fake admin token and logs it out.
+test.beforeEach(async ({ page }) => {
+  await page.route(/:8000\//, route => route.abort())
+})
+
 // The dev server for e2e runs with NEXT_PUBLIC_E2E_SKIP_AUTH=1, which signs in a fake admin.
 // Admins may use the host area; "plain guest" redirects are covered by the backend 403 tests.
 
@@ -82,6 +87,23 @@ test.describe('Host profile', () => {
     await expect(page.getByText('Submitted, awaiting verification')).toBeVisible()
     await expect(page.getByRole('dialog')).toHaveCount(0) // the pop-up never covers the profile page itself
   })
+  test('bookings page shows a pending ID with approve and report actions', async ({ page }) => {
+    await page.route('**/host/profile/completeness', json({ complete: true, missing: [], kyc_status: 'verified' }))
+    await page.route('**/host/bookings**', json({
+      items: [{
+        id: 'b1', property_id: 'p1', check_in: '2031-05-01', check_out: '2031-05-04', nights: 3, guests: 2, total: 18536,
+        status: 'confirmed', payment_status: 'paid', booking_ref: 'CS-1234', guest_name: 'Rhea Shah',
+        guest_email: 'rhea@example.com', guest_phone: null, guest_id_status: 'pending',
+      }],
+      total: 1, page: 1, limit: 20,
+    }))
+    await page.goto('/host/bookings')
+    await expect(page.getByText('Rhea Shah')).toBeVisible()
+    await expect(page.getByText('ID waiting for your review')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Approve' })).toBeVisible()
+    await page.getByRole('button', { name: 'Report to admin' }).click()
+    await expect(page.getByPlaceholder('Why is this not legitimate?')).toBeVisible()
+  })
 })
 
 test.describe('Admin marketplace tabs', () => {
@@ -101,6 +123,21 @@ test.describe('Admin marketplace tabs', () => {
     await expect(page.getByText('Hill Homestay')).toBeVisible()
     await expect(page.getByText('New listing', { exact: false }).first()).toBeVisible()
     await expect(page.getByRole('button', { name: /Approve/ })).toBeVisible()
+  })
+  test('disputes tab lists an open report with refund and dismiss', async ({ page }) => {
+    await page.route('**/admin/dashboard', json({ total_bookings: 0, total_properties: 1, total_revenue: 0, pending_bookings: 0 }))
+    await page.route('**/bookings/admin/all**', json({ items: [], total: 0, page: 1, limit: 15 }))
+    await page.route('**/admin/disputes**', json([{
+      id: 'd1', booking_id: 'b1', booking_ref: 'CS-1234', property_name: 'Hill Homestay', guest_name: 'Rhea Shah',
+      guest_email: 'rhea@example.com', host_name: 'Asha', total: 18536, reason: 'Name on ID does not match',
+      status: 'open', admin_note: null, created_at: '2031-01-01T00:00:00', decided_at: null, guest_id_url: null,
+    }]))
+    await page.goto('/admin')
+    await page.waitForLoadState('networkidle') // let React hydrate before clicking a tab
+    await page.getByRole('button', { name: 'Disputes' }).click()
+    await expect(page.getByText('Name on ID does not match')).toBeVisible()
+    await expect(page.getByRole('button', { name: /Refund/ })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Dismiss' })).toBeVisible()
   })
 })
 
