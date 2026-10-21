@@ -48,6 +48,7 @@ def _serialize_user(user: User) -> dict:
         "host_status": user.host_status.value,
         "is_active": user.is_active,
         "is_email_verified": user.is_email_verified,
+        "open_to_connections": user.open_to_connections,
         "created_at": user.created_at.isoformat(),
     }
 
@@ -65,6 +66,7 @@ def _deserialize_user(data: dict) -> User:
         host_status=HostStatus(data.get("host_status", "approved")),
         is_active=data["is_active"],
         is_email_verified=data["is_email_verified"],
+        open_to_connections=data.get("open_to_connections", False),
         created_at=datetime.fromisoformat(data["created_at"]),
     )
 

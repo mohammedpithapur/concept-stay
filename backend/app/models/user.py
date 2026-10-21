@@ -34,4 +34,5 @@ class User(Base):
     host_status: Mapped[HostStatus] = mapped_column(SAEnum(HostStatus), default=HostStatus.approved, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    open_to_connections: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, nullable=False)

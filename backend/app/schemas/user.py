@@ -15,6 +15,7 @@ class UserOut(BaseModel):
     host_status: str = "approved"
     is_active: bool
     is_email_verified: bool
+    open_to_connections: bool = False
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -27,6 +28,7 @@ class HostStatusUpdate(BaseModel):
 class UserUpdate(BaseModel):
     full_name: str | None = None
     phone: str | None = None
+    open_to_connections: bool | None = None
 
 
 class PasswordChange(BaseModel):

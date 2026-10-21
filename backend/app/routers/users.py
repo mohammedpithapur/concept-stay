@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
+from app.services.cache import cache_delete
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
@@ -46,8 +47,11 @@ async def update_profile(data: UserUpdate, user: User = Depends(get_current_user
         user.full_name = data.full_name
     if data.phone is not None:
         user.phone = data.phone
+    if data.open_to_connections is not None:
+        user.open_to_connections = data.open_to_connections
     await db.commit()
     await db.refresh(user)
+    await cache_delete(f"user:{user.id}")  # the cached copy would otherwise serve the old profile for a minute
     return user
 
 
