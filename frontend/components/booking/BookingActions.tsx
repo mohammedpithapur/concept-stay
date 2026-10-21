@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import GuestIdUpload from '@/components/booking/GuestIdUpload'
+import CoGuests from '@/components/booking/CoGuests'
 import type { MyBooking } from '@/lib/api'
 import type { Property } from '@/lib/types'
 import {
@@ -90,6 +91,9 @@ export default function BookingActions({ booking, property, onChanged }: Props) 
 
       {booking.payment_status === 'paid' && ['confirmed', 'completed'].includes(booking.status) && (
         <GuestIdUpload bookingId={booking.id} onChanged={onChanged} />
+      )}
+      {booking.payment_status === 'paid' && ['confirmed', 'completed'].includes(booking.status) && (
+        <CoGuests bookingId={booking.id} />
       )}
 
       {message && <p role="status" style={{ marginTop: '10px', fontSize: '13px', fontWeight: 600, color: '#2E7D32' }}>{message}</p>}

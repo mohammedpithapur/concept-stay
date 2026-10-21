@@ -13,6 +13,7 @@ import type { Property } from '@/lib/types'
 import { Building2, Share2, Download, Calendar, Users, Check, X, Shield, Clock, MapPin, Plus, LogOut } from 'lucide-react'
 import PushSubscribeButton from '@/components/shared/PushSubscribeButton'
 import BookingActions from '@/components/booking/BookingActions'
+import TravelBuddies, { VisibilityToggle } from '@/components/profile/TravelBuddies'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -577,6 +578,7 @@ export default function DashboardPage() {
   const tabs = [
     { id: 'bookings', label: 'Upcoming',    count: upcomingCount + pendingBookings.length },
     { id: 'past',     label: 'Past Stays',  count: pastCount },
+    { id: 'buddies',  label: 'Travel buddies', count: null },
     { id: 'profile',  label: 'My Profile',  count: null },
   ]
 
@@ -738,9 +740,13 @@ export default function DashboardPage() {
         {/* ── Past Stays ── */}
         {activeTab === 'past' && renderBookingList(pastBookings, 'No past stays yet', 'Your completed stays will appear here.')}
 
+        {/* ── Travel buddies ── */}
+        {activeTab === 'buddies' && <TravelBuddies />}
+
         {/* ── Profile ── */}
         {activeTab === 'profile' && (
           <div style={{ maxWidth: '600px' }}>
+            <VisibilityToggle />
 
             {/* Profile card */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '14px', padding: '32px', marginBottom: '16px' }}>

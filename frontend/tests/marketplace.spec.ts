@@ -141,6 +141,50 @@ test.describe('Admin marketplace tabs', () => {
   })
 })
 
+test.describe('Travel buddies', () => {
+  const stats = { upcoming_bookings: 0, past_stays: 0, total_spent: 0, profile: {} }
+  const empty = { items: [], total: 0, page: 1, limit: 50 }
+
+  async function openTab(page: import('@playwright/test').Page, connections: unknown) {
+    await page.route('**/users/dashboard', json(stats))
+    await page.route('**/bookings/mine**', json(empty))
+    await page.route('**/connections', json(connections))
+    await page.goto('/dashboard')
+    await page.waitForLoadState('networkidle') // let React hydrate before clicking a tab
+    await page.getByRole('button', { name: /Travel buddies/ }).click()
+  }
+
+  test('visibility is off by default and explains what is shared', async ({ page }) => {
+    await openTab(page, { incoming: [], outgoing: [], connected: [] })
+    await expect(page.getByText('Hidden: turned off')).toBeVisible()
+    await expect(page.getByText('Contact details are shared only after you accept a request.')).toBeVisible()
+    await expect(page.getByText('No connections yet.')).toBeVisible()
+  })
+
+  test('connected guests show contact details', async ({ page }) => {
+    await openTab(page, {
+      incoming: [], outgoing: [],
+      connected: [{ id: 'c1', user_id: 'u2', full_name: 'Bela Rao', email: 'bela@example.com', phone: '+919800000001', property_name: 'Lake Cottage' }],
+    })
+    await expect(page.getByText('Bela Rao')).toBeVisible()
+    await expect(page.getByText('bela@example.com')).toBeVisible()
+    await expect(page.getByText('+919800000001')).toBeVisible()
+  })
+
+  test('an incoming request can be accepted', async ({ page }) => {
+    let accepted = false
+    await page.route('**/connections/c9/accept', route => { accepted = true; return route.fulfill({ status: 200, contentType: 'application/json', body: '{"id":"c9","status":"accepted","created_at":"2031-01-01T00:00:00"}' }) })
+    await openTab(page, {
+      incoming: [{ id: 'c9', user_id: 'u3', first_name: 'Chai', property_name: 'Lake Cottage', check_in: '2031-05-01', check_out: '2031-05-04', created_at: '2031-01-01T00:00:00' }],
+      outgoing: [], connected: [],
+    })
+    await expect(page.getByText('Chai')).toBeVisible()
+    await expect(page.getByRole('listitem').filter({ hasText: 'Chai' }).getByText(/@|91\d{8}/)).toHaveCount(0) // no contact details before acceptance
+    await page.getByRole('button', { name: 'Accept' }).click()
+    await expect.poll(() => accepted).toBe(true)
+  })
+})
+
 test.describe('Discovery', () => {
   const listing = {
     id: 'p1', name: 'Lake Cottage', city: 'Udaipur', state: 'Rajasthan', description: '', images: [], amenities: [],

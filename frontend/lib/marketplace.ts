@@ -418,3 +418,44 @@ export const listDisputes = async (status: Dispute["status"] | undefined, fetche
 
 export const decideDispute = async (id: string, decision: "refund" | "dismiss", note: string, fetcher: ApiFetcher): Promise<Dispute> =>
   json(await post(fetcher, `/admin/disputes/${id}/decide`, { decision, note }), "Deciding dispute")
+
+// ─── Travel buddies (join-in) ─────────────────────────────────────────────────
+
+export type CoGuest = {
+  user_id: string
+  first_name: string
+  check_in: string
+  check_out: string
+  connection_status: "none" | "pending_out" | "pending_in" | "accepted" | "declined" | "blocked"
+}
+
+export type PendingConnection = {
+  id: string; user_id: string; first_name: string; property_name: string
+  check_in: string; check_out: string; created_at: string
+}
+
+export type ConnectedGuest = {
+  id: string; user_id: string; full_name: string; email: string; phone: string | null; property_name: string
+}
+
+export type ConnectionsData = { incoming: PendingConnection[]; outgoing: PendingConnection[]; connected: ConnectedGuest[] }
+
+export const getCoGuests = async (bookingId: string, fetcher: ApiFetcher): Promise<CoGuest[]> =>
+  json(await fetcher(buildApiUrl(`/bookings/${bookingId}/co-guests`)), "Loading travel buddies")
+
+export const sendConnectionRequest = async (toUserId: string, bookingId: string, fetcher: ApiFetcher) =>
+  json<{ id: string; status: string }>(await post(fetcher, "/connections", { to_user_id: toUserId, booking_id: bookingId }), "Sending request")
+
+export const listConnections = async (fetcher: ApiFetcher): Promise<ConnectionsData> =>
+  json(await fetcher(buildApiUrl("/connections")), "Loading connections")
+
+export const respondConnection = async (id: string, action: "accept" | "decline" | "block", fetcher: ApiFetcher) =>
+  json<{ id: string; status: string }>(await post(fetcher, `/connections/${id}/${action}`), "Updating request")
+
+export const removeConnection = async (id: string, fetcher: ApiFetcher): Promise<void> => {
+  const res = await fetcher(buildApiUrl(`/connections/${id}`), { method: "DELETE" })
+  if (!res.ok) await json(res, "Removing connection")
+}
+
+export const setOpenToConnections = async (open: boolean, fetcher: ApiFetcher): Promise<{ open_to_connections: boolean }> =>
+  json(await fetcher(buildApiUrl("/users/profile"), { method: "PATCH", body: JSON.stringify({ open_to_connections: open }) }), "Saving visibility")

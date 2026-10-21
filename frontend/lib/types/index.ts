@@ -133,6 +133,7 @@ export interface User {
   profile_photo: string
   role: 'guest' | 'host' | 'admin'
   host_status?: 'pending' | 'approved' | 'suspended'
+  open_to_connections?: boolean
   created_at: string
 }
 
