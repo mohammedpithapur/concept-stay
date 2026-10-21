@@ -56,6 +56,7 @@ class Booking(Base):
     refund_amount: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     taxes: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     service_fee: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
+    guest_id_status: Mapped[str] = mapped_column(String(20), default="missing", server_default="missing", nullable=False)
     total: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[BookingStatus] = mapped_column(SAEnum(BookingStatus), default=BookingStatus.pending, nullable=False)
     payment_status: Mapped[PaymentStatus] = mapped_column(SAEnum(PaymentStatus), default=PaymentStatus.unpaid, nullable=False)

@@ -441,3 +441,57 @@ async def send_contact_enquiry_email(
     except Exception as exc:
         logger.exception("Error sending contact email: %s", exc)
         return False
+
+
+async def _deliver(to_email: str, subject: str, html: str, label: str) -> bool:
+    if not settings.RESEND_API_KEY:
+        if settings.ENVIRONMENT == "development":
+            logger.info("[DEV EMAIL] %s to %s:\n%s", label, to_email, html)
+            return True
+        logger.error("RESEND_API_KEY is not configured")
+        return False
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            response = await client.post(
+                "https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {settings.RESEND_API_KEY}"},
+                json={"from": settings.RESEND_FROM_EMAIL, "to": [to_email], "subject": subject, "html": html},
+            )
+        if response.is_success:
+            return True
+        logger.error("Resend %s email failed for %s: %s %s", label, to_email, response.status_code, response.text)
+        return False
+    except Exception as exc:
+        logger.exception("Error sending %s email to %s via Resend: %s", label, to_email, exc)
+        return False
+
+
+async def send_admin_dispute_email(
+    booking_ref: str, property_name: str, host_name: str, guest_name: str, guest_email: str, reason: str,
+) -> bool:
+    """Tell the admin a host reported a booking as not legitimate."""
+    from html import escape
+
+    html = (
+        f"<p>A host reported booking <strong>{escape(booking_ref)}</strong> at {escape(property_name)} as not legitimate.</p>"
+        f"<p>Host: {escape(host_name)}<br>Guest: {escape(guest_name)} ({escape(guest_email)})</p>"
+        f"<p>Reason given:<br>{escape(reason)}</p>"
+        f"<p><a href=\"{settings.FRONTEND_BASE_URL}/admin\">Open the admin disputes tab</a> to decide.</p>"
+    )
+    return await _deliver(settings.ADMIN_EMAIL, f"Booking reported: {booking_ref}", html, "dispute")
+
+
+async def send_dispute_decision_email(
+    to_email: str, guest_name: str, booking_ref: str, property_name: str, refunded: bool, amount: str = "",
+) -> bool:
+    """Tell the guest what the admin decided about the reported booking."""
+    from html import escape
+
+    if refunded:
+        body = (f"We reviewed booking {escape(booking_ref)} at {escape(property_name)} and approved a full refund of "
+                f"\u20b9{escape(amount)}. It is on its way to your original payment method; please allow 5-7 business days.")
+    else:
+        body = (f"We reviewed the report on booking {escape(booking_ref)} at {escape(property_name)} and found no reason to "
+                f"change it. Your booking stands.")
+    html = f"<p>Hi {escape(guest_name)},</p><p>{body}</p>"
+    return await _deliver(to_email, f"Update on your booking {booking_ref}", html, "dispute decision")

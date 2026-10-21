@@ -16,8 +16,8 @@ from starlette.responses import JSONResponse
 from app.config import settings
 from app.database import get_db, _IS_LAMBDA
 from app.rate_limit import limiter
-from app.routers import admin, auth, bookings, ical, payments, properties, reviews, users, events, push, contact, articles, host, host_profile, payouts
-from app.models import push_subscription, price_override, payout, host_profile as host_profile_models  # noqa: F401 — ensures table is created
+from app.routers import admin, auth, bookings, ical, payments, properties, reviews, users, events, push, contact, articles, host, host_profile, guest_ids, payouts
+from app.models import push_subscription, price_override, payout, host_profile as host_profile_models, guest_id as guest_id_models  # noqa: F401 — ensures table is created
 
 
 logger = logging.getLogger("conceptstay.api")
@@ -58,11 +58,15 @@ async def housekeeping_worker():
         try:
             from app.database import async_session
             from app.services.booking import complete_finished_bookings
+            from app.services.guest_id_retention import purge_expired_guest_ids
 
             async with async_session() as session:
                 done = await complete_finished_bookings(session, force=True)
+                purged = await purge_expired_guest_ids(session)
             if done:
                 logger.info("Marked %d finished stays as completed", done)
+            if purged:
+                logger.info("Purged %d expired guest ID files", purged)
         except asyncio.CancelledError:
             break
         except Exception as e:
@@ -186,6 +190,7 @@ app.include_router(contact.router)
 app.include_router(articles.router)
 app.include_router(host.router)
 app.include_router(host_profile.router)
+app.include_router(guest_ids.router)
 app.include_router(payouts.router)
 
 

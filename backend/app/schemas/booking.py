@@ -42,6 +42,7 @@ class BookingOut(BaseModel):
     taxes: int = 0
     refund_amount: int = 0
     service_fee: int = 0
+    guest_id_status: str = "missing"
     total: int
     status: str
     payment_status: str

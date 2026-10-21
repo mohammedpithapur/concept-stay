@@ -17,9 +17,9 @@ from app.models.payment import Payment, RazorpayPaymentStatus
 from app.models.payout import Payout
 from app.models.price_override import PropertyPriceOverride
 from app.schemas.booking import BookingCreate, BookingOut, BookingStatusUpdate, BookingListOut
-from app.services.cancellation import compute_refund, refund_deadline, rescale_payout
+from app.services.cancellation import cancel_and_refund, compute_refund, refund_deadline
 from app.services.property import public_listing_clauses
-from app.services.refunds import RefundError, issue_refund
+from app.services.refunds import RefundError
 from app.services.booking import calculate_pricing, apply_group_blocking, remove_shadow_blocks, auto_cleanup_expired_bookings, complete_finished_bookings
 from app.services.email import send_booking_cancellation_email
 from app.services.push import send_push_to_user, send_push_to_admins
@@ -337,26 +337,12 @@ async def cancel_my_booking(
     prop = await db.get(Property, booking.property_id)
     refund_amount = 0
     if booking.payment_status == PaymentStatus.paid:
-        payment = await db.scalar(select(Payment).where(Payment.booking_id == booking.id))
         refund_amount = compute_refund(booking.total, booking.created_at, utc_now(), booking.check_in)
-        if refund_amount > 0:
-            try:
-                await asyncio.to_thread(issue_refund, payment.razorpay_payment_id if payment else "", refund_amount)
-            except RefundError as exc:
-                raise HTTPException(status_code=502, detail=f"Refund failed, booking not cancelled: {exc}")
-            booking.payment_status = PaymentStatus.refunded
-            if payment and refund_amount >= booking.total:
-                payment.status = RazorpayPaymentStatus.refunded
-                payment.updated_at = utc_now()
-        payout = await db.scalar(select(Payout).where(Payout.booking_id == booking.id).with_for_update())
-        if payout:
-            rescale_payout(payout, booking.total, refund_amount)
-
-    booking.refund_amount = refund_amount
-    booking.status = BookingStatus.cancelled
-    await remove_shadow_blocks(db, booking, commit=False)
-    await db.commit()
-    await db.refresh(booking)
+    try:
+        await cancel_and_refund(db, booking, refund_amount, reason="guest_cancelled")
+    except RefundError as exc:
+        raise HTTPException(status_code=502, detail=f"Refund failed, booking not cancelled: {exc}")
+    refund_amount = booking.refund_amount
 
     prop_name = prop.name if prop else "Concept Stay Property"
     background_tasks.add_task(
