@@ -4,8 +4,9 @@ import uuid
 import secrets
 import string
 from datetime import datetime, date
+from decimal import Decimal
 
-from sqlalchemy import String, Integer, Text, Date, DateTime, Enum as SAEnum, ForeignKey, Boolean, Index
+from sqlalchemy import String, Integer, Text, Date, DateTime, Enum as SAEnum, ForeignKey, Boolean, Index, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -56,6 +57,9 @@ class Booking(Base):
     refund_amount: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     taxes: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     service_fee: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
+    currency: Mapped[str] = mapped_column(String(3), default="INR", server_default="INR", nullable=False)
+    fx_rate: Mapped[Decimal] = mapped_column(Numeric(18, 8), default=Decimal(1), server_default="1", nullable=False)
+    charged_minor: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)  # what the gateway charges, in minor units of `currency`
     guest_id_status: Mapped[str] = mapped_column(String(20), default="missing", server_default="missing", nullable=False)
     total: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[BookingStatus] = mapped_column(SAEnum(BookingStatus), default=BookingStatus.pending, nullable=False)

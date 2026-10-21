@@ -10,6 +10,7 @@ from app.models.booking import Booking, BookingStatus, PaymentStatus
 from app.models.payment import Payment, RazorpayPaymentStatus
 from app.models.payout import Payout
 from app.services.booking import remove_shadow_blocks
+from app.services.fx import to_minor
 from app.services.refunds import issue_refund
 
 REFUND_WINDOW_DAYS = 10
@@ -61,7 +62,9 @@ async def cancel_and_refund(db: AsyncSession, booking: Booking, refund_amount: i
     if booking.payment_status == PaymentStatus.paid:
         payment = await db.scalar(select(Payment).where(Payment.booking_id == booking.id))
         if refund_amount > 0:
-            await asyncio.to_thread(issue_refund, payment.razorpay_payment_id if payment else "", refund_amount)
+            # A full refund returns exactly what was captured; a partial one is converted at the booking's own rate.
+            minor = payment.amount if (payment and refund_amount >= booking.total) else to_minor(refund_amount, booking.fx_rate)
+            await asyncio.to_thread(issue_refund, payment.razorpay_payment_id if payment else "", minor)
             booking.payment_status = PaymentStatus.refunded
             if payment and refund_amount >= booking.total:
                 payment.status = RazorpayPaymentStatus.refunded

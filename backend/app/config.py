@@ -49,7 +49,8 @@ class Settings(BaseSettings):
     # Marketplace economics (percent, integer)
     PLATFORM_COMMISSION_PERCENT: int = 15  # taken from the host's stay value
     GUEST_SERVICE_FEE_PERCENT: int = 5     # added to the guest's total
-    TAX_PERCENT: int = 12                  # tax on the stay value, collected for remittance
+    SUPPORTED_CURRENCIES: list[str] = ["INR", "USD", "EUR", "GBP", "AED", "SGD", "AUD"]  # all two-decimal; non-INR needs Razorpay International
+    TAX_PERCENT: int = 12                  # tax on the whole total (stay, extras, fees), collected for remittance
 
     # Web Push (VAPID) — generate keys with: python backend/generate_vapid.py
     VAPID_PUBLIC_KEY: str = "BBEvrlgw4jr6bqlZQOnvleXIfzbvVH9cc95CfV_1yTltNL5mHAFuI48Sn0PMMO84_hzG9mh0-akMvaOrvshL2dc"

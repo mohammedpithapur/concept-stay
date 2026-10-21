@@ -54,6 +54,7 @@ from app.services.refunds import RefundError, issue_refund
 from app.services.payouts import create_payout_for_booking
 from app.services.push import send_push_to_admins, send_push_to_user, send_push_to_all
 from app.services.booking import remove_shadow_blocks
+from app.services.fx import to_inr
 
 
 router = APIRouter(prefix="/payments", tags=["payments"])
@@ -118,7 +119,7 @@ async def create_payment_order(
             key_id=settings.RAZORPAY_KEY_ID,
         )
 
-    amount_paise = booking.total * 100  # ₹ → paise
+    amount_minor = booking.charged_minor or booking.total * 100  # in minor units of booking.currency
 
     if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
         raise HTTPException(
@@ -134,8 +135,8 @@ async def create_payment_order(
     client = _get_razorpay_client()
     rz_order = client.order.create(
         {
-            "amount": amount_paise,
-            "currency": "INR",
+            "amount": amount_minor,
+            "currency": booking.currency,
             "receipt": booking.booking_ref,
             "payment_capture": 1,  # auto-capture
             # Notes appear in Razorpay dashboard under each payment
@@ -158,8 +159,8 @@ async def create_payment_order(
         id=uuid.uuid4(),
         booking_id=booking.id,
         razorpay_order_id=rz_order["id"],
-        amount=amount_paise,
-        currency="INR",
+        amount=amount_minor,
+        currency=booking.currency,
         status=RazorpayPaymentStatus.created,
     )
     db.add(payment)
@@ -460,7 +461,10 @@ async def razorpay_webhook(
             )
             if payment:
                 booking = await db.get(Booking, payment.booking_id)
-                refunded = (payment_entity.get("amount") or payment.amount) // 100
+                gateway_minor = payment_entity.get("amount") or payment.amount
+                refunded = 0
+                if booking:  # convert back with the rate the booking was charged at, so INR and USD both stay exact
+                    refunded = booking.total if gateway_minor >= payment.amount else to_inr(gateway_minor, booking.fx_rate)
                 if booking and refunded > (booking.refund_amount or 0):
                     first_refund = not booking.refund_amount
                     booking.refund_amount = min(refunded, booking.total)
@@ -484,7 +488,7 @@ async def _refund_late_payment(db: AsyncSession, payment: Payment, booking: Book
     payment.updated_at = utc_now()
     payment.status = RazorpayPaymentStatus.paid
     try:
-        await asyncio.to_thread(issue_refund, razorpay_payment_id, payment.amount // 100)
+        await asyncio.to_thread(issue_refund, razorpay_payment_id, payment.amount)
         payment.status = RazorpayPaymentStatus.refunded
     except RefundError:
         pass  # stays 'paid' on a cancelled booking: visible to the admin, who can refund via /payments/{id}/refund

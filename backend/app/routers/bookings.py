@@ -18,6 +18,7 @@ from app.models.payout import Payout
 from app.models.price_override import PropertyPriceOverride
 from app.schemas.booking import BookingCreate, BookingOut, BookingStatusUpdate, BookingListOut
 from app.services.cancellation import cancel_and_refund, compute_refund, refund_deadline
+from app.services.fx import UnsupportedCurrency, get_rate, to_minor
 from app.services.property import public_listing_clauses
 from app.services.refunds import RefundError
 from app.services.booking import calculate_pricing, apply_group_blocking, remove_shadow_blocks, auto_cleanup_expired_bookings, complete_finished_bookings
@@ -62,6 +63,11 @@ async def create_booking(
             .with_for_update()
         )
 
+    try:
+        fx_rate = await get_rate(db, data.currency)
+    except UnsupportedCurrency as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+
     # Fetch active price overrides that overlap the stay dates
     overrides_res = await db.execute(
         select(PropertyPriceOverride).where(
@@ -96,11 +102,13 @@ async def create_booking(
         existing_pending.taxes = pricing["taxes"]
         existing_pending.service_fee = pricing["service_fee"]
         existing_pending.total = pricing["total"]
-        # a Razorpay order cannot change amount: drop an unpaid one that no longer matches so a fresh order is made
+        existing_pending.currency, existing_pending.fx_rate = data.currency, fx_rate
+        existing_pending.charged_minor = to_minor(pricing["total"], fx_rate)
+        # a Razorpay order cannot change amount or currency: drop an unpaid one that no longer matches so a fresh order is made
         stale = await db.scalar(select(Payment).where(
             Payment.booking_id == existing_pending.id,
             Payment.status == RazorpayPaymentStatus.created,
-            Payment.amount != pricing["total"] * 100,
+            or_(Payment.amount != existing_pending.charged_minor, Payment.currency != data.currency),
         ))
         if stale:
             await db.delete(stale)
@@ -149,6 +157,9 @@ async def create_booking(
         taxes=pricing["taxes"],
         service_fee=pricing["service_fee"],
         total=pricing["total"],
+        currency=data.currency,
+        fx_rate=fx_rate,
+        charged_minor=to_minor(pricing["total"], fx_rate),
         status=BookingStatus.pending,
         guest_name=data.guest_name or user.full_name,
         guest_email=data.guest_email or user.email,

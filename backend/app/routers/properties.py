@@ -20,6 +20,7 @@ from app.services.booking import calculate_pricing
 from app.services.property import apply_property_inheritance, get_property_filters, public_listing_clauses
 from app.taxonomy import CATEGORIES, CATEGORY_LABELS, EXPERIENCE_TAGS, PROPERTY_TYPES
 from app.services.cache import cache_get_json, cache_set_json
+from app.services.fx import UnsupportedCurrency, get_rate, to_minor
 from app.services.booking import auto_cleanup_expired_bookings
 
 router = APIRouter(prefix="/properties", tags=["properties"])
@@ -241,6 +242,7 @@ async def get_property_quote(
     check_out: date,
     guests: int = Query(1, ge=1),
     pets: int = Query(0, ge=0),
+    currency: str = Query("INR"),
     db: AsyncSession = Depends(get_db),
 ):
     """Server-side price breakdown (nightly rates, taxes, fees, total) for a prospective stay."""
@@ -271,7 +273,14 @@ async def get_property_quote(
             )
         )
     ).scalars().all()
-    return calculate_pricing(prop, check_in, check_out, pets, guests, price_overrides=list(overrides))
+    pricing = calculate_pricing(prop, check_in, check_out, pets, guests, price_overrides=list(overrides))
+    currency = currency.upper()
+    try:
+        rate = await get_rate(db, currency)
+    except UnsupportedCurrency as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    pricing["charged"] = {"currency": currency, "amount_minor": to_minor(pricing["total"], rate)}
+    return pricing
 
 
 @router.get("/{property_id}/availability")

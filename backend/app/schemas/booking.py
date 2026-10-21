@@ -1,7 +1,9 @@
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, model_validator, field_validator, Field
 from uuid import UUID
 from datetime import datetime, date
 from typing import Literal
+
+from app.config import settings
 
 
 class BookingCreate(BaseModel):
@@ -14,6 +16,15 @@ class BookingCreate(BaseModel):
     guest_email: str | None = None
     guest_phone: str | None = None
     note: str | None = None
+    currency: str = "INR"
+
+    @field_validator("currency")
+    @classmethod
+    def validate_currency(cls, v):
+        v = (v or "INR").upper()
+        if v not in settings.SUPPORTED_CURRENCIES:
+            raise ValueError(f"currency must be one of {settings.SUPPORTED_CURRENCIES}")
+        return v
 
     @model_validator(mode="after")
     def validate_booking(self):
@@ -43,6 +54,8 @@ class BookingOut(BaseModel):
     refund_amount: int = 0
     service_fee: int = 0
     guest_id_status: str = "missing"
+    currency: str = "INR"
+    charged_minor: int = 0
     total: int
     status: str
     payment_status: str
