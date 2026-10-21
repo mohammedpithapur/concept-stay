@@ -7,6 +7,7 @@ import { buildApiUrl, createBooking, createPaymentOrder, verifyPayment } from '@
 import { useAuth } from '@/lib/auth/AuthContext'
 import type { Property } from '@/lib/types'
 import { REFUND_POLICY, getPriceQuote, type PriceQuote } from '@/lib/marketplace'
+import { useCurrency } from '@/lib/currency'
 import { AlertTriangle } from 'lucide-react'
 
 // ── Razorpay type declarations ────────────────────────────────────────────────
@@ -104,17 +105,18 @@ function BookingPageContent() {
 
   const [property, setProperty] = useState<Property | null>(null)
   const [quote, setQuote] = useState<PriceQuote | null>(null)
+  const { currency, formatMinor } = useCurrency()
   // The server quote is authoritative (taxes, fees); the URL total is only a fallback while it loads.
   const total = quote?.total ?? urlTotal
 
   useEffect(() => {
     if (!property || !checkIn || !checkOut || nights <= 0) return
     let cancelled = false
-    getPriceQuote(property.id, { checkIn, checkOut, guests, pets })
+    getPriceQuote(property.id, { checkIn, checkOut, guests, pets, currency })
       .then(q => { if (!cancelled) setQuote(q) })
       .catch(() => {})
     return () => { cancelled = true }
-  }, [property, checkIn, checkOut, guests, pets, nights])
+  }, [property, checkIn, checkOut, guests, pets, nights, currency])
   const [pageLoading, setPageLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -243,6 +245,7 @@ function BookingPageContent() {
           guest_email: form.email.trim() || undefined,
           guest_phone: form.phone.trim() || undefined,
           note: form.special_requests.trim() || undefined,
+          currency,
         },
         fetchWithAuth,
       )
@@ -544,6 +547,11 @@ function BookingPageContent() {
               <span style={{ fontSize: '18px', fontWeight: '700', color: 'var(--color-text-primary)' }}>Total</span>
               <span style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-text-primary)' }}>₹{total.toLocaleString('en-IN')}</span>
             </div>
+            {currency !== 'INR' && quote?.charged && (
+              <p data-testid="charged-line" style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '4px' }}>
+                Charged in {quote.charged.currency}: {formatMinor(quote.charged.amount_minor, quote.charged.currency).replace(`${quote.charged.currency} `, '')} (rate locked at payment)
+              </p>
+            )}
             <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Includes all fees and taxes</p>
           </div>
 

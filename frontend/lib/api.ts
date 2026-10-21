@@ -329,6 +329,7 @@ export type BookingCreate = {
   guest_email?: string
   guest_phone?: string
   note?: string
+  currency?: string   // defaults to INR; the server locks the exchange rate when the booking is created
 }
 
 export type PaymentOrderOut = {

@@ -82,7 +82,11 @@ export type PriceQuote = {
   service_fee: number
   total: number
   nightly_rates: NightlyRate[]
+  /** What the gateway will charge, in minor units of `currency` (present when a currency was requested). */
+  charged?: { currency: string; amount_minor: number }
 }
+
+export type FxRates = { base: "INR"; supported: string[]; rates: Record<string, number> }
 
 export type CategoryCount = { slug: string; label: string; count: number }
 export type Destination = { state: string; city: string; count: number }
@@ -269,10 +273,15 @@ export async function getDestinations(): Promise<Destination[]> {
 
 export async function getPriceQuote(
   propertyId: string,
-  p: { checkIn: string; checkOut: string; guests: number; pets: number },
+  p: { checkIn: string; checkOut: string; guests: number; pets: number; currency?: string },
 ): Promise<PriceQuote> {
   const q = new URLSearchParams({ check_in: p.checkIn, check_out: p.checkOut, guests: String(p.guests), pets: String(p.pets) })
+  if (p.currency && p.currency !== "INR") q.set("currency", p.currency)
   return json(await fetch(buildApiUrl(`/properties/${propertyId}/quote?${q}`), { cache: "no-store" }), "Price quote")
+}
+
+export async function getFxRates(): Promise<FxRates> {
+  return json(await fetch(buildApiUrl("/fx-rates"), { cache: "no-store" }), "Loading exchange rates")
 }
 
 export async function getReviewSummary(propertyId: string): Promise<ReviewSummary> {

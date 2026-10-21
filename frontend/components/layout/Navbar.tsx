@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth/AuthContext'
+import CurrencySelect from '@/components/layout/CurrencySelect'
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false)
@@ -100,6 +101,7 @@ export default function Navbar() {
 
         {/* Desktop right side */}
         <div className="hidden md:flex items-center gap-4">
+          <CurrencySelect />
           {loading ? (
             <div style={{ width: '80px', height: '36px', backgroundColor: 'rgba(42,24,16,0.08)', borderRadius: '8px' }} />
           ) : user ? (

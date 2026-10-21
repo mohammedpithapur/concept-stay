@@ -7,6 +7,7 @@ import MapWrapper from '@/components/shared/MapWrapper'
 import { buildApiUrl, fetchPropertyReviews, type PriceOverride } from '@/lib/api'
 import type { Property, Review } from '@/lib/types'
 import VerifiedBadge from '@/components/property/VerifiedBadge'
+import { useCurrency } from '@/lib/currency'
 import { REFUND_POLICY, PROPERTY_TYPES, getPriceQuote, getReviewSummary, labelFor, type PriceQuote, type ReviewSummary } from '@/lib/marketplace'
 import type { DateRange } from 'react-day-picker'
 import { useAuth } from '@/lib/auth/AuthContext'
@@ -62,6 +63,7 @@ export default function PropertyDetailPage() {
   const [reviews, setReviews] = useState<Review[]>([])
   const [reviewsLoading, setReviewsLoading] = useState(false)
   const [quote, setQuote] = useState<PriceQuote | null>(null)
+  const { currency, formatMinor } = useCurrency()
   const [reviewSummary, setReviewSummary] = useState<ReviewSummary | null>(null)
   const [shareCopied, setShareCopied] = useState(false)
 
@@ -258,11 +260,11 @@ export default function PropertyDetailPage() {
   useEffect(() => {
     if (!property || !checkIn || !checkOut || nights <= 0) { setQuote(null); return }
     let cancelled = false
-    getPriceQuote(property.id, { checkIn, checkOut, guests, pets })
+    getPriceQuote(property.id, { checkIn, checkOut, guests, pets, currency })
       .then(q => { if (!cancelled) setQuote(q) })
       .catch(() => { if (!cancelled) setQuote(null) })
     return () => { cancelled = true }
-  }, [property, checkIn, checkOut, guests, pets, nights])
+  }, [property, checkIn, checkOut, guests, pets, nights, currency])
 
   useEffect(() => {
     if (!property) return
@@ -1367,6 +1369,11 @@ export default function PropertyDetailPage() {
                 <span>Total</span>
                 <span>₹{totalPrice.toLocaleString('en-IN')}</span>
               </div>
+              {currency !== 'INR' && quote?.charged && (
+                <p data-testid="charged-line" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', marginTop: '8px' }}>
+                  Charged in {quote.charged.currency}: {formatMinor(quote.charged.amount_minor, quote.charged.currency).replace(`${quote.charged.currency} `, '')} (rate locked at payment)
+                </p>
+              )}
             </div>
           )}
 

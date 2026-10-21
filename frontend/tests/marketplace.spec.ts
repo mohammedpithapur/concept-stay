@@ -185,6 +185,46 @@ test.describe('Travel buddies', () => {
   })
 })
 
+test.describe('International checkout', () => {
+  const property = {
+    id: 'p1', name: 'Lake Cottage', city: 'Udaipur', state: 'Rajasthan', description: '', images: [], amenities: [],
+    price_per_night: 5000, cleaning_fee: 800, pet_charge_per_night: 0, avg_rating: 4.5, review_count: 2, bedrooms: 2,
+    bathrooms: 1, bathrooms_detail: [], pets_allowed: false, latitude: 24.58, longitude: 73.68, max_guests: 4,
+    base_guests: 2, min_nights: 1, house_rules: [],
+  }
+  const quote = {
+    nights: 3, base_price: 15000, extra_guest_charge: 0, cleaning_fee: 800, pet_charge: 0, taxes: 1986,
+    service_fee: 750, total: 18536, nightly_rates: [],
+  }
+  const url = '/booking/p1?checkIn=2031-05-01&checkOut=2031-05-04&guests=2&pets=0&nights=3&total=18536'
+
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/fx-rates', json({ base: 'INR', supported: ['INR', 'USD'], rates: { INR: 1, USD: 0.012 } }))
+    await page.route('**/properties/p1', json(property))
+    await page.route('**/properties/p1/quote**', route => {
+      const usd = route.request().url().includes('currency=USD')
+      return route.fulfill({
+        status: 200, contentType: 'application/json',
+        body: JSON.stringify(usd ? { ...quote, charged: { currency: 'USD', amount_minor: 22243 } } : quote),
+      })
+    })
+  })
+
+  test('choosing USD shows the charged amount on the booking page', async ({ page }) => {
+    await page.goto(url)
+    await expect(page.getByText('Includes all fees and taxes')).toBeVisible()
+    await page.getByLabel('Currency').selectOption('USD')
+    await expect(page.getByTestId('charged-line')).toContainText('Charged in USD: 222.43')
+    await expect(page.getByTestId('charged-line')).toContainText('rate locked at payment')
+  })
+
+  test('INR shows no conversion line', async ({ page }) => {
+    await page.goto(url)
+    await expect(page.getByText('Includes all fees and taxes')).toBeVisible()
+    await expect(page.getByTestId('charged-line')).toHaveCount(0)
+  })
+})
+
 test.describe('Discovery', () => {
   const listing = {
     id: 'p1', name: 'Lake Cottage', city: 'Udaipur', state: 'Rajasthan', description: '', images: [], amenities: [],
