@@ -10,6 +10,10 @@ from app.models.event import EventRequest, EventStatus
 from app.models.price_override import PropertyPriceOverride
 from app.models.article import Article
 from app.models.payout import Payout
+from app.models.host_profile import HostProfile, HostDocument
+from app.models.guest_id import GuestIdDocument, RefundDispute
+from app.models.connection import Connection
+from app.models.fx_rate import FxRate
 
 __all__ = [
 	"User",
@@ -27,4 +31,10 @@ __all__ = [
 	"PropertyPriceOverride",
 	"Article",
 	"Payout",
+	"HostProfile",
+	"HostDocument",
+	"GuestIdDocument",
+	"RefundDispute",
+	"Connection",
+	"FxRate",
 ]
