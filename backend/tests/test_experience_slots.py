@@ -108,3 +108,18 @@ async def test_slot_must_belong_to_the_experience_in_the_path(client, admin_toke
     slot = await add_slot(client, op_a, first)
     res = await client.delete(f"/operator/experiences/{second}/slots/{slot['id']}", headers=h(op_a))
     assert res.status_code == 404
+
+
+async def test_operator_lists_all_own_slots_including_full_and_past_ones(client, admin_token, op_a, op_b, db_session):
+    eid = await create_live_experience(client, op_a, admin_token)
+    later = await add_slot(client, op_a, eid, hours=96, capacity=3)
+    sooner = await add_slot(client, op_a, eid, hours=48, capacity=2)
+    row = await db_session.get(ExperienceSlot, UUID(sooner["id"]))
+    row.seats_booked = 2  # full
+    await db_session.commit()
+    row.starts_at = datetime.now(timezone.utc) - timedelta(hours=5)  # and in the past
+    await db_session.commit()
+    res = await client.get(f"/operator/experiences/{eid}/slots", headers=h(op_a))
+    assert res.status_code == 200
+    assert [(s["id"], s["seats_left"]) for s in res.json()] == [(sooner["id"], 0), (later["id"], 3)]
+    assert (await client.get(f"/operator/experiences/{eid}/slots", headers=h(op_b))).status_code == 403

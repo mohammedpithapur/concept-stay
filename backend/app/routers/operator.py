@@ -104,6 +104,18 @@ async def _load_slot(experience_id: uuid.UUID, slot_id: uuid.UUID, operator: Use
     return slot
 
 
+@router.get("/experiences/{experience_id}/slots", response_model=list[SlotOut])
+async def list_my_slots(
+    experience_id: uuid.UUID, operator: User = Depends(get_operator), db: AsyncSession = Depends(get_db)
+):
+    """Every slot of the listing, full and past ones included, oldest first."""
+    await load_owned_experience(experience_id, operator, db)
+    result = await db.execute(
+        select(ExperienceSlot).where(ExperienceSlot.experience_id == experience_id).order_by(ExperienceSlot.starts_at)
+    )
+    return [_slot_out(s) for s in result.scalars().all()]
+
+
 @router.post("/experiences/{experience_id}/slots", response_model=SlotOut, status_code=201)
 async def add_slot(
     experience_id: uuid.UUID, data: SlotIn, operator: User = Depends(get_operator), db: AsyncSession = Depends(get_db)
