@@ -14,6 +14,10 @@ from app.models.host_profile import HostProfile, HostDocument
 from app.models.guest_id import GuestIdDocument, RefundDispute
 from app.models.connection import Connection
 from app.models.fx_rate import FxRate
+from app.models.app_setting import AppSetting
+from app.models.experience import (
+	Experience, ExperienceBooking, ExperiencePayment, ExperiencePayout, ExperienceReview, ExperienceSlot,
+)
 
 __all__ = [
 	"User",
@@ -37,4 +41,11 @@ __all__ = [
 	"RefundDispute",
 	"Connection",
 	"FxRate",
+	"AppSetting",
+	"Experience",
+	"ExperienceSlot",
+	"ExperienceBooking",
+	"ExperiencePayment",
+	"ExperiencePayout",
+	"ExperienceReview",
 ]

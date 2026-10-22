@@ -48,6 +48,7 @@ class Settings(BaseSettings):
 
     # Marketplace economics (percent, integer)
     PLATFORM_COMMISSION_PERCENT: int = 15  # taken from the host's stay value
+    EXPERIENCE_COMMISSION_PERCENT: int = 15  # default; the admin setting in app_settings overrides it
     GUEST_SERVICE_FEE_PERCENT: int = 5     # added to the guest's total
     SUPPORTED_CURRENCIES: list[str] = ["INR", "USD", "EUR", "GBP", "AED", "SGD", "AUD"]  # all two-decimal; non-INR needs Razorpay International
     TAX_PERCENT: int = 12                  # tax on the whole total (stay, extras, fees), collected for remittance
