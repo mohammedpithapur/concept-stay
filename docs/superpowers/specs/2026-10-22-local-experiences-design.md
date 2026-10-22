@@ -20,15 +20,15 @@ Trusted local operators list experiences (activities, tours, food, wellness, loc
 - Operators are a person or a company. They apply, fill a KYC profile like hosts, and admin approves them.
 - New experience listings and edits to live ones need admin approval.
 - Categories: adventure, food, culture, wellness, nature, local_transport, other.
-- A user can be a host and an operator at the same time (see Roles).
+- Operator and host are separate roles; one account cannot be both (confirmed by the user).
 - Guests may book until 1 hour before the slot starts.
 
 ## Roles
 
-- No change to the `userrole` Postgres enum. `User` gains `is_operator` (bool, default false) and `operator_status` (pending|approved|suspended, a plain string column with a CHECK). A host can also be an operator.
-- New dependencies `get_operator` (approved) and `get_operator_any_status` (for profile and KYC pages) in `dependencies.py`. Admin passes `get_operator`.
-- KYC reuses `HostProfile` and `HostDocument` (keyed by user id). The profile routes are refactored so one handler set is exposed under `/host/profile` and `/operator/profile`; both read and write the same row, so a person who is host and operator has one KYC. `/admin/kyc` already lists by user.
-- `POST /auth/become-operator` sets `is_operator=true`, `operator_status=pending`.
+- Operator is its own role, separate from host. `UserRole` gains `operator`: `ALTER TYPE userrole ADD VALUE 'operator'` inside `autocommit_block()`, as in `20261020_01_host_role.py`. `User` gains `operator_status` (pending|approved|suspended, string column with a CHECK). The enum value cannot be removed on downgrade; the downgrade drops only the column.
+- One account has one role. A host cannot become an operator, and an operator cannot become a host. A person who wants both uses a second account with a different email. `POST /auth/become-operator` works only for a `guest`; anyone else gets 409.
+- New dependencies `get_operator` (role operator and status approved, or admin) and `get_operator_any_status` (for profile and KYC pages), next to `get_host` in `dependencies.py`.
+- KYC reuses the `HostProfile` and `HostDocument` tables, keyed by user id. Because an account is only ever host or operator, each account has its own KYC row. The profile routes are refactored so one handler set is exposed under `/host/profile` and `/operator/profile`, each guarded by its own dependency. `/admin/kyc` already lists by user.
 
 ## Money
 
@@ -52,7 +52,7 @@ Worked example, 2 people at 2,500: value 5,000; service fee 250; taxes 630; tota
 
 New models are imported in `app/models/__init__.py` so a fresh database gets the tables.
 
-- `User`: `is_operator`, `operator_status`.
+- `User`: role value `operator`, `operator_status`.
 - `AppSetting`: key, value.
 - `Experience`: id, operator_id, title, description, images (JSONB, max 10), city, state, meeting_point, category, duration_minutes, difficulty (easy|moderate|hard), min_age, languages (JSONB, validated list), included, what_to_bring, price_per_person (int INR, > 0), approval_status (draft|pending_review|approved|rejected), pending_changes (JSONB), rejection_reason, is_published, avg_rating, review_count. Indexes on (city), (category), (is_published, approval_status).
 - `ExperienceSlot`: id, experience_id, starts_at (timestamptz, stored UTC, entered as India time), capacity (>= 1), seats_booked. CHECK 0 <= seats_booked <= capacity. Index on (experience_id, starts_at).
@@ -116,7 +116,7 @@ One review per booking, only by the booking's guest, only when status is `confir
 
 ## Testing
 
-Backend tests first for: dual host and operator role; ownership 403s; approval and pending-change flow; capacity cannot drop below booked seats; last-seat race and pay-after-full (auto refund, no payout, `failed_full`); verify plus webhook gives one payout and one seat deduction; webhook dispatch finds stays and experience orders; price and tax maths against the worked example; commission snapshot survives a setting change; payout gate on KYC; admin refund releases seats and voids payout; expiry sweep; review rules and rating update; traveller report totals including one-sided travellers; migration applies on top of the current head and fresh DB bootstrap creates the tables. Frontend: Playwright smoke for operator and experience pages with mocked API (abort unmocked `:8000` calls). One pytest process at a time on this machine.
+Backend tests first for: a host or operator cannot become the other role; ownership 403s; approval and pending-change flow; capacity cannot drop below booked seats; last-seat race and pay-after-full (auto refund, no payout, `failed_full`); verify plus webhook gives one payout and one seat deduction; webhook dispatch finds stays and experience orders; price and tax maths against the worked example; commission snapshot survives a setting change; payout gate on KYC; admin refund releases seats and voids payout; expiry sweep; review rules and rating update; traveller report totals including one-sided travellers; migration applies on top of the current head and fresh DB bootstrap creates the tables. Frontend: Playwright smoke for operator and experience pages with mocked API (abort unmocked `:8000` calls). One pytest process at a time on this machine.
 
 ## Non-goals
 
