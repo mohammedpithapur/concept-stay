@@ -5,23 +5,23 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { UserCheck, X } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
-import { getProfileCompleteness } from '@/lib/marketplace'
+import { getProfileCompleteness, type ProfileBase } from '@/lib/marketplace'
 
-/** Shown on every host page (except the profile page itself) until the payout profile is complete. */
-export default function ProfileIncompleteModal() {
+/** Shown on every host or operator page (except the profile page itself) until the payout profile is complete. */
+export default function ProfileIncompleteModal({ base = '/host' }: { base?: ProfileBase }) {
   const { user, fetchWithAuth } = useAuth()
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
-  const onProfilePage = pathname.startsWith('/host/profile')
+  const onProfilePage = pathname.startsWith(`${base}/profile`)
 
   useEffect(() => {
     if (!user || onProfilePage) return
     let cancelled = false
-    getProfileCompleteness(fetchWithAuth)
+    getProfileCompleteness(fetchWithAuth, base)
       .then(c => { if (!cancelled) setOpen(!c.complete) })
       .catch(() => { if (!cancelled) setOpen(false) })
     return () => { cancelled = true }
-  }, [user, fetchWithAuth, onProfilePage])
+  }, [user, fetchWithAuth, onProfilePage, base])
 
   if (!open || onProfilePage) return null
 
@@ -46,11 +46,11 @@ export default function ProfileIncompleteModal() {
           Your profile is not completed yet.
         </h2>
         <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
-          Add your ID, PAN and bank details so Concept Stay can pay you. You can keep listing properties meanwhile, but payouts wait until your profile is verified.
+          Add your ID, PAN and bank details so Concept Stay can pay you. You can keep adding listings meanwhile, but payouts wait until your profile is verified.
         </p>
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <Link
-            href="/host/profile"
+            href={`${base}/profile`}
             style={{ padding: '10px 20px', borderRadius: 'var(--btn-radius)', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', fontSize: '13px', fontWeight: 700, textDecoration: 'none' }}
           >
             Complete profile

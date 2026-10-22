@@ -363,3 +363,6 @@ export const refundExperienceBooking = async (id: string, fetcher: ApiFetcher) =
   json<{ booking_id: string; status: string; payout_needs_recovery: boolean }>(
     await send(fetcher, "POST", `/admin/experience-bookings/${id}/refund`), "Refund",
   )
+
+export const listOperatorSlots = async (id: string, fetcher: ApiFetcher): Promise<OperatorSlot[]> =>
+  json(await fetcher(buildApiUrl(`/operator/experiences/${id}/slots`)), "Loading slots")

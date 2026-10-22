@@ -368,26 +368,29 @@ export const markPayoutPaid = async (id: string, reference: string, fetcher: Api
 
 // ─── Host profile (KYC) ───────────────────────────────────────────────────────
 
-export const getHostProfile = async (fetcher: ApiFetcher): Promise<HostProfile> =>
-  json(await fetcher(buildApiUrl("/host/profile")), "Loading profile")
+// Hosts and operators share one KYC profile shape; `base` picks the route set ("/host" or "/operator").
+export type ProfileBase = "/host" | "/operator"
 
-export const saveHostProfile = async (data: Record<string, string>, fetcher: ApiFetcher): Promise<HostProfile> =>
-  json(await fetcher(buildApiUrl("/host/profile"), { method: "PUT", body: JSON.stringify(data) }), "Saving profile")
+export const getHostProfile = async (fetcher: ApiFetcher, base: ProfileBase = "/host"): Promise<HostProfile> =>
+  json(await fetcher(buildApiUrl(`${base}/profile`)), "Loading profile")
 
-export const uploadHostDocument = async (docType: HostDocType, file: File, fetcher: ApiFetcher): Promise<HostDocument> => {
+export const saveHostProfile = async (data: Record<string, string>, fetcher: ApiFetcher, base: ProfileBase = "/host"): Promise<HostProfile> =>
+  json(await fetcher(buildApiUrl(`${base}/profile`), { method: "PUT", body: JSON.stringify(data) }), "Saving profile")
+
+export const uploadHostDocument = async (docType: HostDocType, file: File, fetcher: ApiFetcher, base: ProfileBase = "/host"): Promise<HostDocument> => {
   const body = new FormData()
   body.append("doc_type", docType)
   body.append("file", file)
-  return json(await fetcher(buildApiUrl("/host/profile/documents"), { method: "POST", body }), "Uploading document")
+  return json(await fetcher(buildApiUrl(`${base}/profile/documents`), { method: "POST", body }), "Uploading document")
 }
 
-export const deleteHostDocument = async (id: string, fetcher: ApiFetcher): Promise<void> => {
-  const res = await fetcher(buildApiUrl(`/host/profile/documents/${id}`), { method: "DELETE" })
+export const deleteHostDocument = async (id: string, fetcher: ApiFetcher, base: ProfileBase = "/host"): Promise<void> => {
+  const res = await fetcher(buildApiUrl(`${base}/profile/documents/${id}`), { method: "DELETE" })
   if (!res.ok) await json(res, "Deleting document")
 }
 
-export const getProfileCompleteness = async (fetcher: ApiFetcher): Promise<ProfileCompleteness> =>
-  json(await fetcher(buildApiUrl("/host/profile/completeness")), "Checking profile")
+export const getProfileCompleteness = async (fetcher: ApiFetcher, base: ProfileBase = "/host"): Promise<ProfileCompleteness> =>
+  json(await fetcher(buildApiUrl(`${base}/profile/completeness`)), "Checking profile")
 
 export const listKyc = async (status: KycStatus | undefined, fetcher: ApiFetcher): Promise<KycListItem[]> =>
   json(await fetcher(buildApiUrl(`/admin/kyc${status ? `?status=${status}` : ""}`)), "Loading KYC")
