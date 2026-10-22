@@ -179,3 +179,27 @@ async def test_withdraw_removes_contact_access(client, admin_headers, db_session
     assert (await client.delete(f"/connections/{cid}", headers=a.h)).status_code == 204
     assert (await client.get("/connections", headers=b.h)).json()["connected"] == []
     assert (await client.get("/connections", headers=a.h)).json()["connected"] == []
+
+
+async def test_removing_a_declined_or_blocked_row_is_refused(client, admin_headers, db_session):
+    pid = await _listing(client, admin_headers)
+    a, b, c = await _guest(client, "Asha"), await _guest(client, "Bela"), await _guest(client, "Chai")
+    ba = await _stay(client, db_session, a, pid, 60)
+    bb = await _stay(client, db_session, b, pid, 63)
+    await _stay(client, db_session, c, pid, 66)
+
+    blocked = (await client.post("/connections", headers=a.h, json={"to_user_id": b.id, "booking_id": ba["id"]})).json()["id"]
+    await client.post(f"/connections/{blocked}/block", headers=b.h)
+    assert (await client.delete(f"/connections/{blocked}", headers=b.h)).status_code == 409
+    assert (await client.delete(f"/connections/{blocked}", headers=a.h)).status_code == 409
+    # the block still holds: A cannot ask again and B still does not see A
+    assert (await client.post("/connections", headers=a.h, json={"to_user_id": b.id, "booking_id": ba["id"]})).status_code in (403, 409)
+    assert [x["first_name"] for x in (await _co_guests(client, b, bb)).json()] == ["Chai"]
+
+    declined = (await client.post("/connections", headers=c.h, json={"to_user_id": b.id, "booking_id": (await _only_booking(client, c))["id"]})).json()["id"]
+    await client.post(f"/connections/{declined}/decline", headers=b.h)
+    assert (await client.delete(f"/connections/{declined}", headers=c.h)).status_code == 409
+
+
+async def _only_booking(client, guest):
+    return (await client.get("/bookings/mine", headers=guest.h)).json()["items"][0]

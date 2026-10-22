@@ -245,3 +245,26 @@ async def test_purge_skips_open_dispute(client, admin_token, user_token, db_sess
     assert (await db_session.execute(select(RefundDispute))).scalar_one().status == "open"
     assert await purge_expired_guest_ids(db_session) == 0
     assert len(storage.files) == 1
+
+
+async def test_purge_keeps_the_row_when_storage_delete_fails(client, admin_token, user_token, db_session, storage, monkeypatch):
+    from app.services.upload import UploadStorageError
+
+    async def boom(path):
+        raise UploadStorageError("storage down")
+
+    _, booking = await _old_stay_with_id(client, admin_token, user_token, db_session)
+    monkeypatch.setattr(private_storage, "delete_private", boom)
+    assert await purge_expired_guest_ids(db_session) == 0
+    doc = (await db_session.execute(select(GuestIdDocument))).scalar_one()
+    assert doc.deleted_at is None and len(storage.files) == 1  # retried next hour, never silently dropped
+
+
+async def test_guest_cannot_replace_the_id_while_a_dispute_is_open(client, admin_token, user_token, db_session, storage, mails):
+    host, booking = await _hosted_booking(client, admin_token, user_token, db_session)
+    await _upload_id(client, user_token, booking["id"])
+    await _reject(client, host, booking["id"])
+    files_before = dict(storage.files)
+    assert (await _upload_id(client, user_token, booking["id"], doc_type="passport")).status_code == 409
+    assert storage.files == files_before  # the evidence the host judged is untouched
+    assert (await client.get(f"/bookings/{booking['id']}/guest-id", headers=_h(user_token))).json()["status"] == "rejected"

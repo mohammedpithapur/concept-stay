@@ -128,6 +128,8 @@ async def upload_guest_id(
         raise HTTPException(status_code=422, detail=f"doc_type must be one of: {', '.join(GUEST_ID_TYPES)}")
     if booking.payment_status != PaymentStatus.paid or booking.status not in (BookingStatus.confirmed, BookingStatus.completed):
         raise HTTPException(status_code=409, detail="An ID can be added once the booking is paid")
+    if await db.scalar(select(RefundDispute.id).where(RefundDispute.booking_id == booking.id, RefundDispute.status == "open")):
+        raise HTTPException(status_code=409, detail="This booking is being reviewed; the ID cannot be changed right now")
     content, mime = await read_validated_upload(file)
     existing = await _doc(db, booking.id, lock=True)
     if existing and existing.status == "approved" and not existing.deleted_at:
@@ -153,7 +155,10 @@ async def upload_guest_id(
     booking.guest_id_status = "pending"
     await db.commit()
     if old_path:
-        await private_storage.delete_private(old_path)
+        try:
+            await private_storage.delete_private(old_path)
+        except UploadStorageError:
+            pass  # the new file is saved; the old one is orphaned but unreachable
     return _out(doc)
 
 

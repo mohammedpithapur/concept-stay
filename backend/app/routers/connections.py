@@ -221,5 +221,8 @@ async def remove_connection(
 ):
     """Withdraw a request or disconnect: contact access ends for both sides."""
     conn = await _party_connection(db, connection_id, user)
+    if conn.status in ("declined", "blocked"):
+        # The row is what keeps the pair hidden and stops repeat requests; removing it would undo the block.
+        raise HTTPException(status_code=409, detail="A declined or blocked request cannot be removed")
     await db.delete(conn)
     await db.commit()

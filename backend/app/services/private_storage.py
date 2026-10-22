@@ -51,9 +51,12 @@ async def signed_url(path: str, expires_in: int = 300) -> str:
 
 
 async def delete_private(path: str) -> None:
+    """Remove a file. Raises UploadStorageError when it could not be removed, so callers decide what to do."""
     url = f"{_base()}/storage/v1/object/{settings.SUPABASE_PRIVATE_BUCKET}"
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
-            await client.request("DELETE", url, json={"prefixes": [path]}, headers=_headers("application/json"))
-    except httpx.HTTPError:
-        pass  # best effort: the database row is the source of truth
+            resp = await client.request("DELETE", url, json={"prefixes": [path]}, headers=_headers("application/json"))
+    except httpx.HTTPError as exc:
+        raise UploadStorageError(f"Failed to reach storage: {exc}") from exc
+    if resp.status_code not in (200, 204):
+        raise UploadStorageError(f"Storage delete failed ({resp.status_code})")

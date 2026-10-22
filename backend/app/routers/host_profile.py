@@ -50,8 +50,15 @@ def _missing(profile: HostProfile, docs: list[HostDocument]) -> list[str]:
     return [name for name, ok in checks if not ok]
 
 
-def _resync_status(profile: HostProfile, docs: list[HostDocument]) -> None:
-    """Keep kyc_status honest after every change: complete profiles wait for review, incomplete ones say so."""
+def _resync_status(profile: HostProfile, docs: list[HostDocument], documents_changed: bool = False) -> None:
+    """Keep kyc_status honest after every change: complete profiles wait for review, incomplete ones say so.
+
+    Adding or removing a document on a verified profile sends it back for review: the admin verified those files.
+    """
+    if documents_changed and profile.kyc_status == "verified" and not _missing(profile, docs):
+        profile.kyc_status = "submitted"
+        profile.submitted_at = utc_now()
+        profile.verified_at = None
     if _missing(profile, docs):
         profile.kyc_status = "incomplete"
         profile.verified_at = None
@@ -151,7 +158,7 @@ async def upload_my_document(
     )
     db.add(doc)
     docs.append(doc)
-    _resync_status(profile, docs)
+    _resync_status(profile, docs, documents_changed=True)
     await db.commit()
     await db.refresh(doc)
     return doc
@@ -168,9 +175,12 @@ async def delete_my_document(
     await db.delete(doc)
     await db.flush()
     profile = await _get_or_create(db, host)
-    _resync_status(profile, await _documents(db, host.id))
+    _resync_status(profile, await _documents(db, host.id), documents_changed=True)
     await db.commit()
-    await private_storage.delete_private(path)
+    try:
+        await private_storage.delete_private(path)
+    except UploadStorageError:
+        pass  # the row is gone; an orphaned file in the private bucket is never served
 
 
 # ── Admin ────────────────────────────────────────────────────────────────────

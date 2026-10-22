@@ -194,3 +194,16 @@ async def test_mark_paid_requires_verified_kyc(client, admin_token, admin_header
     await client.post(f"/admin/kyc/{host_id}/verify", headers=admin_headers)
     ok = await client.post(f"/admin/payouts/{payout.id}/mark-paid", headers=admin_headers, json={"reference": "UTR1"})
     assert ok.status_code == 200 and ok.json()["status"] == "paid"
+
+
+async def test_changing_documents_on_a_verified_profile_asks_for_review(client, admin_token, pending_host):
+    token, host_id = pending_host
+    await _complete_profile(client, token)
+    await client.post(f"/admin/kyc/{host_id}/verify", headers=_h(admin_token))
+    extra = await _upload(client, token, "pan")
+    assert extra.status_code == 201
+    assert (await client.get("/host/profile", headers=_h(token))).json()["kyc_status"] == "submitted"
+
+    await client.post(f"/admin/kyc/{host_id}/verify", headers=_h(admin_token))
+    assert (await client.delete(f"/host/profile/documents/{extra.json()['id']}", headers=_h(token))).status_code == 204
+    assert (await client.get("/host/profile", headers=_h(token))).json()["kyc_status"] == "submitted"

@@ -18,6 +18,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models.booking import Booking
+from app.models.connection import Connection
+from app.models.guest_id import GuestIdDocument, RefundDispute
 from app.models.ical import ICalLink
 from app.models.payment import Payment
 from app.models.payout import Payout
@@ -25,10 +27,14 @@ from app.models.price_override import PropertyPriceOverride
 from app.models.property import Property, PropertyImage
 from app.models.property_group import PropertyGroup, PropertyGroupMember
 from app.models.review import Review
+from app.services import private_storage
 from app.services.upload import delete_property_image_from_url
 
 # Child tables first: a row may only be deleted once nothing references it.
 _TABLES = [
+    ("connections", Connection),
+    ("disputes", RefundDispute),
+    ("guest_ids", GuestIdDocument),
     ("reviews", Review),
     ("payouts", Payout),
     ("payments", Payment),
@@ -52,11 +58,14 @@ async def purge_all_listings(db: AsyncSession, *, dry_run: bool = True) -> dict[
     counts = {name: await db.scalar(select(func.count()).select_from(model)) or 0 for name, model in _TABLES}
     counts.pop("group_members")  # an implementation detail, not worth reporting separately
     counts = {k: counts[k] for k in ("properties", "bookings", "payments", "payouts", "reviews", "images",
-                                      "ical_links", "price_overrides", "groups")}
+                                      "ical_links", "price_overrides", "groups", "guest_ids", "disputes", "connections")}
     if dry_run:
         return counts
 
     image_urls = (await db.execute(select(PropertyImage.image_url))).scalars().all()
+    guest_id_paths = (
+        await db.execute(select(GuestIdDocument.storage_path).where(GuestIdDocument.deleted_at.is_(None)))
+    ).scalars().all()
     for _, model in _TABLES:
         await db.execute(delete(model))
     await db.commit()
@@ -66,6 +75,11 @@ async def purge_all_listings(db: AsyncSession, *, dry_run: bool = True) -> dict[
             await asyncio.to_thread(delete_property_image_from_url, url)
         except Exception:  # noqa: BLE001 - best effort
             pass
+    for path in guest_id_paths:  # government IDs must not outlive their booking rows
+        try:
+            await private_storage.delete_private(path)
+        except Exception:  # noqa: BLE001 - best effort; reported below so nothing is silently left behind
+            print(f"WARNING: could not delete private file {path}; remove it from the bucket by hand")
     return counts
 
 

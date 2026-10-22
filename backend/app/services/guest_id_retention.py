@@ -1,4 +1,5 @@
 """Guest ID files are kept only as long as they are useful: 30 days after check-out, unless a dispute is open."""
+import logging
 from datetime import timedelta
 
 from sqlalchemy import select
@@ -8,6 +9,9 @@ from app.database import today_ist, utc_now
 from app.models.booking import Booking
 from app.models.guest_id import GuestIdDocument, RefundDispute
 from app.services import private_storage
+from app.services.upload import UploadStorageError
+
+logger = logging.getLogger("conceptstay.api")
 
 RETENTION_DAYS = 30
 
@@ -25,8 +29,14 @@ async def purge_expired_guest_ids(db: AsyncSession) -> int:
             .where(GuestIdDocument.deleted_at.is_(None), Booking.check_out <= cutoff, ~open_dispute)
         )
     ).scalars().all()
+    removed = 0
     for doc in rows:
-        await private_storage.delete_private(doc.storage_path)
+        try:
+            await private_storage.delete_private(doc.storage_path)
+        except UploadStorageError:
+            logger.warning("Could not delete guest ID file for booking %s; will retry", doc.booking_id)
+            continue  # keep the row so the next hourly run tries again
         doc.deleted_at = utc_now()
+        removed += 1
     await db.commit()
-    return len(rows)
+    return removed
