@@ -1,7 +1,8 @@
 """Admin review of operator experience listings."""
 import uuid
+from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,6 +12,7 @@ from app.models.experience import Experience
 from app.models.user import User
 from app.schemas.experience import ExperienceOut, RejectExperienceIn
 from app.services import experience_review
+from app.services.traveller_report import build_traveller_report
 
 router = APIRouter(prefix="/admin", tags=["admin-experiences"])
 
@@ -77,3 +79,16 @@ async def admin_publish_experience(
     await db.commit()
     await db.refresh(exp)
     return exp
+
+
+@router.get("/traveller-report")
+async def traveller_report(
+    from_: date | None = Query(None, alias="from"),
+    to: date | None = None,
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    admin: User = Depends(get_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """Revenue per traveller (commission plus service fee, stays and experiences), highest first."""
+    return await build_traveller_report(db, from_, to, limit, offset)
