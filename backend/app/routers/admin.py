@@ -4,7 +4,7 @@ import uuid
 from datetime import date, timedelta
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_, delete
@@ -36,6 +36,7 @@ from app.services.upload import (
 )
 from app.schemas.property import HostPropertyOut, RejectListingIn, VerificationUpdateIn
 from app.schemas.user import HostStatusUpdate, OperatorStatusUpdate, UserOut
+from app.services import app_settings as app_settings_service
 from app.services import listing_review
 from app.services.cache import cache_delete, cache_get_json, cache_set_json, invalidate_properties_cache
 
@@ -1169,6 +1170,26 @@ async def update_host_status(
     await cache_delete(f"user:{host.id}")
     await invalidate_properties_cache()
     return host
+
+
+# -- Settings ------------------------------------------------------------------
+
+class CommissionIn(BaseModel):
+    percent: int = Field(ge=0, le=100)
+
+
+@router.get("/settings/experience-commission")
+async def get_experience_commission(admin: User = Depends(get_admin), db: AsyncSession = Depends(get_db)):
+    return {"percent": await app_settings_service.get_commission_percent(db)}
+
+
+@router.put("/settings/experience-commission")
+async def put_experience_commission(
+    data: CommissionIn, admin: User = Depends(get_admin), db: AsyncSession = Depends(get_db)
+):
+    await app_settings_service.set_commission_percent(db, data.percent)
+    await db.commit()
+    return {"percent": data.percent}
 
 
 # -- Operators -----------------------------------------------------------------
