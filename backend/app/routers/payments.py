@@ -55,6 +55,7 @@ from app.services.payouts import create_payout_for_booking
 from app.services.push import send_push_to_admins, send_push_to_user, send_push_to_all
 from app.services.booking import remove_shadow_blocks
 from app.services.fx import to_inr
+from app.services.experience_payments import handle_experience_webhook_event
 
 
 router = APIRouter(prefix="/payments", tags=["payments"])
@@ -340,6 +341,10 @@ async def razorpay_webhook(
 
     event_type: str = event.get("event", "")
     payload = event.get("payload", {})
+
+    # Experience orders share this webhook URL: hand them to the experience handler, stays carry on below.
+    if await handle_experience_webhook_event(db, event_type, payload, background_tasks):
+        return {"status": "ok"}
 
     # ── payment.captured ──────────────────────────────────────────────────────
     if event_type == "payment.captured":

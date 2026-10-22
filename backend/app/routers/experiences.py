@@ -9,12 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import IST, get_db
 from app.models.experience import Experience, ExperienceSlot
-from app.models.user import OperatorStatus, User
+from app.models.user import User
 from app.schemas.experience import (
     ExperienceListOut, PublicExperienceDetail, PublicExperienceOut, QuoteIn, SlotPublic,
 )
 from app.services.app_settings import get_commission_percent
-from app.services.experience_booking import BOOKING_CUTOFF, seats_left, slot_is_open
+from app.services.experience_booking import BOOKING_CUTOFF, public_clauses, seats_left, slot_is_open, visible_experience
 from app.services.experience_pricing import compute_experience_pricing
 from app.services.fx import UnsupportedCurrency, get_rate, to_minor
 
@@ -27,14 +27,6 @@ def _bookable_slot_clause(now: datetime):
     return (
         ExperienceSlot.starts_at > now + BOOKING_CUTOFF,
         ExperienceSlot.seats_booked < ExperienceSlot.capacity,
-    )
-
-
-def _public_clauses():
-    return (
-        Experience.approval_status == "approved",
-        Experience.is_published.is_(True),
-        User.operator_status == OperatorStatus.approved,
     )
 
 
@@ -58,7 +50,7 @@ async def list_experiences(
     has_slot = (
         select(ExperienceSlot.id).where(ExperienceSlot.experience_id == Experience.id, *slot_filters).exists()
     )
-    conditions = [*_public_clauses(), has_slot]
+    conditions = [*public_clauses(), has_slot]
     if city:
         conditions.append(func.lower(Experience.city) == city.lower())
     if state:
@@ -93,22 +85,9 @@ async def list_experiences(
     return ExperienceListOut(items=items, total=total or 0)
 
 
-async def _visible_experience(db: AsyncSession, experience_id: uuid.UUID) -> Experience:
-    row = (
-        await db.execute(
-            select(Experience)
-            .join(User, User.id == Experience.operator_id)
-            .where(Experience.id == experience_id, *_public_clauses())
-        )
-    ).scalar_one_or_none()
-    if not row:
-        raise HTTPException(status_code=404, detail="Experience not found")
-    return row
-
-
 @router.get("/{experience_id}", response_model=PublicExperienceDetail)
 async def get_experience(experience_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    exp = await _visible_experience(db, experience_id)
+    exp = await visible_experience(db, experience_id)
     now = datetime.now(timezone.utc)
     slots = (
         await db.execute(
@@ -127,7 +106,7 @@ async def get_experience(experience_id: uuid.UUID, db: AsyncSession = Depends(ge
 
 @router.post("/{experience_id}/quote")
 async def quote_experience(experience_id: uuid.UUID, data: QuoteIn, db: AsyncSession = Depends(get_db)):
-    exp = await _visible_experience(db, experience_id)
+    exp = await visible_experience(db, experience_id)
     slot = await db.get(ExperienceSlot, data.slot_id)
     if not slot or slot.experience_id != exp.id:
         raise HTTPException(status_code=404, detail="Slot not found")

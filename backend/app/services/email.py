@@ -495,3 +495,25 @@ async def send_dispute_decision_email(
                 f"change it. Your booking stands.")
     html = f"<p>Hi {escape(guest_name)},</p><p>{body}</p>"
     return await _deliver(to_email, f"Update on your booking {booking_ref}", html, "dispute decision")
+
+
+async def send_experience_voucher_email(
+    to_email: str, guest_name: str, title: str, starts_at: str, party_size: int, meeting_point: str,
+    voucher_code: str, operator_name: str, operator_phone: str, operator_email: str,
+) -> bool:
+    """Booking voucher for a paid experience: where to meet and who to contact."""
+    from html import escape
+
+    contact = escape(operator_name)
+    if operator_phone:
+        contact += f", {escape(operator_phone)}"
+    if operator_email:
+        contact += f", {escape(operator_email)}"
+    html = (
+        f"<p>Hi {escape(guest_name)},</p>"
+        f"<p>Your experience <strong>{escape(title)}</strong> is confirmed.</p>"
+        f"<p>When: {escape(starts_at)}<br>People: {party_size}<br>Meeting point: {escape(meeting_point)}</p>"
+        f"<p>Voucher code: <strong>{escape(voucher_code)}</strong><br>Operator: {contact}</p>"
+        f"<p>Show your voucher code to the operator when you arrive.</p>"
+    )
+    return await _deliver(to_email, f"Your voucher: {title}", html, "experience voucher")
