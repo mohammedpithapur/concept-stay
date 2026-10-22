@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -116,3 +116,45 @@ async def create_experience_booking(
     await db.refresh(booking)
     await db.refresh(payment)
     return booking, payment
+
+
+PENDING_TTL = timedelta(minutes=30)  # an unpaid booking is abandoned after this long
+
+
+async def expire_stale_experience_bookings(db: AsyncSession, now: datetime | None = None) -> int:
+    """Pending bookings nobody paid within PENDING_TTL become expired (their payment, failed). Commits."""
+    cutoff = (now or datetime.now(timezone.utc)).replace(tzinfo=None) - PENDING_TTL
+    stale = (
+        await db.execute(
+            select(ExperienceBooking.id).where(ExperienceBooking.status == "pending", ExperienceBooking.created_at < cutoff)
+        )
+    ).scalars().all()
+    if not stale:
+        return 0
+    await db.execute(
+        update(ExperiencePayment)
+        .where(ExperiencePayment.booking_id.in_(stale), ExperiencePayment.status == "created")
+        .values(status="failed")
+    )
+    await db.execute(update(ExperienceBooking).where(ExperienceBooking.id.in_(stale)).values(status="expired"))
+    await db.commit()
+    return len(stale)
+
+
+async def complete_finished_experience_bookings(db: AsyncSession, now: datetime | None = None) -> int:
+    """Confirmed bookings whose slot has finished (start plus the experience's duration) become completed. Commits."""
+    now = now or datetime.now(timezone.utc)
+    ends_at = ExperienceSlot.starts_at + func.make_interval(0, 0, 0, 0, 0, Experience.duration_minutes)
+    done = (
+        await db.execute(
+            select(ExperienceBooking.id)
+            .join(ExperienceSlot, ExperienceSlot.id == ExperienceBooking.slot_id)
+            .join(Experience, Experience.id == ExperienceBooking.experience_id)
+            .where(ExperienceBooking.status == "confirmed", ends_at < now)
+        )
+    ).scalars().all()
+    if not done:
+        return 0
+    await db.execute(update(ExperienceBooking).where(ExperienceBooking.id.in_(done)).values(status="completed"))
+    await db.commit()
+    return len(done)

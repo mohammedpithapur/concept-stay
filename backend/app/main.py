@@ -58,15 +58,22 @@ async def housekeeping_worker():
         try:
             from app.database import async_session
             from app.services.booking import complete_finished_bookings
+            from app.services.experience_booking import (
+                complete_finished_experience_bookings, expire_stale_experience_bookings,
+            )
             from app.services.guest_id_retention import purge_expired_guest_ids
 
             async with async_session() as session:
                 done = await complete_finished_bookings(session, force=True)
                 purged = await purge_expired_guest_ids(session)
+                expired = await expire_stale_experience_bookings(session)
+                finished = await complete_finished_experience_bookings(session)
             if done:
                 logger.info("Marked %d finished stays as completed", done)
             if purged:
                 logger.info("Purged %d expired guest ID files", purged)
+            if expired or finished:
+                logger.info("Experiences: %d unpaid bookings expired, %d finished", expired, finished)
         except asyncio.CancelledError:
             break
         except Exception as e:
