@@ -8,8 +8,9 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import IST, get_db
-from app.models.experience import Experience, ExperienceSlot
+from app.models.experience import Experience, ExperienceReview, ExperienceSlot
 from app.models.user import User
+from app.schemas.experience_review import ExperienceReviewOut
 from app.schemas.experience import (
     ExperienceListOut, PublicExperienceDetail, PublicExperienceOut, QuoteIn, SlotPublic,
 )
@@ -129,3 +130,23 @@ async def quote_experience(experience_id: uuid.UUID, data: QuoteIn, db: AsyncSes
         "total": pricing["total"],
         "charged": {"currency": currency, "amount_minor": to_minor(pricing["total"], rate)},
     }
+
+
+@router.get("/{experience_id}/reviews", response_model=list[ExperienceReviewOut])
+async def list_experience_reviews(
+    experience_id: uuid.UUID, limit: int = Query(50, ge=1, le=200), db: AsyncSession = Depends(get_db)
+):
+    exp = await visible_experience(db, experience_id)
+    rows = (
+        await db.execute(
+            select(ExperienceReview, User.full_name)
+            .join(User, User.id == ExperienceReview.guest_id)
+            .where(ExperienceReview.experience_id == exp.id)
+            .order_by(ExperienceReview.created_at.desc())
+            .limit(limit)
+        )
+    ).all()
+    return [
+        ExperienceReviewOut(rating=r.rating, text=r.text, guest_first_name=(name.split() or [""])[0], created_at=r.created_at)
+        for r, name in rows
+    ]

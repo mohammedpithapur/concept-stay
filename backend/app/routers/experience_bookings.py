@@ -1,18 +1,21 @@
 """Guest-side experience bookings: create (with the Razorpay order), verify the payment, list, read."""
 import uuid
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from sqlalchemy import select
+from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.models.experience import Experience, ExperienceBooking, ExperiencePayment, ExperienceSlot
+from app.models.experience import Experience, ExperienceBooking, ExperiencePayment, ExperienceReview, ExperienceSlot
 from app.models.user import User
 from app.schemas.experience_booking import (
     ExperienceBookingIn, ExperienceCheckoutOut, ExperienceVerifyIn, ExperienceVoucherOut,
 )
+from app.schemas.experience_review import ExperienceReviewIn, ExperienceReviewOut
 from app.services.experience_booking import create_experience_booking
 from app.services.experience_payments import (
     SlotFull, confirm_experience_payment, load_voucher, queue_voucher_email, voucher_out,
@@ -91,3 +94,45 @@ async def get_booking(
     booking_id: uuid.UUID, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
 ):
     return await load_voucher(db, await _own_booking(db, booking_id, user))
+
+
+@router.post("/{booking_id}/review", response_model=ExperienceReviewOut, status_code=201)
+async def review_booking(
+    booking_id: uuid.UUID,
+    data: ExperienceReviewIn,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    booking = await db.get(ExperienceBooking, booking_id)
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    if booking.guest_id != user.id:
+        raise HTTPException(status_code=403, detail="Only the guest who booked can review")
+    slot = await db.get(ExperienceSlot, booking.slot_id)
+    if booking.status not in ("confirmed", "completed") or slot.starts_at > datetime.now(timezone.utc):
+        raise HTTPException(status_code=409, detail="You can review an experience after you have taken part in it")
+    exp = await db.get(Experience, booking.experience_id, with_for_update=True)  # serialises the rating recompute
+    if await db.scalar(select(ExperienceReview.id).where(ExperienceReview.booking_id == booking.id)):
+        raise HTTPException(status_code=409, detail="You already reviewed this booking")
+    review = ExperienceReview(
+        booking_id=booking.id, guest_id=user.id, experience_id=exp.id, rating=data.rating, text=data.text
+    )
+    db.add(review)
+    try:
+        await db.flush()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail="You already reviewed this booking")
+    avg, count = (
+        await db.execute(
+            select(func.avg(ExperienceReview.rating), func.count()).where(ExperienceReview.experience_id == exp.id)
+        )
+    ).one()
+    exp.avg_rating = round(float(avg), 1)
+    exp.review_count = count
+    await db.commit()
+    await db.refresh(review)
+    return ExperienceReviewOut(
+        rating=review.rating, text=review.text, guest_first_name=(user.full_name.split() or [""])[0],
+        created_at=review.created_at,
+    )
