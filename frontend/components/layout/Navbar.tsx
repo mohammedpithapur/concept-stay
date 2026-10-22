@@ -86,6 +86,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           {[
             { label: 'Our Properties', href: '/properties' },
+            { label: 'Experiences', href: '/experiences' },
             { label: 'Corporate', href: '/corporate' },
             { label: 'Wedding', href: '/wedding' },
             { label: 'Articles', href: '/articles' },
@@ -129,7 +130,8 @@ export default function Navbar() {
                   </div>
                   {[
                     { label: 'My Dashboard', href: '/dashboard' },
-                    ...(user.role === 'host' || user.role === 'admin' ? [{ label: 'Host Dashboard', href: '/host' }] : [{ label: 'Become a host', href: '/host/apply' }]),
+                    ...(user.role === 'host' || user.role === 'admin' ? [{ label: 'Host Dashboard', href: '/host' }] : user.role === 'guest' ? [{ label: 'Become a host', href: '/host/apply' }] : []),
+                    ...(user.role === 'operator' || user.role === 'admin' ? [{ label: 'Operator Dashboard', href: '/operator' }] : user.role === 'guest' ? [{ label: 'Become an operator', href: '/operator/apply' }] : []),
                     ...(user.role === 'admin' ? [{ label: 'Admin Panel', href: '/admin' }] : []),
                   ].map(item => (
                     <Link key={item.href} href={item.href}
@@ -206,6 +208,7 @@ export default function Navbar() {
         <div className="md:hidden flex flex-col w-full" style={{ backgroundColor: 'var(--color-bg-page)', borderTop: '1px solid var(--color-border)', padding: '16px 24px', gap: '16px', maxWidth: '1400px', margin: '0 auto' }}>
           {[
             { label: 'Our Properties', href: '/properties' },
+            { label: 'Experiences', href: '/experiences' },
             { label: 'Corporate', href: '/corporate' },
             { label: 'Wedding', href: '/wedding' },
             { label: 'Articles', href: '/articles' },
@@ -224,10 +227,18 @@ export default function Navbar() {
                 style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
                 My Dashboard
               </Link>
-              <Link href={user.role === 'host' || user.role === 'admin' ? '/host' : '/host/apply'} onClick={() => setMenuOpen(false)}
-                style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
-                {user.role === 'host' || user.role === 'admin' ? 'Host Dashboard' : 'Become a host'}
-              </Link>
+              {user.role !== 'operator' && (
+                <Link href={user.role === 'host' || user.role === 'admin' ? '/host' : '/host/apply'} onClick={() => setMenuOpen(false)}
+                  style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
+                  {user.role === 'host' || user.role === 'admin' ? 'Host Dashboard' : 'Become a host'}
+                </Link>
+              )}
+              {user.role !== 'host' && (
+                <Link href={user.role === 'operator' || user.role === 'admin' ? '/operator' : '/operator/apply'} onClick={() => setMenuOpen(false)}
+                  style={{ color: 'var(--color-text-primary)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '500' }}>
+                  {user.role === 'operator' || user.role === 'admin' ? 'Operator Dashboard' : 'Become an operator'}
+                </Link>
+              )}
               {user.role === 'admin' && (
                 <Link href="/admin" onClick={() => setMenuOpen(false)}
                   style={{ color: 'var(--color-terra)', fontSize: '14px', letterSpacing: '1px', textDecoration: 'none', textTransform: 'uppercase', fontWeight: '700' }}>

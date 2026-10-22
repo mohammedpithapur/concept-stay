@@ -7,6 +7,7 @@ import type { User } from '@/lib/types'
 interface UseRequireAuthOptions {
   requireAdmin?: boolean
   requireHost?: boolean // approved host or admin
+  requireOperator?: boolean // approved operator or admin
 }
 
 interface UseRequireAuthReturn {
@@ -39,8 +40,13 @@ export function useRequireAuth(options: UseRequireAuthOptions = {}): UseRequireA
 
     if (options.requireHost && user.role !== 'admin' && !(user.role === 'host' && user.host_status === 'approved')) {
       router.replace('/host/apply')
+      return
     }
-  }, [user, loading, router, pathname, options.requireAdmin, options.requireHost])
+
+    if (options.requireOperator && user.role !== 'admin' && !(user.role === 'operator' && user.operator_status === 'approved')) {
+      router.replace('/operator/apply')
+    }
+  }, [user, loading, router, pathname, options.requireAdmin, options.requireHost, options.requireOperator])
 
   return { user, loading }
 }

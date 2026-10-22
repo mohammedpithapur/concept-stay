@@ -14,6 +14,7 @@ import { Building2, Share2, Download, Calendar, Users, Check, X, Shield, Clock, 
 import PushSubscribeButton from '@/components/shared/PushSubscribeButton'
 import BookingActions from '@/components/booking/BookingActions'
 import TravelBuddies, { VisibilityToggle } from '@/components/profile/TravelBuddies'
+import MyExperiences from './MyExperiences'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -578,6 +579,7 @@ export default function DashboardPage() {
   const tabs = [
     { id: 'bookings', label: 'Upcoming',    count: upcomingCount + pendingBookings.length },
     { id: 'past',     label: 'Past Stays',  count: pastCount },
+    { id: 'experiences', label: 'My experiences', count: null },
     { id: 'buddies',  label: 'Travel buddies', count: null },
     { id: 'profile',  label: 'My Profile',  count: null },
   ]
@@ -739,6 +741,9 @@ export default function DashboardPage() {
 
         {/* ── Past Stays ── */}
         {activeTab === 'past' && renderBookingList(pastBookings, 'No past stays yet', 'Your completed stays will appear here.')}
+
+        {/* ── Experiences ── */}
+        {activeTab === 'experiences' && <MyExperiences />}
 
         {/* ── Travel buddies ── */}
         {activeTab === 'buddies' && <TravelBuddies />}
