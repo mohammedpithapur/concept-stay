@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { DisputesTab, HostsTab, KycTab, PayoutsTab, ReviewQueueTab } from './MarketplaceTabs'
+import { CommissionTab, ExperiencePayoutsTab, ExperienceReviewTab, OperatorsTab, TravellerReportTab } from './ExperienceTabs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -926,6 +927,11 @@ export default function AdminPage() {
     { id: 'kyc', label: 'Host KYC' },
     { id: 'disputes', label: 'Disputes' },
     { id: 'payouts', label: 'Payouts' },
+    { id: 'operators', label: 'Operators' },
+    { id: 'exp_review', label: 'Experience Review' },
+    { id: 'exp_payouts', label: 'Experience Payouts' },
+    { id: 'commission', label: 'Commission' },
+    { id: 'traveller', label: 'Traveller Report' },
   ]
 
   const cardStyle = { backgroundColor: '#ffffff', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '24px' }
@@ -2420,6 +2426,11 @@ export default function AdminPage() {
         {activeTab === 'kyc' && <KycTab />}
         {activeTab === 'disputes' && <DisputesTab />}
         {activeTab === 'payouts' && <PayoutsTab />}
+        {activeTab === 'operators' && <OperatorsTab />}
+        {activeTab === 'exp_review' && <ExperienceReviewTab />}
+        {activeTab === 'exp_payouts' && <ExperiencePayoutsTab />}
+        {activeTab === 'commission' && <CommissionTab />}
+        {activeTab === 'traveller' && <TravellerReportTab />}
 
         {/* Articles / Blog Tab */}
         {activeTab === 'articles' && (
