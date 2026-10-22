@@ -1,17 +1,19 @@
 """Demo data for a STAGING database only. Idempotent. Never run against production.
 
-Creates an admin, an approved host, and a handful of verified, approved listings so a reviewer can
-browse, filter, map, book and cancel immediately. Logins are printed at the end.
+Creates an admin, an approved host, an approved operator, and a handful of verified, approved listings and
+experiences so a reviewer can browse, filter, map, book and cancel immediately. Logins are printed at the end.
 """
 import asyncio
 import os
 import sys
+from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # run from anywhere
 
 from sqlalchemy import select
 
 from app.database import async_session
+from app.models.experience import Experience, ExperienceSlot
 from app.models.fx_rate import FxRate
 from app.models.host_profile import HostProfile
 from app.models.property import Property, PropertyImage
@@ -24,6 +26,7 @@ PASSWORD = os.environ.get("STAGING_SEED_PASSWORD", "Staging#2026")
 ACCOUNTS = [
     ("admin@staging.test", "Staging Admin", UserRole.admin),
     ("host@staging.test", "Staging Host", UserRole.host),
+    ("operator@staging.test", "Staging Operator", UserRole.operator),
     ("guest@staging.test", "Staging Guest", UserRole.guest),
 ]
 # Demo exchange rates (units per rupee) so the currency selector works on staging. Real rates are set by an admin.
@@ -36,6 +39,15 @@ LISTINGS = [
     ("Offbeat Valley Villa", "Spiti", "Himachal Pradesh", 32.2460, 78.0350, 12500, "villa", ["offbeat", "mountain"], ["adventure", "remote_offgrid"], "non_refundable", "photo-1506905925346-21bda4d32df4"),
     ("Backwater Workation Loft", "Alleppey", "Kerala", 9.4981, 76.3388, 5600, "guesthouse", ["lakeside", "nature"], ["workation", "solo"], "moderate", "photo-1602002418082-a4443e081dd1"),
 ]
+# title, city, state, category, minutes, difficulty, min age, price per person, photo, meeting point
+EXPERIENCES = [
+    ("Sunrise Ridge Trek", "Manali", "Himachal Pradesh", "adventure", 240, "moderate", 12, 1800, "photo-1551632811-561732d1e306",
+     "Mall Road taxi stand, 5:30 AM"),
+    ("Old Town Food Walk", "Udaipur", "Rajasthan", "food", 150, "easy", 6, 1200, "photo-1555939594-58d7cb561ad1",
+     "Clock Tower gate"),
+]
+SLOT_DAYS = (3, 6, 10)  # each experience gets three open dates, nine in the morning India time
+SLOT_CAPACITY = 6
 
 
 async def main() -> None:
@@ -57,6 +69,14 @@ async def main() -> None:
                 user_id=host.id, legal_name="Staging Host", phone="+91 90000 00000", pan_enc=encrypt_text("ABCDE1234F"),
                 aadhaar_last4="4321", bank_holder="Staging Host", bank_account_enc=encrypt_text("123456789012"),
                 bank_ifsc="HDFC0001234", kyc_status="verified", verified_at=utc_now(),
+            ))
+        # The demo operator is KYC-verified too, so the admin can mark experience payouts paid straight away.
+        operator = users[UserRole.operator]
+        if not await db.get(HostProfile, operator.id):
+            db.add(HostProfile(
+                user_id=operator.id, legal_name="Staging Operator", phone="+91 90000 00001", pan_enc=encrypt_text("FGHIJ5678K"),
+                aadhaar_last4="8765", bank_holder="Staging Operator", bank_account_enc=encrypt_text("210987654321"),
+                bank_ifsc="HDFC0004321", kyc_status="verified", verified_at=utc_now(),
             ))
         for currency, rate in FX_RATES.items():
             if not await db.get(FxRate, currency):
@@ -80,6 +100,23 @@ async def main() -> None:
             db.add(prop)
             await db.flush()
             db.add(PropertyImage(property_id=prop.id, image_url=IMG.format(photo), is_primary=True, display_order=0))
+        today = datetime.now(timezone.utc).replace(hour=3, minute=30, second=0, microsecond=0)  # 09:00 India time
+        for title, city, state, category, minutes, difficulty, min_age, price, photo, meeting in EXPERIENCES:
+            if await db.scalar(select(Experience).where(Experience.title == title)):
+                continue
+            exp = Experience(
+                operator_id=operator.id, title=title, description=f"{title} in {city}, led by a trusted local guide.",
+                images=[IMG.format(photo)], city=city, state=state, meeting_point=meeting, category=category,
+                duration_minutes=minutes, difficulty=difficulty, min_age=min_age, languages=["English", "Hindi"],
+                included="Guide and refreshments", what_to_bring="Comfortable shoes and water",
+                price_per_person=price, approval_status="approved", is_published=True,
+            )
+            db.add(exp)
+            await db.flush()
+            for days in SLOT_DAYS:
+                db.add(ExperienceSlot(
+                    experience_id=exp.id, starts_at=today + timedelta(days=days), capacity=SLOT_CAPACITY, seats_booked=0,
+                ))
         await db.commit()
     print("Staging data ready. Logins (password for all):", PASSWORD)
     for email, _, role in ACCOUNTS:

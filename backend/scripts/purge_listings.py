@@ -1,4 +1,4 @@
-"""Remove EVERY listing and everything hanging off it (bookings, payments, payouts, reviews, images, ...).
+"""Remove EVERY listing and experience and everything hanging off them (bookings, payments, payouts, reviews, images, ...).
 
 The client's existing listings are dummy data. Users are kept. Dry run by default: it only prints counts.
 
@@ -19,6 +19,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.models.booking import Booking
 from app.models.connection import Connection
+from app.models.experience import (
+    Experience, ExperienceBooking, ExperiencePayment, ExperiencePayout, ExperienceReview, ExperienceSlot,
+)
 from app.models.guest_id import GuestIdDocument, RefundDispute
 from app.models.ical import ICalLink
 from app.models.payment import Payment
@@ -32,6 +35,12 @@ from app.services.upload import delete_property_image_from_url
 
 # Child tables first: a row may only be deleted once nothing references it.
 _TABLES = [
+    ("experience_reviews", ExperienceReview),
+    ("experience_payouts", ExperiencePayout),
+    ("experience_payments", ExperiencePayment),
+    ("experience_bookings", ExperienceBooking),
+    ("experience_slots", ExperienceSlot),
+    ("experiences", Experience),
     ("connections", Connection),
     ("disputes", RefundDispute),
     ("guest_ids", GuestIdDocument),
@@ -58,11 +67,15 @@ async def purge_all_listings(db: AsyncSession, *, dry_run: bool = True) -> dict[
     counts = {name: await db.scalar(select(func.count()).select_from(model)) or 0 for name, model in _TABLES}
     counts.pop("group_members")  # an implementation detail, not worth reporting separately
     counts = {k: counts[k] for k in ("properties", "bookings", "payments", "payouts", "reviews", "images",
-                                      "ical_links", "price_overrides", "groups", "guest_ids", "disputes", "connections")}
+                                      "ical_links", "price_overrides", "groups", "guest_ids", "disputes", "connections",
+                                      "experiences", "experience_slots", "experience_bookings", "experience_payments",
+                                      "experience_payouts", "experience_reviews")}
     if dry_run:
         return counts
 
-    image_urls = (await db.execute(select(PropertyImage.image_url))).scalars().all()
+    image_urls = list((await db.execute(select(PropertyImage.image_url))).scalars().all())
+    for photos in (await db.execute(select(Experience.images))).scalars().all():
+        image_urls.extend(u for u in photos if isinstance(u, str))
     guest_id_paths = (
         await db.execute(select(GuestIdDocument.storage_path).where(GuestIdDocument.deleted_at.is_(None)))
     ).scalars().all()

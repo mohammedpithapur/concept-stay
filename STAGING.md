@@ -10,7 +10,7 @@ docker compose -f docker-compose.staging.yml up --build
 
 - Site: http://localhost:3000
 - API: http://localhost:8000 (docs at `/docs`)
-- First start builds the schema, then loads demo data (5 verified listings with photos and map pins).
+- First start builds the schema, then loads demo data (5 verified listings with photos and map pins, and 2 experiences with three open dates each).
 
 Demo logins (password `Staging#2026`, override with `STAGING_SEED_PASSWORD`):
 
@@ -18,6 +18,7 @@ Demo logins (password `Staging#2026`, override with `STAGING_SEED_PASSWORD`):
 |---|---|
 | Admin | admin@staging.test |
 | Host (approved) | host@staging.test |
+| Operator (approved, KYC verified) | operator@staging.test |
 | Guest | guest@staging.test |
 
 Reset everything: `docker compose -f docker-compose.staging.yml down -v`.
@@ -29,6 +30,7 @@ New settings for this release (all optional for local staging; see `backend/app/
 | `FIELD_ENCRYPTION_KEY` | Fernet key that encrypts host PAN and bank account numbers. Generate with `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`. Required when `ENVIRONMENT=production` (the API refuses to start without it); other environments derive a key from `JWT_SECRET`. Losing the key makes stored PAN and account numbers unreadable. |
 | `SUPABASE_PRIVATE_BUCKET` | Name of the **private** Supabase bucket for KYC documents and guest IDs (default `private-docs`). Create it with public access OFF; files are only ever served through 5-minute signed URLs. Without Supabase configured, document uploads return 502. |
 | `SUPPORTED_CURRENCIES` | Currencies guests can pay in (default INR, USD, EUR, GBP, AED, SGD, AUD). |
+| `EXPERIENCE_COMMISSION_PERCENT` | Default commission on experience bookings (15). The admin can change it in the Commission tab; each booking keeps the rate it was made at. |
 
 International payments need **Razorpay International Payments** enabled on the Razorpay account; until then non-INR orders are rejected by the gateway (INR is unaffected).
 
@@ -46,6 +48,10 @@ Payments need Razorpay **test** keys (`rzp_test_...`): export `RAZORPAY_KEY_ID` 
 8. Travel buddies: turn it on under Travel buddies (off by default). Two opted-in guests with stays at the same property within 2 days of each other see each other's first name; contact details appear only after the request is accepted.
 9. International payments: pick USD (or another currency) in the navbar. The booking page shows "Charged in USD: ..." and Razorpay is opened in that currency. Admin can change the demo rate with `PUT /admin/fx-rates/{currency}`.
 10. Live listing edits: a host edit to an approved listing is published immediately (no re-approval). Finished stays turn "completed" on their own and can then be reviewed.
+11. Experiences: browse `/experiences` (no stay needed), pick an open date and book. Register a new user, use "Become an operator" (a host account cannot also be an operator), approve them under Admin > Operators, then add an experience and a slot (dates are entered in India time). Admin > Experience Review > approve. A guest pays with a Razorpay test card and gets a voucher with the meeting point and the operator's contact; the operator sees the guest's first name, phone and voucher code under Bookings.
+12. Experience money: the guest pays price + 5% service fee + 12% tax; the platform keeps 15% of the price (setting under Admin > Commission) plus the fee. Admin > Experience Payouts: a payout is blocked until the operator's profile is verified in the Host KYC tab. There is no guest cancellation; Admin > Experience Payouts > "Refund a booking" gives a full refund, returns the seats and voids an unpaid payout.
+13. Last seat: if two guests pay for the same last seat, the second payment is refunded automatically and the guest is told. Unpaid bookings expire after 30 minutes and booking closes one hour before a slot starts.
+14. Revenue per traveller: Admin > Traveller Report shows commission plus service fee from stays and experiences for each guest, with date filters.
 
 ## Hosting it on a public URL (needs your accounts)
 
@@ -55,11 +61,11 @@ The live frontend defaults to the production API when `NEXT_PUBLIC_API_BASE` is 
 2. Frontend: deploy the `staging` branch (for example as a Vercel preview) with `NEXT_PUBLIC_API_BASE=<staging API URL>`.
 3. In the Razorpay dashboard, point a test-mode webhook at `<staging API>/payments/webhook`.
 
-When the existing production database is later upgraded, `scripts/bootstrap_db.py` runs `alembic upgrade head` (eight new migrations); take a backup first.
+When the existing production database is later upgraded, `scripts/bootstrap_db.py` runs `alembic upgrade head` (nine new migrations); take a backup first.
 
 ## Removing the dummy listings
 
-The existing listings are demo data. `backend/scripts/purge_listings.py` deletes every listing and everything attached to it (bookings, payments, payouts, reviews, photos, iCal links, price overrides, groups) and keeps users. It is a **dry run by default**:
+The existing listings are demo data. `backend/scripts/purge_listings.py` deletes every listing and experience and everything attached to them (bookings, payments, payouts, reviews, photos, slots, iCal links, price overrides, groups) and keeps users. It is a **dry run by default**:
 
 ```bash
 cd backend

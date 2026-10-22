@@ -8,6 +8,7 @@ from app.models.booking import Booking
 from app.models.payout import Payout
 from app.models.property import Property
 from app.models.user import User
+from tests.test_experience_bookings import _rates, orders  # noqa: F401  (fixtures)
 from tests.test_payouts import _book, _listing, _pay, _razorpay_secret  # noqa: F401  (autouse fixture)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
@@ -73,3 +74,29 @@ async def test_purge_also_removes_guest_id_files(client, admin_headers, user_tok
     assert counts["guest_ids"] == 1
     assert deleted == ["guest-ids/b/file.png"]
     assert await _count(db_session, GuestIdDocument) == 0
+
+
+async def test_purge_removes_experience_data_but_keeps_users(client, admin_token, db_session, orders):
+    from app.models.experience import (
+        Experience, ExperienceBooking, ExperiencePayment, ExperiencePayout, ExperienceReview, ExperienceSlot,
+    )
+    from tests.experience_helpers import make_operator
+    from tests.test_experience_bookings import _guest, _paid, _setup
+
+    op = await make_operator(client, admin_token, "oppurge@example.com")
+    guest = await _guest(client, "guestpurge@example.com")
+    eid, slot = await _setup(client, op, admin_token)
+    await _paid(client, guest, slot["id"], 2)
+    models = (Experience, ExperienceSlot, ExperienceBooking, ExperiencePayment, ExperiencePayout)
+
+    dry = await purge_listings.purge_all_listings(db_session)
+    assert dry["experiences"] == 1 and dry["experience_slots"] == 1 and dry["experience_bookings"] == 1
+    assert dry["experience_payments"] == 1 and dry["experience_payouts"] == 1
+    for model in models:
+        assert await _count(db_session, model) == 1
+
+    users_before = await _count(db_session, User)
+    await purge_listings.purge_all_listings(db_session, dry_run=False)
+    for model in (*models, ExperienceReview):
+        assert await _count(db_session, model) == 0
+    assert await _count(db_session, User) == users_before
