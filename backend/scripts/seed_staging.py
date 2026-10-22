@@ -12,9 +12,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
 from sqlalchemy import select
 
 from app.database import async_session
+from app.models.fx_rate import FxRate
+from app.models.host_profile import HostProfile
 from app.models.property import Property, PropertyImage
 from app.models.user import HostStatus, User, UserRole
 from app.services.auth import hash_password
+from app.services.crypto import encrypt_text
+from app.database import utc_now
 
 PASSWORD = os.environ.get("STAGING_SEED_PASSWORD", "Staging#2026")
 ACCOUNTS = [
@@ -22,6 +26,8 @@ ACCOUNTS = [
     ("host@staging.test", "Staging Host", UserRole.host),
     ("guest@staging.test", "Staging Guest", UserRole.guest),
 ]
+# Demo exchange rates (units per rupee) so the currency selector works on staging. Real rates are set by an admin.
+FX_RATES = {"USD": "0.012", "EUR": "0.011", "GBP": "0.0095", "AED": "0.044", "SGD": "0.016", "AUD": "0.018"}
 IMG = "https://images.unsplash.com/{}?auto=format&fit=crop&w=1200&q=70"
 LISTINGS = [
     ("Pine Ridge Cottage", "Manali", "Himachal Pradesh", 32.2396, 77.1887, 4200, "cottage", ["mountain", "nature"], ["romantic", "nature"], "moderate", "photo-1470770841072-f978cf4d019e"),
@@ -43,6 +49,18 @@ async def main() -> None:
                 db.add(user)
             users[role] = user
         await db.flush()
+
+        # The demo host is already KYC-verified so the admin can mark payouts paid straight away.
+        host = users[UserRole.host]
+        if not await db.get(HostProfile, host.id):
+            db.add(HostProfile(
+                user_id=host.id, legal_name="Staging Host", phone="+91 90000 00000", pan_enc=encrypt_text("ABCDE1234F"),
+                aadhaar_last4="4321", bank_holder="Staging Host", bank_account_enc=encrypt_text("123456789012"),
+                bank_ifsc="HDFC0001234", kyc_status="verified", verified_at=utc_now(),
+            ))
+        for currency, rate in FX_RATES.items():
+            if not await db.get(FxRate, currency):
+                db.add(FxRate(currency=currency, rate_per_inr=rate))
 
         for name, city, state, lat, lng, price, ptype, cats, tags, policy, photo in LISTINGS:
             if await db.scalar(select(Property).where(Property.name == name)):
