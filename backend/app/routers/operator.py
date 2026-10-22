@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy import select
@@ -6,10 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.dependencies import get_operator
-from app.models.experience import Experience
+from app.models.experience import Experience, ExperienceBooking, ExperienceSlot
 from app.models.user import User, UserRole
 from app.routers import admin as admin_router
-from app.schemas.experience import ExperienceIn, ExperienceOut, ExperiencePatch
+from app.schemas.experience import ExperienceIn, ExperienceOut, ExperiencePatch, SlotIn, SlotOut, SlotPatch
+from app.services.experience_booking import seats_left
 
 router = APIRouter(prefix="/operator", tags=["operator"])
 
@@ -83,3 +85,68 @@ async def unpublish_my_experience(
 @router.post("/upload-image")
 async def operator_upload_image(file: UploadFile = File(...), operator: User = Depends(get_operator)):
     return await admin_router.upload_image_file(file=file, admin=operator)
+
+
+# ── Slots ────────────────────────────────────────────────────────────────────
+
+def _slot_out(slot: ExperienceSlot) -> SlotOut:
+    return SlotOut(
+        id=slot.id, experience_id=slot.experience_id, starts_at=slot.starts_at, capacity=slot.capacity,
+        seats_booked=slot.seats_booked, seats_left=seats_left(slot),
+    )
+
+
+async def _load_slot(experience_id: uuid.UUID, slot_id: uuid.UUID, operator: User, db: AsyncSession) -> ExperienceSlot:
+    await load_owned_experience(experience_id, operator, db)
+    slot = await db.get(ExperienceSlot, slot_id, with_for_update=True)
+    if not slot or slot.experience_id != experience_id:
+        raise HTTPException(status_code=404, detail="Slot not found")
+    return slot
+
+
+@router.post("/experiences/{experience_id}/slots", response_model=SlotOut, status_code=201)
+async def add_slot(
+    experience_id: uuid.UUID, data: SlotIn, operator: User = Depends(get_operator), db: AsyncSession = Depends(get_db)
+):
+    await load_owned_experience(experience_id, operator, db)
+    if data.starts_at <= datetime.now(timezone.utc):
+        raise HTTPException(status_code=422, detail="A slot must start in the future")
+    slot = ExperienceSlot(experience_id=experience_id, starts_at=data.starts_at, capacity=data.capacity, seats_booked=0)
+    db.add(slot)
+    await db.commit()
+    await db.refresh(slot)
+    return _slot_out(slot)
+
+
+@router.patch("/experiences/{experience_id}/slots/{slot_id}", response_model=SlotOut)
+async def change_slot_capacity(
+    experience_id: uuid.UUID,
+    slot_id: uuid.UUID,
+    data: SlotPatch,
+    operator: User = Depends(get_operator),
+    db: AsyncSession = Depends(get_db),
+):
+    slot = await _load_slot(experience_id, slot_id, operator, db)
+    if data.capacity < slot.seats_booked:
+        raise HTTPException(status_code=409, detail=f"{slot.seats_booked} seats are already booked")
+    slot.capacity = data.capacity
+    await db.commit()
+    await db.refresh(slot)
+    return _slot_out(slot)
+
+
+@router.delete("/experiences/{experience_id}/slots/{slot_id}", status_code=204)
+async def delete_slot(
+    experience_id: uuid.UUID,
+    slot_id: uuid.UUID,
+    operator: User = Depends(get_operator),
+    db: AsyncSession = Depends(get_db),
+):
+    slot = await _load_slot(experience_id, slot_id, operator, db)
+    has_bookings = await db.scalar(
+        select(ExperienceBooking.id).where(ExperienceBooking.slot_id == slot.id).limit(1)
+    )
+    if has_bookings:
+        raise HTTPException(status_code=409, detail="This slot has bookings and cannot be deleted")
+    await db.delete(slot)
+    await db.commit()

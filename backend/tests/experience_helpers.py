@@ -51,3 +51,17 @@ async def create_live_experience(client, op_token, admin_token, **overrides) -> 
     approve = await client.post(f"/admin/experiences/{eid}/approve", headers=h(admin_token))
     assert approve.status_code == 200, approve.text
     return eid
+
+
+def in_hours(hours: float) -> str:
+    from datetime import datetime, timedelta, timezone
+    return (datetime.now(timezone.utc) + timedelta(hours=hours)).isoformat()
+
+
+async def add_slot(client, op_token, experience_id, hours: float = 72, capacity: int = 4) -> dict:
+    res = await client.post(
+        f"/operator/experiences/{experience_id}/slots",
+        headers=h(op_token), json={"starts_at": in_hours(hours), "capacity": capacity},
+    )
+    assert res.status_code == 201, res.text
+    return res.json()

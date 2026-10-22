@@ -1,10 +1,10 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import AwareDatetime, BaseModel, Field, field_validator
 
 from app.models.experience import (
-    EXPERIENCE_CATEGORIES, EXPERIENCE_DIFFICULTIES, MAX_EXPERIENCE_IMAGES,
+    EXPERIENCE_CATEGORIES, EXPERIENCE_DIFFICULTIES, MAX_EXPERIENCE_IMAGES, MAX_PARTY_SIZE,
 )
 
 
@@ -118,3 +118,71 @@ class ExperienceOut(BaseModel):
 
 class RejectExperienceIn(BaseModel):
     reason: str = Field(min_length=1, max_length=2000)
+
+
+# ── Slots ──
+
+class SlotIn(BaseModel):
+    starts_at: AwareDatetime
+    capacity: int = Field(ge=1, le=500)
+
+
+class SlotPatch(BaseModel):
+    capacity: int = Field(ge=1, le=500)
+
+
+class SlotOut(BaseModel):
+    id: uuid.UUID
+    experience_id: uuid.UUID
+    starts_at: datetime
+    capacity: int
+    seats_booked: int
+    seats_left: int
+
+
+class SlotPublic(BaseModel):
+    id: uuid.UUID
+    starts_at: datetime
+    capacity: int
+    seats_left: int
+
+
+# ── Public ──
+
+class PublicExperienceOut(BaseModel):
+    """What anyone may see. The meeting point and operator contact appear only on a confirmed booking."""
+
+    id: uuid.UUID
+    title: str
+    description: str
+    images: list[str]
+    city: str
+    state: str
+    category: str
+    duration_minutes: int
+    difficulty: str
+    min_age: int
+    languages: list[str]
+    included: str
+    what_to_bring: str
+    price_per_person: int
+    avg_rating: float
+    review_count: int
+    next_slot_at: datetime | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class PublicExperienceDetail(PublicExperienceOut):
+    slots: list[SlotPublic]
+
+
+class ExperienceListOut(BaseModel):
+    items: list[PublicExperienceOut]
+    total: int
+
+
+class QuoteIn(BaseModel):
+    slot_id: uuid.UUID
+    party_size: int = Field(ge=1, le=MAX_PARTY_SIZE)
+    currency: str = "INR"
