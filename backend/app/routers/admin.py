@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 
 from app.database import get_db
 from app.dependencies import get_admin
-from app.models.user import HostStatus, User, UserRole
+from app.models.user import HostStatus, OperatorStatus, User, UserRole
 from app.models.property import Property
 from app.models.property_group import PropertyGroup, PropertyGroupMember
 from app.models.booking import Booking, BookingStatus, PaymentStatus
@@ -35,7 +35,7 @@ from app.services.upload import (
     UploadValidationError,
 )
 from app.schemas.property import HostPropertyOut, RejectListingIn, VerificationUpdateIn
-from app.schemas.user import HostStatusUpdate, UserOut
+from app.schemas.user import HostStatusUpdate, OperatorStatusUpdate, UserOut
 from app.services import listing_review
 from app.services.cache import cache_delete, cache_get_json, cache_set_json, invalidate_properties_cache
 
@@ -1169,6 +1169,34 @@ async def update_host_status(
     await cache_delete(f"user:{host.id}")
     await invalidate_properties_cache()
     return host
+
+
+# -- Operators -----------------------------------------------------------------
+
+@router.get("/operators", response_model=list[UserOut])
+async def list_operators(admin: User = Depends(get_admin), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(User).where(User.role == UserRole.operator).order_by(User.created_at.desc())
+    )
+    return result.scalars().all()
+
+
+@router.patch("/operators/{user_id}", response_model=UserOut)
+async def update_operator_status(
+    user_id: uuid.UUID,
+    data: OperatorStatusUpdate,
+    admin: User = Depends(get_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    operator = await db.get(User, user_id)
+    if not operator or operator.role != UserRole.operator:
+        raise HTTPException(status_code=404, detail="Operator not found")
+    operator.operator_status = OperatorStatus(data.operator_status)
+    await db.commit()
+    await db.refresh(operator)
+    await cache_delete(f"user:{operator.id}")
+    await invalidate_properties_cache()
+    return operator
 
 
 # -- Listing review (host submissions) ---------------------------------------------

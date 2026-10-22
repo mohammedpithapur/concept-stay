@@ -14,7 +14,7 @@ from app.config import settings
 from app.database import get_db, utc_now
 from app.dependencies import get_current_user
 from app.models.password_reset import PasswordResetToken
-from app.models.user import HostStatus, User, UserRole
+from app.models.user import HostStatus, OperatorStatus, User, UserRole
 from app.rate_limit import limiter
 from app.schemas.user import RegisterIn, LoginIn, TokenOut, UserOut, ForgotPasswordIn, ResetPasswordIn, SendOtpIn, VerifyOtpIn
 from app.services.auth import (
@@ -213,6 +213,19 @@ async def become_host(user: User = Depends(get_current_user), db: AsyncSession =
     db_user = await db.get(User, user.id)
     db_user.role = UserRole.host
     db_user.host_status = HostStatus.pending
+    await db.commit()
+    await db.refresh(db_user)
+    await cache_delete(f"user:{db_user.id}")
+    return db_user
+
+
+@router.post("/become-operator", response_model=UserOut)
+async def become_operator(user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    if user.role != UserRole.guest:
+        raise HTTPException(status_code=409, detail="Only guest accounts can apply to become an operator")
+    db_user = await db.get(User, user.id)
+    db_user.role = UserRole.operator
+    db_user.operator_status = OperatorStatus.pending
     await db.commit()
     await db.refresh(db_user)
     await cache_delete(f"user:{db_user.id}")

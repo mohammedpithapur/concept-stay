@@ -13,6 +13,7 @@ class UserOut(BaseModel):
     phone: str | None
     role: str
     host_status: str = "approved"
+    operator_status: str = "approved"
     is_active: bool
     is_email_verified: bool
     open_to_connections: bool = False
@@ -23,6 +24,10 @@ class UserOut(BaseModel):
 
 class HostStatusUpdate(BaseModel):
     host_status: Literal["pending", "approved", "suspended"]
+
+
+class OperatorStatusUpdate(BaseModel):
+    operator_status: Literal["pending", "approved", "suspended"]
 
 
 class UserUpdate(BaseModel):

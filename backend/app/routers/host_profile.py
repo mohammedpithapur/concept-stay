@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db, utc_now
-from app.dependencies import get_admin, get_host_any_status
+from app.dependencies import get_admin, get_host_any_status, get_operator_any_status
 from app.models.host_profile import HOST_DOC_TYPES, HostDocument, HostProfile
 from app.models.user import User
 from app.schemas.host_profile import (
@@ -88,99 +88,109 @@ def _profile_out(profile: HostProfile, docs: list[HostDocument]) -> HostProfileO
 
 # ── Host ─────────────────────────────────────────────────────────────────────
 
-@router.get("/host/profile", response_model=HostProfileOut)
-async def get_my_profile(host: User = Depends(get_host_any_status), db: AsyncSession = Depends(get_db)):
-    profile = await _get_or_create(db, host)
-    docs = await _documents(db, host.id)
-    await db.commit()
-    return _profile_out(profile, docs)
+def build_profile_router(prefix: str, dependency) -> APIRouter:
+    """The profile and document routes, mounted for hosts (/host) and operators (/operator) with their own guard."""
+    r = APIRouter(tags=["host-profile"])
+
+    @r.get(f"{prefix}/profile", response_model=HostProfileOut)
+    async def get_my_profile(host: User = Depends(dependency), db: AsyncSession = Depends(get_db)):
+        profile = await _get_or_create(db, host)
+        docs = await _documents(db, host.id)
+        await db.commit()
+        return _profile_out(profile, docs)
 
 
-@router.put("/host/profile", response_model=HostProfileOut)
-async def save_my_profile(
-    data: HostProfileIn, host: User = Depends(get_host_any_status), db: AsyncSession = Depends(get_db)
-):
-    profile = await _get_or_create(db, host)
-    values = data.model_dump(exclude_unset=True)
-    sensitive_changed = False
-    for field in ("legal_name", "phone", "aadhaar_last4", "gst_number", "bank_holder", "bank_ifsc"):
-        if field in values:
-            if field in ("bank_holder", "bank_ifsc") and values[field] != getattr(profile, field):
-                sensitive_changed = True
-            setattr(profile, field, values[field])
-    if values.get("pan_number"):
-        profile.pan_enc = encrypt_text(values["pan_number"])
-        sensitive_changed = True
-    if values.get("bank_account_number"):
-        profile.bank_account_enc = encrypt_text(values["bank_account_number"])
-        sensitive_changed = True
+    @r.put(f"{prefix}/profile", response_model=HostProfileOut)
+    async def save_my_profile(
+        data: HostProfileIn, host: User = Depends(dependency), db: AsyncSession = Depends(get_db)
+    ):
+        profile = await _get_or_create(db, host)
+        values = data.model_dump(exclude_unset=True)
+        sensitive_changed = False
+        for field in ("legal_name", "phone", "aadhaar_last4", "gst_number", "bank_holder", "bank_ifsc"):
+            if field in values:
+                if field in ("bank_holder", "bank_ifsc") and values[field] != getattr(profile, field):
+                    sensitive_changed = True
+                setattr(profile, field, values[field])
+        if values.get("pan_number"):
+            profile.pan_enc = encrypt_text(values["pan_number"])
+            sensitive_changed = True
+        if values.get("bank_account_number"):
+            profile.bank_account_enc = encrypt_text(values["bank_account_number"])
+            sensitive_changed = True
 
-    docs = await _documents(db, host.id)
-    if profile.kyc_status == "verified" and sensitive_changed:
-        profile.kyc_status = "submitted"  # payout details changed: the admin looks again
-        profile.submitted_at = utc_now()
-        profile.verified_at = None
-    _resync_status(profile, docs)
-    await db.commit()
-    return _profile_out(profile, docs)
-
-
-@router.get("/host/profile/completeness", response_model=CompletenessOut)
-async def profile_completeness(host: User = Depends(get_host_any_status), db: AsyncSession = Depends(get_db)):
-    profile = await _get_or_create(db, host)
-    docs = await _documents(db, host.id)
-    await db.commit()
-    missing = _missing(profile, docs)
-    return CompletenessOut(complete=not missing, missing=missing, kyc_status=profile.kyc_status)
+        docs = await _documents(db, host.id)
+        if profile.kyc_status == "verified" and sensitive_changed:
+            profile.kyc_status = "submitted"  # payout details changed: the admin looks again
+            profile.submitted_at = utc_now()
+            profile.verified_at = None
+        _resync_status(profile, docs)
+        await db.commit()
+        return _profile_out(profile, docs)
 
 
-@router.post("/host/profile/documents", response_model=HostDocumentOut, status_code=201)
-async def upload_my_document(
-    doc_type: str = Form(...),
-    file: UploadFile = File(...),
-    host: User = Depends(get_host_any_status),
-    db: AsyncSession = Depends(get_db),
-):
-    if doc_type not in HOST_DOC_TYPES:
-        raise HTTPException(status_code=422, detail=f"doc_type must be one of: {', '.join(HOST_DOC_TYPES)}")
-    content, mime = await read_validated_upload(file)
-    profile = await _get_or_create(db, host)
-    docs = await _documents(db, host.id)
-    if len(docs) >= MAX_DOCUMENTS:
-        raise HTTPException(status_code=409, detail="Too many documents; delete one first")
-    try:
-        path = await private_storage.upload_private(f"host-kyc/{host.id}", file.filename or "document", content, mime)
-    except UploadStorageError as exc:
-        raise HTTPException(status_code=502, detail=str(exc))
-    doc = HostDocument(
-        user_id=host.id, doc_type=doc_type, storage_path=path,
-        filename=(file.filename or "document")[:255], mime=mime, size=len(content),
-    )
-    db.add(doc)
-    docs.append(doc)
-    _resync_status(profile, docs, documents_changed=True)
-    await db.commit()
-    await db.refresh(doc)
-    return doc
+    @r.get(f"{prefix}/profile/completeness", response_model=CompletenessOut)
+    async def profile_completeness(host: User = Depends(dependency), db: AsyncSession = Depends(get_db)):
+        profile = await _get_or_create(db, host)
+        docs = await _documents(db, host.id)
+        await db.commit()
+        missing = _missing(profile, docs)
+        return CompletenessOut(complete=not missing, missing=missing, kyc_status=profile.kyc_status)
 
 
-@router.delete("/host/profile/documents/{doc_id}", status_code=204)
-async def delete_my_document(
-    doc_id: uuid.UUID, host: User = Depends(get_host_any_status), db: AsyncSession = Depends(get_db)
-):
-    doc = await db.get(HostDocument, doc_id)
-    if not doc or doc.user_id != host.id:
-        raise HTTPException(status_code=404, detail="Document not found")
-    path = doc.storage_path
-    await db.delete(doc)
-    await db.flush()
-    profile = await _get_or_create(db, host)
-    _resync_status(profile, await _documents(db, host.id), documents_changed=True)
-    await db.commit()
-    try:
-        await private_storage.delete_private(path)
-    except UploadStorageError:
-        pass  # the row is gone; an orphaned file in the private bucket is never served
+    @r.post(f"{prefix}/profile/documents", response_model=HostDocumentOut, status_code=201)
+    async def upload_my_document(
+        doc_type: str = Form(...),
+        file: UploadFile = File(...),
+        host: User = Depends(dependency),
+        db: AsyncSession = Depends(get_db),
+    ):
+        if doc_type not in HOST_DOC_TYPES:
+            raise HTTPException(status_code=422, detail=f"doc_type must be one of: {', '.join(HOST_DOC_TYPES)}")
+        content, mime = await read_validated_upload(file)
+        profile = await _get_or_create(db, host)
+        docs = await _documents(db, host.id)
+        if len(docs) >= MAX_DOCUMENTS:
+            raise HTTPException(status_code=409, detail="Too many documents; delete one first")
+        try:
+            path = await private_storage.upload_private(f"host-kyc/{host.id}", file.filename or "document", content, mime)
+        except UploadStorageError as exc:
+            raise HTTPException(status_code=502, detail=str(exc))
+        doc = HostDocument(
+            user_id=host.id, doc_type=doc_type, storage_path=path,
+            filename=(file.filename or "document")[:255], mime=mime, size=len(content),
+        )
+        db.add(doc)
+        docs.append(doc)
+        _resync_status(profile, docs, documents_changed=True)
+        await db.commit()
+        await db.refresh(doc)
+        return doc
+
+
+    @r.delete(f"{prefix}/profile/documents/{{doc_id}}", status_code=204)
+    async def delete_my_document(
+        doc_id: uuid.UUID, host: User = Depends(dependency), db: AsyncSession = Depends(get_db)
+    ):
+        doc = await db.get(HostDocument, doc_id)
+        if not doc or doc.user_id != host.id:
+            raise HTTPException(status_code=404, detail="Document not found")
+        path = doc.storage_path
+        await db.delete(doc)
+        await db.flush()
+        profile = await _get_or_create(db, host)
+        _resync_status(profile, await _documents(db, host.id), documents_changed=True)
+        await db.commit()
+        try:
+            await private_storage.delete_private(path)
+        except UploadStorageError:
+            pass  # the row is gone; an orphaned file in the private bucket is never served
+
+    return r
+
+
+router.include_router(build_profile_router("/host", get_host_any_status))
+router.include_router(build_profile_router("/operator", get_operator_any_status))
 
 
 # ── Admin ────────────────────────────────────────────────────────────────────

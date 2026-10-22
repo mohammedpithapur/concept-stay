@@ -13,10 +13,17 @@ import enum
 class UserRole(str, enum.Enum):
     guest = "guest"
     host = "host"
+    operator = "operator"
     admin = "admin"
 
 
 class HostStatus(str, enum.Enum):
+    pending = "pending"
+    approved = "approved"
+    suspended = "suspended"
+
+
+class OperatorStatus(str, enum.Enum):
     pending = "pending"
     approved = "approved"
     suspended = "suspended"
@@ -32,6 +39,9 @@ class User(Base):
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     role: Mapped[UserRole] = mapped_column(SAEnum(UserRole), default=UserRole.guest, nullable=False)
     host_status: Mapped[HostStatus] = mapped_column(SAEnum(HostStatus), default=HostStatus.approved, nullable=False)
+    operator_status: Mapped[OperatorStatus] = mapped_column(
+        SAEnum(OperatorStatus), default=OperatorStatus.approved, server_default="approved", nullable=False
+    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     open_to_connections: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)

@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models.user import HostStatus, User, UserRole
+from app.models.user import HostStatus, OperatorStatus, User, UserRole
 from app.services.auth import get_user_from_token
 
 security = HTTPBearer()
@@ -56,4 +56,20 @@ async def get_host_any_status(user: User = Depends(get_current_user)) -> User:
     """Any host (pending or suspended included) or admin: used by the profile pages a host fills before approval."""
     if user.role not in (UserRole.host, UserRole.admin):
         raise HTTPException(status_code=403, detail="Host access required")
+    return user
+
+
+async def get_operator(user: User = Depends(get_current_user)) -> User:
+    """Approved operators, plus admins."""
+    if user.role == UserRole.admin:
+        return user
+    if user.role != UserRole.operator or user.operator_status != OperatorStatus.approved:
+        raise HTTPException(status_code=403, detail="Approved operator access required")
+    return user
+
+
+async def get_operator_any_status(user: User = Depends(get_current_user)) -> User:
+    """Any operator (pending or suspended included) or admin: used by the profile pages filled before approval."""
+    if user.role not in (UserRole.operator, UserRole.admin):
+        raise HTTPException(status_code=403, detail="Operator access required")
     return user
