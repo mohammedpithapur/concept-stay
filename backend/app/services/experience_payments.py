@@ -23,7 +23,11 @@ REVEALED = ("confirmed", "completed")
 
 
 class SlotFull(Exception):
-    """The guest paid for seats that were taken by someone else first; the payment has been refunded."""
+    """The guest paid for seats that were taken by someone else first. `refunded` says whether the money is back yet."""
+
+    def __init__(self, refunded: bool = True):
+        super().__init__("slot full")
+        self.refunded = refunded
 
 
 async def confirm_experience_payment(
@@ -36,12 +40,13 @@ async def confirm_experience_payment(
     # Lock the payment row: a second caller (verify racing the webhook) waits here, then sees the first result.
     payment = await db.get(ExperiencePayment, payment.id, with_for_update=True, populate_existing=True)
     booking = await db.get(ExperienceBooking, payment.booking_id, populate_existing=True)
+    if booking.status == "failed_full":  # before the "paid" shortcut: a failed auto-refund leaves the payment 'paid'
+        refunded = payment.status == "refunded"
+        await db.commit()
+        raise SlotFull(refunded=refunded)
     if payment.status == "paid" or booking.status in ("confirmed", "completed", "refunded"):
         await db.commit()
         return booking
-    if booking.status == "failed_full":
-        await db.commit()
-        raise SlotFull()
 
     slot = await db.get(ExperienceSlot, booking.slot_id, with_for_update=True, populate_existing=True)
     if seats_left(slot) >= booking.party_size and slot.starts_at > datetime.now(timezone.utc):
@@ -74,8 +79,9 @@ async def confirm_experience_payment(
     except RefundError:
         logger.warning("Auto-refund failed for experience payment %s; refund it from the admin panel", payment.id)
     booking.status = "failed_full"
+    refunded = payment.status == "refunded"
     await db.commit()
-    raise SlotFull()
+    raise SlotFull(refunded=refunded)
 
 
 async def apply_full_refund(db: AsyncSession, booking: ExperienceBooking, payment: ExperiencePayment) -> bool:
@@ -173,10 +179,13 @@ async def handle_experience_webhook_event(db: AsyncSession, event_type: str, pay
             payment = await db.scalar(select(ExperiencePayment).where(ExperiencePayment.razorpay_payment_id == pay_id))
         if payment is None:
             return False
-        booking = await db.get(ExperienceBooking, payment.booking_id)
+        # Lock the payment like the admin refund does: the gateway sends this event for the admin's own refund, and
+        # without the lock both could see the booking as confirmed and release its seats twice.
+        payment = await db.get(ExperiencePayment, payment.id, with_for_update=True, populate_existing=True)
+        booking = await db.get(ExperienceBooking, payment.booking_id, populate_existing=True)
         if (entity.get("amount") or payment.amount) >= payment.amount:  # only full refunds are supported
             await apply_full_refund(db, booking, payment)
-            await db.commit()
+        await db.commit()
         return True
 
     return False

@@ -108,6 +108,20 @@ async def admin_refund_experience_booking(
     if booking.status == "refunded":
         await db.commit()
         return ExperienceRefundOut(booking_id=booking.id, status="refunded", payout_needs_recovery=False)
+    if booking.status == "failed_full" and payment is not None:
+        # The guest lost the last seat and the automatic refund failed: return the money, nothing else to undo.
+        if payment.status == "refunded":
+            await db.commit()
+            return ExperienceRefundOut(booking_id=booking.id, status="failed_full", payout_needs_recovery=False)
+        if payment.status == "paid" and payment.razorpay_payment_id:
+            try:
+                await asyncio.to_thread(issue_refund, payment.razorpay_payment_id, payment.amount)
+            except RefundError as exc:
+                raise HTTPException(status_code=502, detail=f"Refund failed: {exc}")
+            payment.status = "refunded"
+            payment.updated_at = utc_now()
+            await db.commit()
+            return ExperienceRefundOut(booking_id=booking.id, status="failed_full", payout_needs_recovery=False)
     if booking.status not in REVEALED or payment is None or not payment.razorpay_payment_id:
         raise HTTPException(status_code=409, detail="Only a paid booking can be refunded")
     try:

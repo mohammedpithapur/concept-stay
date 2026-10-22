@@ -67,8 +67,12 @@ async def verify_booking_payment(
     was_confirmed = booking.status in ("confirmed", "completed")
     try:
         booking = await confirm_experience_payment(db, payment, data.razorpay_payment_id)
-    except SlotFull:
-        raise HTTPException(status_code=409, detail="Slot is full, your payment was refunded")
+    except SlotFull as full:
+        raise HTTPException(
+            status_code=409,
+            detail="Slot is full, your payment was refunded" if full.refunded
+            else "Slot is full. We could not return your payment automatically; our team will refund you shortly.",
+        )
     if not was_confirmed and booking.status == "confirmed":
         await queue_voucher_email(db, booking, background_tasks)
     return await load_voucher(db, booking)
