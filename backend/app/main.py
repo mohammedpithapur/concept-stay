@@ -16,7 +16,7 @@ from starlette.responses import JSONResponse
 from app.config import settings
 from app.database import get_db, _IS_LAMBDA
 from app.rate_limit import limiter
-from app.routers import admin, auth, bookings, ical, payments, properties, reviews, users, events, push, contact, articles, host, host_profile, guest_ids, connections, fx, payouts, operator, admin_experiences, experiences, experience_bookings, experience_payouts
+from app.routers import admin, auth, bookings, ical, payments, properties, reviews, users, events, push, contact, articles, host, host_profile, guest_ids, connections, fx, payouts, operator, admin_experiences, experiences, experience_bookings, experience_payouts, dev_private
 from app.models import push_subscription, price_override, payout, host_profile as host_profile_models, guest_id as guest_id_models, connection as connection_models, fx_rate as fx_rate_models  # noqa: F401 — ensures table is created
 
 
@@ -184,6 +184,7 @@ cors_kwargs = {
 app.add_middleware(CORSMiddleware, **cors_kwargs)
 
 app.include_router(auth.router)
+app.include_router(dev_private.router)
 app.include_router(properties.router)
 app.include_router(bookings.router)
 app.include_router(users.router)

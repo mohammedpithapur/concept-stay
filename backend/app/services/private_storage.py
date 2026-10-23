@@ -1,5 +1,9 @@
 """Private Supabase Storage bucket for KYC and guest-ID documents. Files are only ever served via short-lived signed URLs."""
+import hashlib
+import hmac
 import re
+import time
+from pathlib import Path
 from uuid import uuid4
 
 import httpx
@@ -8,6 +12,23 @@ from app.config import settings
 from app.services.upload import UploadStorageError
 
 _SAFE_EXT = re.compile(r"\.[A-Za-z0-9]{1,5}$")
+
+
+def _local() -> bool:
+    """Dev and staging without Supabase keep the files on local disk; production never does."""
+    return not settings.SUPABASE_URL and settings.ENVIRONMENT.lower() not in ("production", "prod")
+
+
+def _local_file(path: str) -> Path:
+    root = Path(settings.LOCAL_PRIVATE_DIR).resolve()
+    target = (root / path).resolve()
+    if root not in target.parents:
+        raise UploadStorageError("Invalid storage path")
+    return target
+
+
+def local_signature(path: str, exp: int) -> str:
+    return hmac.new(settings.JWT_SECRET.encode(), f"{path}:{exp}".encode(), hashlib.sha256).hexdigest()
 
 
 def _base() -> str:
@@ -27,6 +48,11 @@ async def upload_private(prefix: str, filename: str, content: bytes, mime: str) 
     """Store a file and return its storage path (not a URL). The uploaded name is never used in the path."""
     ext = _SAFE_EXT.search(filename or "")
     path = f"{prefix}/{uuid4()}{ext.group(0).lower() if ext else ''}"
+    if _local():
+        target = _local_file(path)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(content)
+        return path
     url = f"{_base()}/storage/v1/object/{settings.SUPABASE_PRIVATE_BUCKET}/{path}"
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
@@ -39,6 +65,9 @@ async def upload_private(prefix: str, filename: str, content: bytes, mime: str) 
 
 
 async def signed_url(path: str, expires_in: int = 300) -> str:
+    if _local():
+        exp = int(time.time()) + expires_in
+        return f"{settings.API_PUBLIC_URL.rstrip('/')}/dev-private/{path}?exp={exp}&sig={local_signature(path, exp)}"
     url = f"{_base()}/storage/v1/object/sign/{settings.SUPABASE_PRIVATE_BUCKET}/{path}"
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
@@ -52,6 +81,9 @@ async def signed_url(path: str, expires_in: int = 300) -> str:
 
 async def delete_private(path: str) -> None:
     """Remove a file. Raises UploadStorageError when it could not be removed, so callers decide what to do."""
+    if _local():
+        _local_file(path).unlink(missing_ok=True)
+        return
     url = f"{_base()}/storage/v1/object/{settings.SUPABASE_PRIVATE_BUCKET}"
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:

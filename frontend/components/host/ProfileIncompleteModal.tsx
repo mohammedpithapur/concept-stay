@@ -7,7 +7,9 @@ import { UserCheck, X } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { getProfileCompleteness, type ProfileBase } from '@/lib/marketplace'
 
-/** Shown on every host or operator page (except the profile page itself) until the payout profile is complete. */
+const dismissedKey = (base: string) => `profile-prompt-dismissed:${base}`
+
+/** Shown once per browser session on a host or operator page (never on the profile page) while the payout profile is incomplete. */
 export default function ProfileIncompleteModal({ base = '/host' }: { base?: ProfileBase }) {
   const { user, fetchWithAuth } = useAuth()
   const pathname = usePathname()
@@ -16,12 +18,18 @@ export default function ProfileIncompleteModal({ base = '/host' }: { base?: Prof
 
   useEffect(() => {
     if (!user || onProfilePage) return
+    try { if (sessionStorage.getItem(dismissedKey(base))) return } catch { /* storage blocked: show the prompt */ }
     let cancelled = false
     getProfileCompleteness(fetchWithAuth, base)
       .then(c => { if (!cancelled) setOpen(!c.complete) })
       .catch(() => { if (!cancelled) setOpen(false) })
     return () => { cancelled = true }
   }, [user, fetchWithAuth, onProfilePage, base])
+
+  const dismiss = () => {
+    try { sessionStorage.setItem(dismissedKey(base), '1') } catch { /* nothing to remember */ }
+    setOpen(false)
+  }
 
   if (!open || onProfilePage) return null
 
@@ -36,7 +44,7 @@ export default function ProfileIncompleteModal({ base = '/host' }: { base?: Prof
         <button
           type="button"
           aria-label="Dismiss"
-          onClick={() => setOpen(false)}
+          onClick={dismiss}
           style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)' }}
         >
           <X size={18} />
@@ -51,13 +59,14 @@ export default function ProfileIncompleteModal({ base = '/host' }: { base?: Prof
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <Link
             href={`${base}/profile`}
+            onClick={dismiss}
             style={{ padding: '10px 20px', borderRadius: 'var(--btn-radius)', backgroundColor: 'var(--color-brand)', color: 'var(--color-on-accent)', fontSize: '13px', fontWeight: 700, textDecoration: 'none' }}
           >
             Complete profile
           </Link>
           <button
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={dismiss}
             style={{ padding: '10px 20px', borderRadius: 'var(--btn-radius)', border: '1px solid var(--color-border)', backgroundColor: '#ffffff', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}
           >
             Later

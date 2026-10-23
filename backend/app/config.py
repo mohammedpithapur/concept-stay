@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_KEY: str = ""
     SUPABASE_STORAGE_BUCKET: str = "property-images"
     SUPABASE_PRIVATE_BUCKET: str = "private-docs"  # KYC and guest IDs; never public, served by signed URL only
+    LOCAL_PRIVATE_DIR: str = "/tmp/private-docs"  # dev/staging fallback when Supabase is not configured
+    API_PUBLIC_URL: str = "http://localhost:8000"  # base of signed links for the local fallback
     FIELD_ENCRYPTION_KEY: str = ""  # Fernet key (python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
     IMAGE_MAX_BYTES: int = 5 * 1024 * 1024
 
