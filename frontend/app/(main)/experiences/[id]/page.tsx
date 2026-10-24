@@ -71,6 +71,7 @@ export default function ExperienceDetailPage() {
     try {
       const checkout = await bookExperience({ slot_id: slotId, party_size: party, currency }, fetchWithAuth)
       const Razorpay = await loadRazorpay()
+      let paymentTaken = false
       await new Promise<void>((resolve, reject) => {
         const rzp = new Razorpay({
           key: checkout.key_id,
@@ -81,13 +82,17 @@ export default function ExperienceDetailPage() {
           order_id: checkout.razorpay_order_id,
           prefill: { name: user.full_name, email: user.email, contact: user.phone },
           theme: { color: '#a23a1f' },
-          modal: { ondismiss: () => reject(new Error('Payment cancelled. You have not been charged.')) },
+          modal: { ondismiss: () => { if (!paymentTaken) reject(new Error('Payment cancelled. You have not been charged.')) } },
           handler: async response => {
+            paymentTaken = true
             try {
               setConfirmed(await verifyExperiencePayment(checkout.booking.id, response, fetchWithAuth))
               resolve()
             } catch (err) {
-              reject(err)
+              // The request never reached the server: the money is taken and the gateway will confirm the booking itself.
+              reject(err instanceof TypeError
+                ? new Error('Payment received. We are confirming your booking; check My experiences in a minute.')
+                : err)
             }
           },
         })

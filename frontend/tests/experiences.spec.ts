@@ -132,4 +132,27 @@ test.describe('Experience checkout', () => {
     await page.getByRole('button', { name: /Pay ₹5,880/ }).click()
     await expect(page.getByText('Slot is full, your payment was refunded')).toBeVisible()
   })
+
+  test('a network failure while confirming a paid booking says the payment was received', async ({ page }) => {
+    await page.addInitScript(() => {
+      ;(window as unknown as { Razorpay: unknown }).Razorpay = class {
+        opts: { handler: (r: object) => void; order_id: string }
+        constructor(opts: { handler: (r: object) => void; order_id: string }) { this.opts = opts }
+        open() { this.opts.handler({ razorpay_order_id: this.opts.order_id, razorpay_payment_id: 'pay_3', razorpay_signature: 'sig' }) }
+      }
+    })
+    const pending = {
+      id: 'b3', experience_id: 'exp1', slot_id: 's1', experience_title: 'Sunrise trek', starts_at: slot.starts_at, party_size: 2,
+      price_per_person: 2500, value: 5000, service_fee: 250, taxes: 630, total: 5880, currency: 'INR', charged_minor: 588000,
+      status: 'pending', created_at: '2031-01-01T00:00:00', voucher_code: null, meeting_point: null,
+      operator_name: null, operator_phone: null, operator_email: null,
+    }
+    await page.route('**/experiences/exp1**', mockExperienceApi({ ...trek, slots: [slot] }))
+    await page.route('**/experience-bookings', respond({ booking: pending, razorpay_order_id: 'order_3', amount: 588000, currency: 'INR', key_id: 'rzp_test' }))
+    await page.route('**/experience-bookings/b3/verify', route => route.abort())
+    await page.goto('/experiences/exp1')
+    await page.getByRole('button', { name: /Pay ₹5,880/ }).click()
+    await expect(page.getByText(/Payment received/)).toBeVisible()
+    await expect(page.getByText(/not been charged|Failed to fetch/i)).toHaveCount(0)
+  })
 })
