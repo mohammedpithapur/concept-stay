@@ -107,6 +107,25 @@ test.describe('Host profile', () => {
 })
 
 test.describe('Admin marketplace tabs', () => {
+  test('host KYC status filter loads the chosen status, not the first one', async ({ page }) => {
+    await page.route('**/admin/dashboard', json({ total_bookings: 0, total_properties: 1, total_revenue: 0, pending_bookings: 0 }))
+    await page.route('**/bookings/admin/all**', json({ items: [], total: 0, page: 1, limit: 15 }))
+    await page.route('**/admin/kyc**', route => {
+      if (route.request().resourceType() === 'document') return route.continue()
+      const status = new URL(route.request().url()).searchParams.get('status')
+      const rows = status === 'rejected'
+        ? [{ user_id: 'u1', email: 'rej@example.com', full_name: 'Rejected Host', legal_name: 'Rejected Host', kyc_status: 'rejected', submitted_at: '2031-01-01T00:00:00' }]
+        : []
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rows) })
+    })
+    await page.goto('/admin')
+    await page.waitForLoadState('networkidle') // let React hydrate before clicking a tab
+    await page.getByRole('button', { name: 'Host KYC' }).click()
+    await expect(page.getByText('No host profiles in this view.')).toBeVisible()
+    await page.getByLabel('Filter KYC').selectOption('rejected')
+    await expect(page.getByText('rej@example.com')).toBeVisible()
+  })
+
   test('review queue lists a new listing awaiting approval', async ({ page }) => {
     await page.route('**/admin/dashboard', json({ total_bookings: 0, total_properties: 1, total_revenue: 0, pending_bookings: 0 }))
     await page.route('**/bookings/admin/all**', json({ items: [], total: 0, page: 1, limit: 15 }))

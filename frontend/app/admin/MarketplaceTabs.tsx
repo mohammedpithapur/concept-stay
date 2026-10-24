@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import {
   VERIFICATION_STATUSES, approveListing, decideDispute, getKyc, listDisputes, listAdminPayouts, listHosts, listKyc, listReviewQueue, markPayoutPaid,
@@ -18,9 +18,15 @@ const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`
 function useLoader<T>(fetcher: () => Promise<T>) {
   const [data, setData] = useState<T | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const fetcherRef = useRef(fetcher)
+  const latest = useRef(0)
+  useEffect(() => { fetcherRef.current = fetcher })
+  // Always runs the newest fetcher (a tab's status filter changes it) and drops a response that a newer request overtook.
   const reload = useCallback(() => {
-    fetcher().then(d => { setData(d); setError(null) }).catch(e => setError((e as Error).message))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const id = ++latest.current
+    fetcherRef.current()
+      .then(d => { if (id === latest.current) { setData(d); setError(null) } })
+      .catch(e => { if (id === latest.current) setError((e as Error).message) })
   }, [])
   useEffect(reload, [reload])
   return { data, error, reload, setError }
