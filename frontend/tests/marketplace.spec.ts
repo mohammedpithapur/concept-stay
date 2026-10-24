@@ -55,22 +55,22 @@ test.describe('Host area', () => {
 test.describe('Host profile', () => {
   const dash = { bookings_this_month: 0, revenue: 0, occupancy_percent: 0, upcoming: [] }
 
-  test('modal shows when profile incomplete', async ({ page }) => {
+  test('banner shows when profile incomplete', async ({ page }) => {
     await page.route('**/host/dashboard', json(dash))
     await page.route('**/host/profile/completeness', json({ complete: false, missing: ['pan_number'], kyc_status: 'incomplete' }))
     await page.goto('/host')
-    await expect(page.getByRole('dialog')).toBeVisible()
-    await expect(page.getByText('Your profile is not completed yet.')).toBeVisible()
-    await page.getByRole('button', { name: 'Later' }).click()
-    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(page.getByRole('status').getByText('Your profile is not completed yet.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible() // the page stays usable under the banner
+    await page.getByRole('link', { name: 'Complete profile' }).click()
+    await expect(page).toHaveURL(/\/host\/profile/)
   })
 
-  test('modal hidden when complete', async ({ page }) => {
+  test('banner hidden when complete', async ({ page }) => {
     await page.route('**/host/dashboard', json(dash))
     await page.route('**/host/profile/completeness', json({ complete: true, missing: [], kyc_status: 'submitted' }))
     await page.goto('/host')
     await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
-    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(page.getByRole('status')).toHaveCount(0)
   })
 
   test('profile page shows masked PAN and lists documents', async ({ page }) => {
@@ -85,7 +85,7 @@ test.describe('Host profile', () => {
     await expect(page.getByText('On file: ********9012')).toBeVisible()
     await expect(page.getByText('pan.png')).toBeVisible()
     await expect(page.getByText('Submitted, awaiting verification')).toBeVisible()
-    await expect(page.getByRole('dialog')).toHaveCount(0) // the pop-up never covers the profile page itself
+    await expect(page.getByRole('status')).toHaveCount(0) // the banner is not repeated on the profile page itself
   })
   test('bookings page shows a pending ID with approve and report actions', async ({ page }) => {
     await page.route('**/host/profile/completeness', json({ complete: true, missing: [], kyc_status: 'verified' }))

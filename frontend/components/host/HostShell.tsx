@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { CSSProperties, ReactNode } from 'react'
-import ProfileIncompleteModal from '@/components/host/ProfileIncompleteModal'
+import ProfileIncompleteBanner from '@/components/host/ProfileIncompleteBanner'
 
 const TABS = [
   { href: '/host', label: 'Dashboard' },
@@ -56,6 +56,7 @@ export default function HostShell({ title, children }: { title: string; children
   const pathname = usePathname()
   return (
     <div className="page-shell" style={{ backgroundColor: 'var(--color-bg-page)', minHeight: '70vh' }}>
+      <ProfileIncompleteBanner />
       <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '36px var(--page-padding) 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>
@@ -88,7 +89,6 @@ export default function HostShell({ title, children }: { title: string; children
         </div>
       </div>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px var(--page-padding) 64px' }}>{children}</div>
-      <ProfileIncompleteModal />
     </div>
   )
 }

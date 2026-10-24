@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
-import ProfileIncompleteModal from '@/components/host/ProfileIncompleteModal'
+import ProfileIncompleteBanner from '@/components/host/ProfileIncompleteBanner'
 
 const TABS = [
   { href: '/operator', label: 'Overview' },
@@ -19,6 +19,7 @@ export default function OperatorShell({ title, children }: { title: string; chil
   const pathname = usePathname()
   return (
     <div className="page-shell" style={{ backgroundColor: 'var(--color-bg-page)', minHeight: '70vh' }}>
+      <ProfileIncompleteBanner base="/operator" />
       <div className="surface-deep" style={{ backgroundColor: 'var(--color-deep)', padding: '36px var(--page-padding) 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <p style={{ color: 'var(--color-terra)', fontSize: '12px', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>
@@ -46,7 +47,6 @@ export default function OperatorShell({ title, children }: { title: string; chil
         </div>
       </div>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px var(--page-padding) 64px' }}>{children}</div>
-      <ProfileIncompleteModal base="/operator" />
     </div>
   )
 }
