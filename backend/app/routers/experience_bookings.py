@@ -56,7 +56,7 @@ async def verify_booking_payment(
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
     if booking.guest_id != user.id:
-        raise HTTPException(status_code=403, detail="Access denied")
+        raise HTTPException(status_code=404, detail="Booking not found")
     payment = await db.scalar(select(ExperiencePayment).where(ExperiencePayment.booking_id == booking.id))
     if not payment or payment.razorpay_order_id != data.razorpay_order_id:
         raise HTTPException(status_code=404, detail="Payment record not found")
@@ -111,7 +111,7 @@ async def review_booking(
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
     if booking.guest_id != user.id:
-        raise HTTPException(status_code=403, detail="Only the guest who booked can review")
+        raise HTTPException(status_code=404, detail="Booking not found")
     slot = await db.get(ExperienceSlot, booking.slot_id)
     if booking.status not in ("confirmed", "completed") or slot.starts_at > datetime.now(timezone.utc):
         raise HTTPException(status_code=409, detail="You can review an experience after you have taken part in it")

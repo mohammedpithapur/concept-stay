@@ -8,6 +8,7 @@ from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
+from app.database import utc_now
 from app.models.experience import Experience, ExperienceBooking, ExperiencePayment, ExperienceSlot
 from app.models.user import OperatorStatus, User
 from app.services.app_settings import get_commission_percent
@@ -84,6 +85,15 @@ async def create_experience_booking(
     if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
         raise HTTPException(status_code=503, detail="Payment gateway not configured")
 
+    pending = await db.scalar(
+        select(func.count()).select_from(ExperienceBooking).where(
+            ExperienceBooking.guest_id == user.id, ExperienceBooking.status == "pending",
+            ExperienceBooking.created_at >= utc_now() - PENDING_TTL,
+        )
+    )
+    if pending >= MAX_PENDING_PER_GUEST:
+        raise HTTPException(status_code=429, detail="Too many unpaid bookings. Finish them or wait for them to expire.")
+
     commission_percent = await get_commission_percent(db)
     pricing = compute_experience_pricing(exp.price_per_person, party_size, commission_percent)
     charged_minor = to_minor(pricing["total"], rate)
@@ -119,6 +129,7 @@ async def create_experience_booking(
 
 
 PENDING_TTL = timedelta(minutes=30)  # an unpaid booking is abandoned after this long
+MAX_PENDING_PER_GUEST = 5  # unpaid bookings (each holds a Razorpay order) one guest may have at a time
 
 
 async def expire_stale_experience_bookings(db: AsyncSession, now: datetime | None = None) -> int:

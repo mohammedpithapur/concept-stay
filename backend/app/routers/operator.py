@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -160,5 +161,9 @@ async def delete_slot(
     )
     if has_bookings:
         raise HTTPException(status_code=409, detail="This slot has bookings and cannot be deleted")
-    await db.delete(slot)
-    await db.commit()
+    try:
+        await db.delete(slot)
+        await db.commit()
+    except IntegrityError:  # a booking appeared between the check above and the delete
+        await db.rollback()
+        raise HTTPException(status_code=409, detail="This slot has bookings and cannot be deleted")

@@ -48,13 +48,13 @@ async def test_review_unpaid_or_refunded_is_409(client, orders, admin_token, op,
     assert (await _review(client, guest, pending)).status_code == 409
 
 
-async def test_non_owner_is_403_and_unknown_is_404(client, orders, admin_token, op, db_session):
+async def test_non_owner_and_unknown_are_both_404(client, orders, admin_token, op, db_session):
     guest = await _guest(client)
     other = await _guest(client, "other@example.com")
     eid, slot = await _setup(client, op, admin_token)
     booking = (await _paid(client, guest, slot["id"], 1))["booking"]["id"]
     await _started(db_session, slot["id"])
-    assert (await _review(client, other, booking)).status_code == 403
+    assert (await _review(client, other, booking)).status_code == 404  # another guest's booking is not revealed
     assert (await _review(client, other, "00000000-0000-0000-0000-000000000000")).status_code == 404
 
 

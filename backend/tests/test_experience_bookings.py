@@ -219,7 +219,7 @@ async def test_other_user_cannot_verify_or_read(client, orders, admin_token, op)
     eid, slot = await _setup(client, op, admin_token)
     order = (await _book(client, guest, slot["id"], 1)).json()
     bid = order["booking"]["id"]
-    assert (await _verify(client, other, bid, order["razorpay_order_id"], "pay_o")).status_code == 403
+    assert (await _verify(client, other, bid, order["razorpay_order_id"], "pay_o")).status_code == 404
     assert (await client.get(f"/experience-bookings/{bid}", headers=h(other))).status_code == 404
     assert (await client.get("/experience-bookings/mine", headers=h(other))).json() == []
     assert [b["id"] for b in (await client.get("/experience-bookings/mine", headers=h(guest))).json()] == [bid]
