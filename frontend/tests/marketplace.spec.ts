@@ -73,6 +73,18 @@ test.describe('Host profile', () => {
     await expect(page.getByRole('status')).toHaveCount(0)
   })
 
+  test('banner shows the KYC rejection reason on every host page', async ({ page }) => {
+    await page.route('**/host/dashboard', json(dash))
+    await page.route('**/host/profile/completeness', json({
+      complete: true, missing: [], kyc_status: 'rejected', rejection_reason: 'PAN image is unreadable',
+    }))
+    await page.goto('/host')
+    const banner = page.getByRole('status')
+    await expect(banner.getByText('Your KYC was rejected')).toBeVisible()
+    await expect(banner.getByText('PAN image is unreadable')).toBeVisible()
+    await expect(banner.getByRole('link', { name: 'Complete profile' })).toBeVisible()
+  })
+
   test('profile page shows masked PAN and lists documents', async ({ page }) => {
     await page.route('**/host/profile', json({
       legal_name: 'Asha Verma', phone: null, pan_masked: '******234F', aadhaar_last4: '4321', gst_number: null,

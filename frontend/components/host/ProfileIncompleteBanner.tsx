@@ -11,19 +11,19 @@ import { getProfileCompleteness, type ProfileBase } from '@/lib/marketplace'
 export default function ProfileIncompleteBanner({ base = '/host' }: { base?: ProfileBase }) {
   const { user, fetchWithAuth } = useAuth()
   const pathname = usePathname()
-  const [incomplete, setIncomplete] = useState(false)
+  const [state, setState] = useState<{ incomplete: boolean; rejection: string | null }>({ incomplete: false, rejection: null })
   const onProfilePage = pathname.startsWith(`${base}/profile`)
 
   useEffect(() => {
     if (!user || onProfilePage) return
     let cancelled = false
     getProfileCompleteness(fetchWithAuth, base)
-      .then(c => { if (!cancelled) setIncomplete(!c.complete) })
-      .catch(() => { if (!cancelled) setIncomplete(false) })
+      .then(c => { if (!cancelled) setState({ incomplete: !c.complete, rejection: c.kyc_status === 'rejected' ? (c.rejection_reason || 'no reason given') : null }) })
+      .catch(() => { if (!cancelled) setState({ incomplete: false, rejection: null }) })
     return () => { cancelled = true }
   }, [user, fetchWithAuth, onProfilePage, base])
 
-  if (!incomplete || onProfilePage) return null
+  if ((!state.incomplete && !state.rejection) || onProfilePage) return null
 
   return (
     <div
@@ -33,7 +33,11 @@ export default function ProfileIncompleteBanner({ base = '/host' }: { base?: Pro
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
         <AlertTriangle size={18} style={{ color: 'var(--color-terra)', flexShrink: 0 }} />
         <p style={{ flex: 1, minWidth: '220px', margin: 0, fontSize: '14px', lineHeight: 1.5, color: 'var(--color-dark)' }}>
-          <strong>Your profile is not completed yet.</strong> Add your ID, PAN and bank details so Concept Stay can pay you. You can keep working meanwhile, but payouts wait until your profile is verified.
+          {state.rejection ? (
+            <><strong>Your KYC was rejected:</strong> {state.rejection}. Please fix it on your profile and resubmit; payouts wait until it is verified.</>
+          ) : (
+            <><strong>Your profile is not completed yet.</strong> Add your ID, PAN and bank details so Concept Stay can pay you. You can keep working meanwhile, but payouts wait until your profile is verified.</>
+          )}
         </p>
         <Link
           href={`${base}/profile`}

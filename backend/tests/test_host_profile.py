@@ -95,7 +95,7 @@ async def test_completeness_lists_missing_items(client, pending_host):
     assert {"legal_name", "pan_number", "bank_account_number", "pan_document", "id_document"} <= set(empty["missing"])
     await _complete_profile(client, token)
     done = (await client.get("/host/profile/completeness", headers=_h(token))).json()
-    assert done == {"complete": True, "missing": [], "kyc_status": "submitted"}
+    assert done == {"complete": True, "missing": [], "kyc_status": "submitted", "rejection_reason": None}
 
 
 async def test_passport_counts_as_id_document(client, pending_host):
@@ -207,3 +207,14 @@ async def test_changing_documents_on_a_verified_profile_asks_for_review(client, 
     await client.post(f"/admin/kyc/{host_id}/verify", headers=_h(admin_token))
     assert (await client.delete(f"/host/profile/documents/{extra.json()['id']}", headers=_h(token))).status_code == 204
     assert (await client.get("/host/profile", headers=_h(token))).json()["kyc_status"] == "submitted"
+
+
+async def test_completeness_reports_the_rejection_reason_until_resubmitted(client, admin_token, pending_host):
+    token, host_id = pending_host
+    await _complete_profile(client, token)
+    assert (await client.get("/host/profile/completeness", headers=_h(token))).json()["rejection_reason"] is None
+    await client.post(f"/admin/kyc/{host_id}/reject", headers=_h(admin_token), json={"reason": "PAN blurry"})
+    done = (await client.get("/host/profile/completeness", headers=_h(token))).json()
+    assert done["complete"] is True and done["kyc_status"] == "rejected" and done["rejection_reason"] == "PAN blurry"
+    await client.put("/host/profile", headers=_h(token), json={"legal_name": "Asha Verma Jr"})  # resubmitted
+    assert (await client.get("/host/profile/completeness", headers=_h(token))).json()["rejection_reason"] is None

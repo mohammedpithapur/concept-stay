@@ -121,6 +121,7 @@ class CompletenessOut(BaseModel):
     complete: bool
     missing: list[str]
     kyc_status: str
+    rejection_reason: str | None = None
 
 
 class KycListItem(BaseModel):

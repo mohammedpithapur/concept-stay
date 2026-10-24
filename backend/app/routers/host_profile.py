@@ -135,7 +135,10 @@ def build_profile_router(prefix: str, dependency) -> APIRouter:
         docs = await _documents(db, host.id)
         await db.commit()
         missing = _missing(profile, docs)
-        return CompletenessOut(complete=not missing, missing=missing, kyc_status=profile.kyc_status)
+        return CompletenessOut(
+            complete=not missing, missing=missing, kyc_status=profile.kyc_status,
+            rejection_reason=profile.rejection_reason if profile.kyc_status == "rejected" else None,
+        )
 
 
     @r.post(f"{prefix}/profile/documents", response_model=HostDocumentOut, status_code=201)

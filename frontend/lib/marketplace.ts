@@ -161,7 +161,7 @@ export type HostProfile = {
   documents: HostDocument[]
 }
 
-export type ProfileCompleteness = { complete: boolean; missing: string[]; kyc_status: KycStatus }
+export type ProfileCompleteness = { complete: boolean; missing: string[]; kyc_status: KycStatus; rejection_reason?: string | null }
 
 export type KycListItem = {
   user_id: string; email: string; full_name: string; legal_name: string | null
