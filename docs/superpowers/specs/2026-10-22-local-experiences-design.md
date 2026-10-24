@@ -103,7 +103,7 @@ One review per booking, only by the booking's guest, only when status is `confir
 
 ## Traveller report
 
-`GET /admin/traveller-report?from=&to=&limit=&offset=`. One row per user id with: stay commission + stay service fee from non-voided stay payouts (via `Booking.guest_id`), experience commission + service fee from non-voided experience payouts and non-refunded bookings, and totals. Full outer join across both sources, so travellers with only one type appear. Bookings without a `guest_id` (email-only stays) are excluded and counted in a footer line. Refunded or voided money counts as zero. Date range filters by booking creation. Sorted by total revenue, paginated. Revenue is platform revenue (commission plus service fee), not guest-paid totals.
+`GET /admin/traveller-report?from=&to=&limit=&offset=`. One row per user id with: stay commission + stay service fee from non-voided stay payouts (via `Booking.guest_id`), experience commission + service fee from non-voided experience payouts and non-refunded bookings, and totals. Full outer join across both sources, so travellers with only one type appear. Every stay booking has a `guest_id` (the column is NOT NULL), so no row is excluded. Refunded or voided money counts as zero. Date range filters by booking creation. Sorted by total revenue, paginated. Revenue is platform revenue (commission plus service fee), not guest-paid totals.
 
 ## Frontend
 
