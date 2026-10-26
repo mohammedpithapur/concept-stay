@@ -22,4 +22,4 @@ COPY scripts ./scripts
 EXPOSE 10000
 
 # Start Uvicorn bound to 0.0.0.0 and $PORT (Render sets PORT environment variable)
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}"]
+CMD ["sh", "-c", "python scripts/bootstrap_db.py && if [ \"$SEED_STAGING\" = \"1\" ]; then python scripts/seed_staging.py; fi && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}"]
