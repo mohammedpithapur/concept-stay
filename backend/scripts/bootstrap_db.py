@@ -24,14 +24,15 @@ def alembic(*args: str) -> None:
 async def main() -> None:
     async with engine.begin() as conn:
         existing = bool(await conn.scalar(text("select to_regclass('public.users') is not null")))
+        stamped = bool(await conn.scalar(text("select to_regclass('public.alembic_version') is not null")))
         if not existing:
             await conn.run_sync(Base.metadata.create_all)
     await engine.dispose()
-    if existing:
+    if existing and stamped:
         print("Existing database: alembic upgrade head")
         alembic("upgrade", "head")
     else:
-        print("Empty database: created all tables, alembic stamp head")
+        print("Empty or unstamped database: tables ensured, alembic stamp head")
         alembic("stamp", "head")
 
 
