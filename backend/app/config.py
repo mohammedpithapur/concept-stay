@@ -1,7 +1,7 @@
 import json
-from typing import Any
+from typing import Annotated, Any
 from pydantic import model_validator, field_validator, Field, AliasChoices
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, NoDecode
 
 
 class Settings(BaseSettings):
@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     FIELD_ENCRYPTION_KEY: str = ""  # Fernet key (python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
     IMAGE_MAX_BYTES: int = 5 * 1024 * 1024
 
-    CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://172.28.104.24:3000"]
+    CORS_ORIGINS: Annotated[list[str], NoDecode] = ["http://localhost:3000", "http://172.28.104.24:3000"]
     SENTRY_DSN: str | None = None
     REDIS_URL: str | None = None
     RESEND_API_KEY: str | None = None
@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     PLATFORM_COMMISSION_PERCENT: int = 15  # taken from the host's stay value
     EXPERIENCE_COMMISSION_PERCENT: int = 15  # default; the admin setting in app_settings overrides it
     GUEST_SERVICE_FEE_PERCENT: int = 5     # added to the guest's total
-    SUPPORTED_CURRENCIES: list[str] = ["INR", "USD", "EUR", "GBP", "AED", "SGD", "AUD"]  # all two-decimal; non-INR needs Razorpay International
+    SUPPORTED_CURRENCIES: Annotated[list[str], NoDecode] = ["INR", "USD", "EUR", "GBP", "AED", "SGD", "AUD"]  # all two-decimal; non-INR needs Razorpay International
     TAX_PERCENT: int = 12                  # tax on the whole total (stay, extras, fees), collected for remittance
 
     # Web Push (VAPID) — generate keys with: python backend/generate_vapid.py
@@ -62,16 +62,16 @@ class Settings(BaseSettings):
 
     model_config = {"env_file": ".env"}
 
-    @field_validator("CORS_ORIGINS", mode="before")
+    @field_validator("CORS_ORIGINS", "SUPPORTED_CURRENCIES", mode="before")
     @classmethod
-    def parse_cors_origins(cls, v: Any) -> list[str]:
+    def parse_list(cls, v: Any) -> list[str]:
         if isinstance(v, str):
             if v.startswith("["):
                 try:
                     return json.loads(v)
                 except Exception:
                     pass
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
+            return [item.strip() for item in v.split(",") if item.strip()]
         return v
 
     @model_validator(mode="after")
