@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: Annotated[list[str], NoDecode] = ["http://localhost:3000", "http://172.28.104.24:3000"]
     SENTRY_DSN: str | None = None
     REDIS_URL: str | None = None
+    MEMORY_CACHE: bool = False  # cache public lists in process memory when there is no Redis; one server only
     RESEND_API_KEY: str | None = None
     RESEND_FROM_EMAIL: str = "Concept Stay <noreply@conceptstay.in>"
     ADMIN_EMAIL: str = "staysearthy@gmail.com"
