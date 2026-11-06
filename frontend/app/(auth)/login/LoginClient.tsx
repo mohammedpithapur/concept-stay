@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { landingFor } from '@/lib/auth/landing'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { API_BASE } from '@/lib/auth/AuthContext'
 
@@ -20,7 +21,7 @@ export default function LoginClient() {
 
   useEffect(() => {
     if (!loading && user) {
-      const target = (user.role === 'admin' && (next === '/dashboard' || !next)) ? '/admin/properties' : next
+      const target = landingFor(user.role, next)
       router.replace(target)
     }
   }, [user, loading, router, next])
