@@ -13,6 +13,7 @@ from app.models.user import User
 from app.schemas.experience import ExperienceOut, RejectExperienceIn
 from app.services import experience_review
 from app.services.traveller_report import build_traveller_report
+from app.services.cache import invalidate_properties_cache
 
 router = APIRouter(prefix="/admin", tags=["admin-experiences"])
 
@@ -40,6 +41,7 @@ async def approve_experience(
 ):
     exp = experience_review.approve_experience(await _get(db, experience_id))
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(exp)
     return exp
 
@@ -53,6 +55,7 @@ async def reject_experience(
 ):
     exp = experience_review.reject_experience(await _get(db, experience_id), data.reason)
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(exp)
     return exp
 
@@ -64,6 +67,7 @@ async def admin_unpublish_experience(
     exp = await _get(db, experience_id)
     exp.is_published = False
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(exp)
     return exp
 
@@ -77,6 +81,7 @@ async def admin_publish_experience(
         raise HTTPException(status_code=409, detail="Only an approved experience can be published")
     exp.is_published = True
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(exp)
     return exp
 

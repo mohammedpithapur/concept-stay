@@ -13,6 +13,7 @@ from app.models.user import User, UserRole
 from app.routers import admin as admin_router
 from app.schemas.experience import ExperienceIn, ExperienceOut, ExperiencePatch, SlotIn, SlotOut, SlotPatch
 from app.services.experience_booking import seats_left
+from app.services.cache import invalidate_properties_cache
 
 router = APIRouter(prefix="/operator", tags=["operator"])
 
@@ -43,6 +44,7 @@ async def create_my_experience(
     exp = Experience(operator_id=operator.id, approval_status="pending_review", is_published=False, **data.model_dump())
     db.add(exp)
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(exp)
     return exp
 
@@ -68,6 +70,7 @@ async def edit_my_experience(
         exp.pending_changes = {**(exp.pending_changes or {}), **changes}
     exp.rejection_reason = None
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(exp)
     return exp
 
@@ -79,6 +82,7 @@ async def unpublish_my_experience(
     exp = await load_owned_experience(experience_id, operator, db)
     exp.is_published = False  # confirmed bookings stand; only the admin can publish again
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(exp)
     return exp
 
@@ -127,6 +131,7 @@ async def add_slot(
     slot = ExperienceSlot(experience_id=experience_id, starts_at=data.starts_at, capacity=data.capacity, seats_booked=0)
     db.add(slot)
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(slot)
     return _slot_out(slot)
 
@@ -144,6 +149,7 @@ async def change_slot_capacity(
         raise HTTPException(status_code=409, detail=f"{slot.seats_booked} seats are already booked")
     slot.capacity = data.capacity
     await db.commit()
+    await invalidate_properties_cache()
     await db.refresh(slot)
     return _slot_out(slot)
 
@@ -164,6 +170,7 @@ async def delete_slot(
     try:
         await db.delete(slot)
         await db.commit()
+        await invalidate_properties_cache()
     except IntegrityError:  # a booking appeared between the check above and the delete
         await db.rollback()
         raise HTTPException(status_code=409, detail="This slot has bookings and cannot be deleted")

@@ -1,4 +1,6 @@
 """Public experience browsing and quotes."""
+import hashlib
+import json
 import uuid
 from datetime import date, datetime, time, timedelta, timezone
 from typing import Literal
@@ -15,6 +17,7 @@ from app.schemas.experience import (
     ExperienceListOut, PublicExperienceDetail, PublicExperienceOut, QuoteIn, SlotPublic,
 )
 from app.services.app_settings import get_commission_percent
+from app.services.cache import cache_get_json, cache_set_json
 from app.services.experience_booking import BOOKING_CUTOFF, public_clauses, seats_left, slot_is_open, visible_experience
 from app.services.experience_pricing import compute_experience_pricing
 from app.services.fx import UnsupportedCurrency, get_rate, to_minor
@@ -43,6 +46,19 @@ async def list_experiences(
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
 ):
+    cache_payload = {
+        "city": city, "state": state, "category": category, "date": str(date_) if date_ else None,
+        "max_price": max_price, "sort": sort, "limit": limit, "offset": offset,
+    }
+    # key starts with "properties:" so every admin/operator change that clears the stay lists clears this too
+    cache_key = "properties:experiences:" + hashlib.sha256(json.dumps(cache_payload, sort_keys=True).encode()).hexdigest()
+    try:
+        cached = await cache_get_json(cache_key)
+        if cached and isinstance(cached, dict) and "items" in cached:
+            return ExperienceListOut.model_validate(cached)
+    except Exception:
+        pass
+
     now = datetime.now(timezone.utc)
     slot_filters = list(_bookable_slot_clause(now))
     if date_:
@@ -83,7 +99,13 @@ async def list_experiences(
         out = PublicExperienceOut.model_validate(exp)
         out.next_slot_at = next_slots.get(exp.id)
         items.append(out)
-    return ExperienceListOut(items=items, total=total or 0)
+    result = ExperienceListOut(items=items, total=total or 0)
+    try:
+        # short TTL: seats left and the next open slot change as guests book
+        await cache_set_json(cache_key, result.model_dump(mode="json"), ttl_seconds=30)
+    except Exception:
+        pass
+    return result
 
 
 @router.get("/{experience_id}", response_model=PublicExperienceDetail)
