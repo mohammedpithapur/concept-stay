@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { API_BASE } from '@/lib/api'
+import { landingFor } from '@/lib/auth/landing'
 import { AlertTriangle } from 'lucide-react'
 
 /**
@@ -40,7 +41,9 @@ export default function GoogleCallbackClient() {
           throw new Error(err.detail || 'Google authentication failed')
         }
 
-        router.replace(next)
+        // the callback returns the signed-in user; send hosts and operators to their own dashboard
+        const data = await res.json().catch(() => null)
+        router.replace(landingFor(data?.user?.role ?? 'guest', next))
       })
       .catch(err => {
         setError(err.message || 'Authentication failed. Please try again.')

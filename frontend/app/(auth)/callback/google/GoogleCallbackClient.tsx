@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/lib/auth/AuthContext'
+import { landingFor } from '@/lib/auth/landing'
 import { AlertTriangle } from 'lucide-react'
 
 /**
@@ -37,7 +38,7 @@ export default function GoogleCallbackClient() {
 
     googleLoginCallback(code)
       .then(user => {
-        const target = (user.role === 'admin' && next === '/dashboard') ? '/admin/properties' : next
+        const target = landingFor(user.role, next)
         window.location.href = target
       })
       .catch(err => {
