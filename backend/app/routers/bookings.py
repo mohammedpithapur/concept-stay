@@ -121,6 +121,25 @@ async def create_booking(
         await db.refresh(existing_pending)
         return existing_pending
 
+    # 1b. The guest's own bookings that overlap the new dates: an earlier unpaid hold (they changed their dates) is
+    # replaced, a confirmed one is a double booking of their own stay and is refused.
+    own_overlapping = (
+        await db.execute(
+            select(Booking).where(
+                Booking.property_id == data.property_id,
+                Booking.guest_id == user.id,
+                Booking.status.in_([BookingStatus.confirmed, BookingStatus.pending]),
+                Booking.check_in < data.check_out,
+                Booking.check_out > data.check_in,
+            )
+        )
+    ).scalars().all()
+    if any(b.status == BookingStatus.confirmed for b in own_overlapping):
+        raise HTTPException(status_code=409, detail="You already have a booking for these dates")
+    for stale in own_overlapping:
+        stale.status = BookingStatus.cancelled
+        await remove_shadow_blocks(db, stale, commit=False)
+
     # 2. Check availability — overlapping confirmed/pending bookings from OTHER users
     overlapping = await db.execute(
         select(Booking).where(

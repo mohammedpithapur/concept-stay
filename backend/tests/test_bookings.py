@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import select
 
-from app.models.booking import Booking
+from app.models.booking import Booking, BookingStatus
 
 
 pytestmark = pytest.mark.asyncio
@@ -48,24 +48,47 @@ async def test_booking_invalid_dates(client, user_headers):
     assert response.status_code == 422
 
 
-async def test_booking_overlapping(client, admin_headers, user_headers):
-    create = await client.post("/admin/properties", headers=admin_headers, json=_property_payload("Room A"))
-    prop = create.json()
+def _future(days: int) -> str:
+    from datetime import date, timedelta
+    return (date.today() + timedelta(days=days)).isoformat()
 
+
+async def test_same_guest_new_overlapping_dates_replace_the_unpaid_hold(client, admin_headers, user_headers):
+    prop = (await client.post("/admin/properties", headers=admin_headers, json=_property_payload("Room A"))).json()
     first = await client.post(
-        "/bookings",
-        headers=user_headers,
-        json={"property_id": prop["id"], "check_in": "2026-06-10", "check_out": "2026-06-12", "guests": 2, "pets": 0},
+        "/bookings", headers=user_headers,
+        json={"property_id": prop["id"], "check_in": _future(60), "check_out": _future(62), "guests": 2, "pets": 0},
     )
     assert first.status_code == 200, first.text
 
     second = await client.post(
-        "/bookings",
-        headers=user_headers,
-        json={"property_id": prop["id"], "check_in": "2026-06-11", "check_out": "2026-06-13", "guests": 2, "pets": 0},
+        "/bookings", headers=user_headers,
+        json={"property_id": prop["id"], "check_in": _future(61), "check_out": _future(63), "guests": 2, "pets": 0},
+    )
+    assert second.status_code == 200, second.text
+    assert second.json()["id"] != first.json()["id"]
+
+    old = await client.get(f"/bookings/{first.json()['id']}", headers=user_headers)
+    assert old.json()["status"] == "cancelled"  # the earlier unpaid hold no longer blocks or double-books
+
+
+async def test_same_guest_cannot_double_book_a_confirmed_stay(client, admin_headers, user_headers, db_session):
+    prop = (await client.post("/admin/properties", headers=admin_headers, json=_property_payload("Room B"))).json()
+    first = await client.post(
+        "/bookings", headers=user_headers,
+        json={"property_id": prop["id"], "check_in": _future(60), "check_out": _future(62), "guests": 2, "pets": 0},
+    )
+    assert first.status_code == 200, first.text
+    row = await db_session.get(Booking, first.json()["id"])
+    row.status = BookingStatus.confirmed
+    await db_session.commit()
+
+    second = await client.post(
+        "/bookings", headers=user_headers,
+        json={"property_id": prop["id"], "check_in": _future(61), "check_out": _future(63), "guests": 2, "pets": 0},
     )
     assert second.status_code == 409
-    assert second.json().get("detail") == "Property is not available for these dates"
+    assert second.json().get("detail") == "You already have a booking for these dates"
 
 
 async def test_shadow_blocks_created_and_removed(client, admin_headers, user_headers, db_session):
