@@ -91,6 +91,29 @@ async def test_same_guest_cannot_double_book_a_confirmed_stay(client, admin_head
     assert second.json().get("detail") == "You already have a booking for these dates"
 
 
+async def test_dates_spanning_two_back_to_back_stays_are_refused_not_a_server_error(client, admin_headers):
+    prop = (await client.post("/admin/properties", headers=admin_headers, json=_property_payload("Room C"))).json()
+
+    async def guest(email):
+        reg = await client.post("/auth/register", json={"email": email, "password": "GuestPass123!", "full_name": "Guest"})
+        return {"Authorization": f"Bearer {reg.json()['access_token']}"}
+
+    a, b, c = await guest("span-a@example.com"), await guest("span-b@example.com"), await guest("span-c@example.com")
+    for headers, start, end in ((a, 70, 72), (b, 72, 74)):  # back to back: the second starts the day the first ends
+        res = await client.post(
+            "/bookings", headers=headers,
+            json={"property_id": prop["id"], "check_in": _future(start), "check_out": _future(end), "guests": 2, "pets": 0},
+        )
+        assert res.status_code == 200, res.text
+
+    third = await client.post(
+        "/bookings", headers=c,
+        json={"property_id": prop["id"], "check_in": _future(71), "check_out": _future(73), "guests": 2, "pets": 0},
+    )
+    assert third.status_code == 409, third.text
+    assert third.json().get("detail") == "Property is not available for these dates"
+
+
 async def test_shadow_blocks_created_and_removed(client, admin_headers, user_headers, db_session):
     room = await client.post("/admin/properties", headers=admin_headers, json=_property_payload("Room One"))
     whole = await client.post("/admin/properties", headers=admin_headers, json=_property_payload("Whole Property"))

@@ -150,7 +150,7 @@ async def create_booking(
             Booking.guest_id != user.id,
         )
     )
-    if overlapping.scalar_one_or_none():
+    if overlapping.first() is not None:  # first(), not scalar_one_or_none(): two overlapping stays must refuse, not crash
         raise HTTPException(status_code=409, detail="Property is not available for these dates")
 
     if data.pets > 0:
