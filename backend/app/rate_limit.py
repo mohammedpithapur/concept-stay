@@ -1,3 +1,5 @@
+import logging
+
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
@@ -11,6 +13,7 @@ def client_ip(request) -> str:
     peer address is used.
     """
     forwarded = request.headers.get("x-forwarded-for", "")
+    logging.getLogger("conceptstay.api").info("RLDIAG xff=%r peer=%r cf=%r tci=%r", forwarded, request.client.host if request.client else None, request.headers.get("cf-connecting-ip"), request.headers.get("true-client-ip"))  # TEMPORARY diagnostic
     last = forwarded.split(",")[-1].strip() if forwarded else ""
     return last or get_remote_address(request)
 
