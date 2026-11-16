@@ -102,7 +102,21 @@ async def main() -> None:
             db.add(PropertyImage(property_id=prop.id, image_url=IMG.format(photo), is_primary=True, display_order=0))
         today = datetime.now(timezone.utc).replace(hour=3, minute=30, second=0, microsecond=0)  # 09:00 India time
         for title, city, state, category, minutes, difficulty, min_age, price, photo, meeting in EXPERIENCES:
-            if await db.scalar(select(Experience).where(Experience.title == title)):
+            existing = await db.scalar(select(Experience).where(Experience.title == title))
+            if existing:
+                # slots pass; give a demo experience fresh dates when none are left to book
+                open_slot = await db.scalar(
+                    select(ExperienceSlot.id).where(
+                        ExperienceSlot.experience_id == existing.id,
+                        ExperienceSlot.starts_at > datetime.now(timezone.utc) + timedelta(days=1),
+                    ).limit(1)
+                )
+                if not open_slot:
+                    for days in SLOT_DAYS:
+                        db.add(ExperienceSlot(
+                            experience_id=existing.id, starts_at=today + timedelta(days=days),
+                            capacity=SLOT_CAPACITY, seats_booked=0,
+                        ))
                 continue
             exp = Experience(
                 operator_id=operator.id, title=title, description=f"{title} in {city}, led by a trusted local guide.",
