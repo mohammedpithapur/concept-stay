@@ -1,11 +1,12 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, or_
 import asyncio
 
 from app.database import get_db
 from app.dependencies import get_admin
+from app.rate_limit import limiter
 from app.models.user import User
 from app.models.event import EventRequest, EventStatus
 from app.schemas.event import EventRequestCreate, EventRequestUpdate, EventRequestOut
@@ -17,7 +18,9 @@ router = APIRouter(prefix="/events", tags=["events"])
 
 
 @router.post("", response_model=EventRequestOut)
+@limiter.limit("5/minute")
 async def create_event_request(
+    request: Request,
     data: EventRequestCreate,
     db: AsyncSession = Depends(get_db),
 ):

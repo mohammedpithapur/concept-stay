@@ -334,7 +334,8 @@ async def google_callback(
 # ── Forgot / Reset Password ───────────────────────────────────────────────────
 
 @router.post("/forgot-password")
-async def forgot_password(data: ForgotPasswordIn, db: AsyncSession = Depends(get_db)):
+@limiter.limit("5/minute")
+async def forgot_password(request: Request, data: ForgotPasswordIn, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == data.email))
     user = result.scalar_one_or_none()
     if user and user.is_active:
@@ -366,7 +367,8 @@ async def forgot_password(data: ForgotPasswordIn, db: AsyncSession = Depends(get
 
 
 @router.post("/reset-password")
-async def reset_password(data: ResetPasswordIn, response: Response, db: AsyncSession = Depends(get_db)):
+@limiter.limit("10/minute")
+async def reset_password(request: Request, data: ResetPasswordIn, response: Response, db: AsyncSession = Depends(get_db)):
     token_hash = hash_reset_token(data.token)
     result = await db.execute(
         select(PasswordResetToken, User)

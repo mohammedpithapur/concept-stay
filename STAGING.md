@@ -55,6 +55,8 @@ Payments need Razorpay **test** keys (`rzp_test_...`): export `RAZORPAY_KEY_ID` 
 
 ## Hosting it on a public URL (needs your accounts)
 
+The live test site (Render, Vercel, Supabase) is documented in [docs/HOSTED-STAGING.md](docs/HOSTED-STAGING.md). The generic steps below still apply to a fresh setup.
+
 The live frontend defaults to the production API when `NEXT_PUBLIC_API_BASE` is not set, so **always set it** for any staging deploy.
 
 1. Backend: deploy `backend/` with its own Postgres. Environment: `ENVIRONMENT=staging`, `DATABASE_URL`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_BASE_URL=<staging site URL>`, `CORS_ORIGINS=["<staging site URL>"]`, `COOKIE_SECURE=true`, Razorpay **test** keys. Start command: `python scripts/bootstrap_db.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT`. For demo data run `python scripts/seed_staging.py` once (refuses to run with `ENVIRONMENT=production`).
