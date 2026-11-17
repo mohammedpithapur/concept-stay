@@ -87,70 +87,40 @@ async def test_review_updates_property_rating(client, admin_headers):
     assert fetched.json()["review_count"] == 2
 
 
-async def test_group_reviews_shared_across_subproperties(client, admin_headers):
-    """Reviews added to one group property are visible on all group members."""
-    whole = await client.post("/admin/properties", headers=admin_headers, json=_prop_payload("Group Master"))
-    sub1 = await client.post("/admin/properties", headers=admin_headers, json=_prop_payload("Sub Room A"))
-    sub2 = await client.post("/admin/properties", headers=admin_headers, json=_prop_payload("Sub Room B"))
-
-    whole_id = whole.json()["id"]
-    sub1_id = sub1.json()["id"]
-    sub2_id = sub2.json()["id"]
-
-    # Create group
-    group = await client.post("/admin/groups", headers=admin_headers, json={"name": "Sharing Group"})
-    group_id = group.json()["id"]
-
+async def _group_of_two(client, admin_headers, whole_name, sub_name):
+    whole = (await client.post("/admin/properties", headers=admin_headers, json=_prop_payload(whole_name))).json()["id"]
+    sub = (await client.post("/admin/properties", headers=admin_headers, json=_prop_payload(sub_name))).json()["id"]
+    group_id = (await client.post("/admin/groups", headers=admin_headers, json={"name": whole_name + " Group"})).json()["id"]
     await client.post(f"/admin/groups/{group_id}/members", headers=admin_headers,
-                      json={"property_id": whole_id, "is_whole_property": True})
+                      json={"property_id": whole, "is_whole_property": True})
     await client.post(f"/admin/groups/{group_id}/members", headers=admin_headers,
-                      json={"property_id": sub1_id, "is_whole_property": False})
-    await client.post(f"/admin/groups/{group_id}/members", headers=admin_headers,
-                      json={"property_id": sub2_id, "is_whole_property": False})
-
-    # Add review to sub1
-    await client.post(
-        "/admin/reviews", headers=admin_headers,
-        json={"property_id": sub1_id, "guest_name": "Traveler", "rating": 5, "platform": "Google"}
-    )
-
-    # Review should appear in sub2's endpoint too
-    reviews_sub2 = await client.get(f"/properties/{sub2_id}/reviews")
-    assert reviews_sub2.status_code == 200, reviews_sub2.text
-    reviews = reviews_sub2.json()
-    assert len(reviews) == 1
-    assert reviews[0]["guest_name"] == "Traveler"
+                      json={"property_id": sub, "is_whole_property": False})
+    return whole, sub
 
 
-async def test_group_rating_synced_to_all_members(client, admin_headers):
-    """Rating of all group members updates when any member gets a review."""
-    whole = await client.post("/admin/properties", headers=admin_headers, json=_prop_payload("Rating Master"))
-    sub = await client.post("/admin/properties", headers=admin_headers, json=_prop_payload("Rating Room"))
+async def test_reviews_belong_to_the_property_they_were_written_for(client, admin_headers):
+    """Reviews are per property (individual property reviews): a group does not share them between its members."""
+    whole_id, sub_id = await _group_of_two(client, admin_headers, "Review Master", "Review Room")
+    await client.post("/admin/reviews", headers=admin_headers,
+                      json={"property_id": sub_id, "guest_name": "Traveler", "rating": 5, "platform": "Google"})
 
-    whole_id = whole.json()["id"]
-    sub_id = sub.json()["id"]
+    sub_reviews = await client.get(f"/properties/{sub_id}/reviews")
+    whole_reviews = await client.get(f"/properties/{whole_id}/reviews")
+    assert [r["guest_name"] for r in sub_reviews.json()] == ["Traveler"]
+    assert whole_reviews.json() == []
 
-    group = await client.post("/admin/groups", headers=admin_headers, json={"name": "Rating Group"})
-    group_id = group.json()["id"]
 
-    await client.post(f"/admin/groups/{group_id}/members", headers=admin_headers,
-                      json={"property_id": whole_id, "is_whole_property": True})
-    await client.post(f"/admin/groups/{group_id}/members", headers=admin_headers,
-                      json={"property_id": sub_id, "is_whole_property": False})
-
-    # Add reviews to whole property
+async def test_ratings_are_calculated_per_property_not_per_group(client, admin_headers):
+    whole_id, sub_id = await _group_of_two(client, admin_headers, "Rating Master", "Rating Room")
     await client.post("/admin/reviews", headers=admin_headers,
                       json={"property_id": whole_id, "guest_name": "Guest1", "rating": 4})
     await client.post("/admin/reviews", headers=admin_headers,
                       json={"property_id": whole_id, "guest_name": "Guest2", "rating": 2})
 
-    # Both properties should have avg_rating=3.0
-    whole_data = await client.get(f"/properties/{whole_id}")
-    sub_data = await client.get(f"/properties/{sub_id}")
-
-    assert whole_data.json()["avg_rating"] == 3.0
-    assert sub_data.json()["avg_rating"] == 3.0
-    assert sub_data.json()["review_count"] == 2
+    whole_data = (await client.get(f"/properties/{whole_id}")).json()
+    sub_data = (await client.get(f"/properties/{sub_id}")).json()
+    assert whole_data["avg_rating"] == 3.0 and whole_data["review_count"] == 2
+    assert sub_data["avg_rating"] == 0.0 and sub_data["review_count"] == 0
 
 
 async def test_admin_delete_review_recalculates_rating(client, admin_headers):

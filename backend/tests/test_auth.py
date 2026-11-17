@@ -35,3 +35,17 @@ async def test_login_invalid_credentials(client):
     bad = await client.post("/auth/login", json={"identifier": "badlogin@example.com", "password": "WrongPass"})
     assert bad.status_code == 401
     assert bad.json().get("detail") == "Invalid email or password"
+
+
+async def test_unknown_account_and_wrong_password_look_the_same(client):
+    """A stranger must not be able to tell from the login error whether an email has an account."""
+    await client.post(
+        "/auth/register",
+        json={"email": "exists@example.com", "password": "GoodPass123!", "full_name": "Exists"},
+    )
+    wrong = await client.post("/auth/login", json={"identifier": "exists@example.com", "password": "WrongPass1!"})
+    unknown = await client.post("/auth/login", json={"identifier": "nobody-here@example.com", "password": "WrongPass1!"})
+    unknown_phone = await client.post("/auth/login", json={"identifier": "9876500000", "password": "WrongPass1!"})
+    for res in (wrong, unknown, unknown_phone):
+        assert res.status_code == 401, res.text
+        assert res.json().get("detail") == "Invalid email or password"

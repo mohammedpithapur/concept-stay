@@ -30,6 +30,17 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 _COOKIE_MAX_AGE = settings.JWT_REFRESH_EXPIRE_DAYS * 24 * 60 * 60  # seconds
 
 
+_DUMMY_HASH: str | None = None
+
+
+def _dummy_password_hash() -> str:
+    """A real bcrypt hash of a throwaway password, made once, to spend the same time on unknown accounts."""
+    global _DUMMY_HASH
+    if _DUMMY_HASH is None:
+        _DUMMY_HASH = hash_password("not-a-real-account-password")
+    return _DUMMY_HASH
+
+
 def _set_refresh_cookie(response: Response, refresh_token: str) -> None:
     """Set the httpOnly refresh-token cookie — JS cannot read this.
 
@@ -151,15 +162,17 @@ async def login(request: Request, data: LoginIn, response: Response, db: AsyncSe
 
     user = result.scalar_one_or_none()
 
+    # One answer for "no such account" and "wrong password", at the same cost, so neither the message nor the
+    # response time tells a stranger whether an email or phone number has an account.
     if not user:
-        detail = "No account found with this phone number. Please sign up first." if is_phone else "No account found with this email. Please sign up or register first."
-        raise HTTPException(status_code=404, detail=detail)
-
-    if not user.is_active:
-        raise HTTPException(status_code=403, detail="User account is inactive.")
+        await verify_password_async(data.password, _dummy_password_hash())
+        raise HTTPException(status_code=401, detail="Invalid email or password")
 
     if not await verify_password_async(data.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Incorrect password. Please check your password or use 'Forgot Password'.")
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    if not user.is_active:  # only someone who knows the password learns the account is switched off
+        raise HTTPException(status_code=403, detail="User account is inactive.")
 
     access_token = create_access_token(user)
     _set_refresh_cookie(response, create_refresh_token(user))
